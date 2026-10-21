@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Writing Algorithms</title>
+  <meta name="description" content="Lecture slides: three worked algorithm examples (factorials, loops and formulas), each shown as a question and then a solution, followed by a team game.">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232B37E6'/%3E%3Ctext x='32' y='47' text-anchor='middle' font-family='Arial' font-weight='900' font-size='44' fill='%23FFD84D'%3En!%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..900&family=JetBrains+Mono:wght@500;700;800&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body data-tone="blue">
+  <div class="viewport">
+    <div class="stage" id="stage" data-tone="blue">
+
+      <main class="slides" id="slides">
+
+        <!-- 1. Cover -->
+        <section class="slide slide--cover" data-tone="blue" data-title="Writing algorithms">
+          <div class="cover">
+            <div class="cover__text">
+              <p class="cover__kicker">Lecture practice</p>
+              <h1 class="cover__title">Writing algorithms</h1>
+              <p class="cover__lead">Factorials, loops and formulas. Three worked examples, then a team game.</p>
+              <p class="cover__keys"><kbd>→</kbd> next <kbd>←</kbd> back <kbd>F</kbd> full screen</p>
+            </div>
+            <div class="cover__hero" aria-label="5 factorial equals 1 times 2 times 3 times 4 times 5, which is 120">
+              <p class="hero__fact" aria-hidden="true">5!</p>
+              <p class="hero__expand" aria-hidden="true">
+                <span>1</span><span>× 2</span><span>× 3</span><span>× 4</span><span>× 5</span>
+              </p>
+              <p class="hero__total" aria-hidden="true">fact = <b id="hero-total">120</b></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Example 1: question -->
+        <section class="slide slide--question" data-tone="yellow" data-title="Example 1: question">
+          <div class="q">
+            <div class="q__main">
+              <p class="q__tag">Example 1 <span>of 3</span></p>
+              <h2 class="q__text">Write an algorithm to calculate the factorial of any number N the user enters.</h2>
+              <p class="q__check">Test your answer: when N = 5 it should print <b>120</b>.</p>
+              <details class="q__hint">
+                <summary>Show a hint</summary>
+                <p>Keep a counter i that goes 1, 2, 3 … up to N, and multiply fact by i each time.</p>
+              </details>
+            </div>
+            <div class="timer" data-timer></div>
+          </div>
+        </section>
+
+        <!-- 3. Example 1: solution -->
+        <section class="slide slide--solution" data-tone="blue" data-title="Example 1: solution">
+          <div class="sol" data-example="1"></div>
+        </section>
+
+        <!-- 4. Example 2: question -->
+        <section class="slide slide--question" data-tone="yellow" data-title="Example 2: question">
+          <div class="q">
+            <div class="q__main">
+              <p class="q__tag">Example 2 <span>of 3</span></p>
+              <h2 class="q__text">Write an algorithm that calculates</h2>
+              <p class="q__formula">y = 4! × 5!</p>
+              <p class="q__check">Test your answer: it should print <b>2880</b>.</p>
+              <details class="q__hint">
+                <summary>Show a hint</summary>
+                <p>You only need one loop. Once you have 4!, notice that 5! = 5 × 4!.</p>
+              </details>
+            </div>
+            <div class="timer" data-timer></div>
+          </div>
+        </section>
+
+        <!-- 5. Example 2: solution -->
+        <section class="slide slide--solution" data-tone="blue" data-title="Example 2: solution">
+          <div class="sol" data-example="2"></div>
+        </section>
+
+        <!-- 6. Example 3: question -->
+        <section class="slide slide--question" data-tone="yellow" data-title="Example 3: question">
+          <div class="q">
+            <div class="q__main">
+              <p class="q__tag">Example 3 <span>of 3</span></p>
+              <h2 class="q__text">Write an algorithm to calculate</h2>
+              <p class="q__formula">y = 4X! + Z²</p>
+              <p class="q__check">The user enters X and Z. Test your answer: X = 2 and Z = 3 should print <b>17</b>.</p>
+              <details class="q__hint">
+                <summary>Show a hint</summary>
+                <p>Work out X! with a loop first. Then put it into the formula.</p>
+              </details>
+            </div>
+            <div class="timer" data-timer></div>
+          </div>
+        </section>
+
+        <!-- 7. Example 3: solution -->
+        <section class="slide slide--solution" data-tone="blue" data-title="Example 3: solution">
+          <div class="sol" data-example="3"></div>
+        </section>
+
+        <!-- 8. Game -->
+        <section class="slide slide--game" data-tone="navy" data-title="Factorial Face-off">
+          <div class="gs">
+            <div class="gs__intro">
+              <p class="gs__kicker">End of lecture game</p>
+              <h2 class="gs__title">Factorial Face&#8209;off</h2>
+              <ul class="gs__rules">
+                <li>12 questions about today's three algorithms.</li>
+                <li>Teams take turns. Each turn has 30 seconds.</li>
+                <li>A right answer scores 100 points, plus up to 50 for speed.</li>
+                <li>Miss it, and the next team can steal it for 50.</li>
+              </ul>
+            </div>
+            <form class="setup" id="game-setup" autocomplete="off">
+              <p class="setup__label" id="team-count-label">How many teams?</p>
+              <div class="seg" role="radiogroup" aria-labelledby="team-count-label" id="team-count"></div>
+              <div class="setup__teams" id="team-names"></div>
+              <div class="setup__actions">
+                <button type="submit" class="btn btn--go" id="game-start">Start the game</button>
+                <button type="button" class="btn btn--line" id="game-resume" hidden>Resume game</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+      </main>
+
+      <footer class="bar" id="bar">
+        <p class="bar__title">Writing algorithms</p>
+        <nav class="progress" id="progress" aria-label="Slides"></nav>
+        <div class="bar__tools">
+          <p class="bar__count" id="count" aria-live="polite">1 / 8</p>
+          <button class="icon-btn" type="button" data-act="prev" aria-label="Previous slide">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <button class="icon-btn" type="button" data-act="next" aria-label="Next">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+          <button class="icon-btn" type="button" data-act="full" aria-label="Full screen">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+          </button>
+        </div>
+      </footer>
+
+      <div class="game" id="game" hidden></div>
+    </div>
+  </div>
+
+  <script src="js/sound.js"></script>
+  <script src="js/examples.js"></script>
+  <script src="js/solution.js"></script>
+  <script src="js/questions.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/deck.js"></script>
+</body>
+</html>
