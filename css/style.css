@@ -146,7 +146,13 @@ kbd:not(:first-child) { margin-left: 1.2em; }
   max-width: 10ch;
 }
 .cover__lead { font: 500 38px/1.35 var(--sans); color: var(--fg-2); max-width: 22em; }
-.cover__author { margin-top: 48px; font: 700 34px var(--sans); color: var(--fg); }
+.cover__author {
+  margin-top: 48px;
+  font: 900 52px var(--display);
+  font-stretch: 112%;
+  letter-spacing: -.01em;
+  color: var(--yellow);
+}
 .cover__keys { margin-top: 48px; font: 600 24px var(--sans); color: var(--fg-3); }
 
 .cover__hero { text-align: right; }
