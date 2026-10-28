@@ -38,3 +38,5 @@ The bar at the bottom shows where you are; click a segment to jump to that slide
 - `js/sound.js`: sound effects
 
 To run it locally, open `index.html` in a browser, or serve the folder with any static server.
+
+After changing a CSS or JS file, raise the `?v=` number on the links at the bottom and top of `index.html` (for example `?v=3` to `?v=4`). Browsers keep old copies of these files for a few minutes, and the new number makes them load the new ones.
