@@ -33,3 +33,7 @@ During the game, use A–D (or 1–4) to pick an answer and T / F for true-or-fa
 - `js/sound.js`: sound effects
 
 To run it locally, open `index.html` in a browser, or serve the folder with any static server.
+
+## Lecture 2
+
+The second lecture, **Factorial series** (four series algorithms with a loop inside a loop, plus the Series Showdown game), is in [`lecture-2/`](lecture-2/).

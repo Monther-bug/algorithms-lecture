@@ -1,0 +1,319 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Factorial Series</title>
+  <meta name="description" content="Lecture 2 slides: four worked algorithms for factorial series, where one loop builds each factorial and a second loop adds up the terms, followed by a team game.">
+  <meta name="theme-color" content="#fbfaf6">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%232a2418'/%3E%3Ctext x='32' y='45' text-anchor='middle' font-family='Georgia,serif' font-style='italic' font-weight='700' font-size='36' fill='%23e8a770'%3En!%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400..800&family=JetBrains+Mono:wght@500;700;800&family=Playfair+Display:ital,wght@0,500..900;1,500..900&display=swap">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div class="viewport">
+    <div class="stage" id="stage" data-layout="cover">
+
+      <!-- Sidebar: where we are in the lecture. Full on most slides, a slim rail on solutions, hidden on the cover. -->
+      <aside class="side" id="side">
+        <div class="brand">
+          <p class="brand__mark" aria-hidden="true">n!</p>
+          <div class="brand__text">
+            <p class="brand__name">Algorithms</p>
+            <p class="brand__sub">Lecture 2 · Factorial series</p>
+          </div>
+        </div>
+
+        <nav class="path" aria-label="Lecture outline">
+          <p class="side__label">Today's path</p>
+          <ol id="path">
+            <li><button type="button" data-step="goals"><span class="path__mark"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/></svg></span><span class="path__text"><b>Goals</b></span></button></li>
+            <li><button type="button" data-step="pattern"><span class="path__mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M17 4l3 3-3 3"/><path d="M20 7H9a5 5 0 000 10h1"/><path d="M7 20l-3-3 3-3"/><path d="M4 17h11a5 5 0 000-10h-1"/></svg></span><span class="path__text"><b>The big idea</b><small>A loop inside a loop</small></span></button></li>
+            <li><button type="button" data-step="ex1"><span class="path__mark">1</span><span class="path__text"><b>Example 1</b><small>8!/x + 6!/x + 4!/x</small></span></button></li>
+            <li><button type="button" data-step="ex2"><span class="path__mark">2</span><span class="path__text"><b>Example 2</b><small>6!/5! + 4!/3! + 2! + 1!</small></span></button></li>
+            <li><button type="button" data-step="ex3"><span class="path__mark">3</span><span class="path__text"><b>Example 3</b><small>2!·4! + 5!·7! + 8!·10!</small></span></button></li>
+            <li><button type="button" data-step="ex4"><span class="path__mark">4</span><span class="path__text"><b>Example 4</b><small>7x!/3! + 5x!/5! + 3x!/7!</small></span></button></li>
+            <li><button type="button" data-step="recap"><span class="path__mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><span class="path__text"><b>Wrap-up</b></span></button></li>
+            <li><button type="button" data-step="game"><span class="path__mark"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 4h8v5a4 4 0 01-8 0V4z"/><path d="M8 6H5v1a3 3 0 003 3M16 6h3v1a3 3 0 01-3 3M12 13v4M8.5 20h7"/></svg></span><span class="path__text"><b>Team game</b><small>Series Showdown</small></span></button></li>
+          </ol>
+        </nav>
+
+        <div class="side__foot">
+          <p class="side__count" id="count" aria-live="polite">1 / 13</p>
+          <div class="side__tools">
+            <button class="icon-btn" type="button" data-act="prev" aria-label="Previous slide">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+            </button>
+            <button class="icon-btn" type="button" data-act="next" aria-label="Next">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+            </button>
+            <button class="icon-btn" type="button" data-act="full" aria-label="Full screen">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+            </button>
+          </div>
+          <p class="side__author">Monther Ibrahime</p>
+        </div>
+      </aside>
+
+      <main class="slides" id="slides">
+
+        <!-- 1. Cover -->
+        <section class="slide slide--cover" data-layout="cover" data-step="cover" data-title="Factorial series">
+          <div class="cover">
+            <div class="cover__text">
+              <p class="kicker">Lecture 2 · Writing algorithms</p>
+              <h1 class="cover__title">Factorial <em>series</em></h1>
+              <p class="cover__lead">One loop builds each factorial. A second loop adds up the terms. Four worked examples, then a team game.</p>
+              <p class="cover__author">Monther Ibrahime</p>
+              <p class="cover__keys"><kbd>→</kbd> next <kbd>←</kbd> back <kbd>F</kbd> full screen</p>
+            </div>
+            <div class="hero" aria-label="y equals 8 factorial over x, plus 6 factorial over x, plus 4 factorial over x. An outer loop moves i from 8 to 6 to 4, and an inner loop builds each factorial.">
+              <div class="hero__top" aria-hidden="true">
+                <span class="hero__y"><i>y</i> =</span>
+                <span class="hero__term is-done" data-term="8"><span class="frac"><span>8!</span><span><i>x</i></span></span></span>
+                <span class="hero__plus">+</span>
+                <span class="hero__term is-done" data-term="6"><span class="frac"><span>6!</span><span><i>x</i></span></span></span>
+                <span class="hero__plus">+</span>
+                <span class="hero__term is-done" data-term="4"><span class="frac"><span>4!</span><span><i>x</i></span></span></span>
+              </div>
+              <div class="hero__loops" aria-hidden="true">
+                <div class="hero__loop hero__loop--outer">
+                  <p class="hero__tag">Outer loop</p>
+                  <p class="hero__val">i = <b id="hero-i">4</b></p>
+                </div>
+                <div class="hero__loop hero__loop--inner">
+                  <p class="hero__tag">Inner loop</p>
+                  <p class="hero__val">c = <b id="hero-c">4</b></p>
+                  <div class="hero__cells" id="hero-cells"></div>
+                </div>
+              </div>
+              <p class="hero__fact" aria-hidden="true">fact = <b id="hero-fact">24</b></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Goals -->
+        <section class="slide slide--goals" data-layout="full" data-step="goals" data-title="Today's goals">
+          <div class="goals">
+            <header>
+              <p class="kicker">Today's goals</p>
+              <h2 class="h2">What will we learn today?</h2>
+            </header>
+            <div class="goals__body">
+              <div class="remind">
+                <p class="remind__tag">Quick reminder</p>
+                <h3>What is a factorial?</h3>
+                <p class="remind__text">Multiply all the numbers from 1 up to the number.</p>
+                <p class="remind__eq">4! = 1 × 2 × 3 × 4 = <b>24</b></p>
+                <p class="remind__eq">5! = 1 × 2 × 3 × 4 × 5 = <b>120</b></p>
+                <p class="remind__note">In Lecture 1 we found <b>one</b> factorial with a loop. Today we find <b>several</b> and add them up.</p>
+              </div>
+              <ol class="goal-list">
+                <li>
+                  <span class="goal__n">1</span>
+                  <div>
+                    <h3>Add factorials together</h3>
+                    <p>Work out sums like 8! + 6! + 4!, one part at a time.</p>
+                  </div>
+                </li>
+                <li>
+                  <span class="goal__n">2</span>
+                  <div>
+                    <h3>Use two loops</h3>
+                    <p>One loop finds a factorial. A second loop moves on to the next one.</p>
+                  </div>
+                </li>
+                <li>
+                  <span class="goal__n">3</span>
+                  <div>
+                    <h3>Start fresh each time</h3>
+                    <p>Before the next factorial, set <code>fact</code> back to 1.</p>
+                  </div>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. The big idea -->
+        <section class="slide slide--pattern" data-layout="full" data-step="pattern" data-title="The big idea">
+          <div class="pattern">
+            <header>
+              <p class="kicker">The big idea</p>
+              <h2 class="h2">A loop inside a loop</h2>
+              <p class="pattern__lead">To work out <b>y = 8! + 6! + 4!</b>, we do the same thing for each number:</p>
+            </header>
+            <div class="walk">
+              <p class="walk__tag">Outer loop: i = 8, then 6, then 4</p>
+              <ol class="walk__rows">
+                <li style="--n: 0"><span class="walk__i">i = 8</span><span class="walk__inner">1 × 2 × 3 × 4 × 5 × 6 × 7 × 8</span><span class="walk__eq">= 40,320</span><span class="walk__add">add to y</span></li>
+                <li style="--n: 1"><span class="walk__i">i = 6</span><span class="walk__inner">1 × 2 × 3 × 4 × 5 × 6</span><span class="walk__eq">= 720</span><span class="walk__add">add to y</span></li>
+                <li style="--n: 2"><span class="walk__i">i = 4</span><span class="walk__inner">1 × 2 × 3 × 4</span><span class="walk__eq">= 24</span><span class="walk__add">add to y</span></li>
+              </ol>
+              <p class="walk__total">y = 40,320 + 720 + 24 = <b>41,064</b></p>
+            </div>
+            <div class="legend">
+              <p><span class="legend__dot legend__dot--inner" aria-hidden="true"></span><span><b>Inner loop</b> multiplies 1 × 2 × 3 … to find one factorial.</span></p>
+              <p><span class="legend__dot legend__dot--outer" aria-hidden="true"></span><span><b>Outer loop</b> moves to the next number and starts again with fact = 1.</span></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Example 1: question -->
+        <section class="slide slide--question" data-layout="full" data-step="ex1" data-title="Example 1: question">
+          <div class="q">
+            <div class="q__main">
+              <p class="kicker">Example 1 <span>of 4</span></p>
+              <h2 class="q__text">Write an algorithm to calculate</h2>
+              <p class="q__formula" data-formula="1"></p>
+              <div class="q__check">
+                <p class="q__label">Test your answer</p>
+                <p>The user enters x. When x = 2 it should print <b>20,532</b>.</p>
+              </div>
+              <details class="q__hint">
+                <summary>Show a hint</summary>
+                <p>Use the factorial loop from Lecture 1 for each term. After adding fact / x to y, lower i by 2 and reset fact and c.</p>
+              </details>
+            </div>
+            <div class="timer" data-timer></div>
+          </div>
+        </section>
+
+        <!-- 5. Example 1: solution -->
+        <section class="slide slide--solution" data-layout="focus" data-step="ex1" data-title="Example 1: solution">
+          <div class="sol" data-example="1"></div>
+        </section>
+
+        <!-- 6. Example 2: question -->
+        <section class="slide slide--question" data-layout="full" data-step="ex2" data-title="Example 2: question">
+          <div class="q">
+            <div class="q__main">
+              <p class="kicker">Example 2 <span>of 4</span></p>
+              <h2 class="q__text">Write an algorithm to calculate</h2>
+              <p class="q__formula" data-formula="2"></p>
+              <div class="q__check">
+                <p class="q__label">Test your answer</p>
+                <p>No input this time. It should print <b>13</b>.</p>
+              </div>
+              <details class="q__hint">
+                <summary>Show a hint</summary>
+                <p>The first three terms all look like x! / (x − 1)! for x = 6, 4, 2. And x! / x is (x − 1)!.</p>
+              </details>
+            </div>
+            <div class="timer" data-timer></div>
+          </div>
+        </section>
+
+        <!-- 7. Example 2: solution -->
+        <section class="slide slide--solution" data-layout="focus" data-step="ex2" data-title="Example 2: solution">
+          <div class="sol" data-example="2"></div>
+        </section>
+
+        <!-- 8. Example 3: question -->
+        <section class="slide slide--question" data-layout="full" data-step="ex3" data-title="Example 3: question">
+          <div class="q">
+            <div class="q__main">
+              <p class="kicker">Example 3 <span>of 4</span></p>
+              <h2 class="q__text">Write an algorithm to calculate</h2>
+              <p class="q__formula" data-formula="3"></p>
+              <div class="q__check">
+                <p class="q__label">Test your answer</p>
+                <p>No input this time. It should print <b>146,313,820,848</b>.</p>
+              </div>
+              <details class="q__hint">
+                <summary>Show a hint</summary>
+                <p>Each term is i! × (i + 2)! for i = 2, 5, 8. Once you have i!, multiply by (i + 1) and (i + 2) to get (i + 2)!.</p>
+              </details>
+            </div>
+            <div class="timer" data-timer></div>
+          </div>
+        </section>
+
+        <!-- 9. Example 3: solution -->
+        <section class="slide slide--solution" data-layout="focus" data-step="ex3" data-title="Example 3: solution">
+          <div class="sol" data-example="3"></div>
+        </section>
+
+        <!-- 10. Example 4: question -->
+        <section class="slide slide--question" data-layout="full" data-step="ex4" data-title="Example 4: question">
+          <div class="q">
+            <div class="q__main">
+              <p class="kicker">Example 4 <span>of 4</span></p>
+              <h2 class="q__text">Write an algorithm to calculate</h2>
+              <p class="q__formula" data-formula="4"></p>
+              <div class="q__check">
+                <p class="q__label">Test your answer</p>
+                <p>The user enters x, and 7x! means 7 × x!. When x = 7 it should print <b>6,093</b>.</p>
+              </div>
+              <details class="q__hint">
+                <summary>Show a hint</summary>
+                <p>x! is the same in every term, so work it out once. Then loop over d = 3, 5, 7 while the multiplier goes 7, 5, 3.</p>
+              </details>
+            </div>
+            <div class="timer" data-timer></div>
+          </div>
+        </section>
+
+        <!-- 11. Example 4: solution -->
+        <section class="slide slide--solution" data-layout="focus" data-step="ex4" data-title="Example 4: solution">
+          <div class="sol" data-example="4"></div>
+        </section>
+
+        <!-- 12. Wrap-up -->
+        <section class="slide slide--recap" data-layout="full" data-step="recap" data-title="Wrap-up">
+          <div class="recap">
+            <header>
+              <p class="kicker">Wrap-up</p>
+              <h2 class="h2">Four things to remember</h2>
+            </header>
+            <ol class="recap__list">
+              <li><span class="recap__n">1</span><div><h3>The inner loop builds a factorial</h3><p><code>fact = fact * c</code>, <code>c = c + 1</code>, repeat while <code>c &lt;= i</code>.</p></div></li>
+              <li><span class="recap__n">2</span><div><h3>The outer loop moves to the next term</h3><p>Change the counter, then reset <code>fact = 1</code> and <code>c = 1</code> before the next factorial.</p></div></li>
+              <li><span class="recap__n">3</span><div><h3>The step follows the series</h3><p><code>i − 2</code> for 8, 6, 4 · <code>i + 3</code> for 2, 5, 8 · <code>d + 2</code> for 3, 5, 7.</p></div></li>
+              <li><span class="recap__n">4</span><div><h3>Reuse what you already have</h3><p>(i + 2)! comes from i! in Example 3. x! is worked out only once in Example 4.</p></div></li>
+            </ol>
+            <p class="recap__next">Up next: <b>Series Showdown</b>, the team game. <kbd>→</kbd></p>
+          </div>
+        </section>
+
+        <!-- 13. Game -->
+        <section class="slide slide--game" data-layout="full" data-step="game" data-title="Series Showdown">
+          <div class="gs">
+            <div class="gs__intro">
+              <p class="kicker">End of lecture game</p>
+              <h2 class="gs__title">Series <em>Showdown</em></h2>
+              <ul class="gs__rules">
+                <li>12 questions about today's four algorithms.</li>
+                <li>Teams take turns. Each turn has 30 seconds.</li>
+                <li>A right answer scores 100 points, plus up to 50 for speed.</li>
+                <li>Miss it, and the next team can steal it for 50.</li>
+              </ul>
+            </div>
+            <form class="setup" id="game-setup" autocomplete="off">
+              <p class="setup__label" id="team-count-label">How many teams?</p>
+              <div class="seg" role="radiogroup" aria-labelledby="team-count-label" id="team-count"></div>
+              <div class="setup__teams" id="team-names"></div>
+              <div class="setup__actions">
+                <button type="submit" class="btn btn--accent btn--big" id="game-start">Start the game</button>
+                <button type="button" class="btn btn--line btn--big" id="game-resume" hidden>Resume game</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+      </main>
+
+      <div class="game" id="game" hidden></div>
+    </div>
+  </div>
+
+  <script src="js/sound.js"></script>
+  <script src="js/examples.js"></script>
+  <script src="js/solution.js"></script>
+  <script src="js/questions.js"></script>
+  <script src="js/game.js"></script>
+  <script src="js/deck.js"></script>
+</body>
+</html>
