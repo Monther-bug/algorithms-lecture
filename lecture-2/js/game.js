@@ -22,6 +22,17 @@
   const KEYS = ['A', 'B', 'C', 'D'];
 
   const esc = (s) => String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const I18n = window.I18n;
+  const num = (n) => ({ html: String(n) });
+
+  // Each question's text gets a key, so switching language re-renders it in place.
+  window.QUESTIONS.forEach((q, i) => {
+    const ar = q.ar || {};
+    I18n.add(`q${i}.kind`, esc(q.kind), ar.kind);
+    I18n.add(`q${i}.q`, esc(q.q), ar.q);
+    I18n.add(`q${i}.why`, esc(q.why), ar.why);
+    (q.options || []).forEach((o, j) => I18n.add(`q${i}.o${j}`, esc(o), ar.options ? esc(ar.options[j]) : null));
+  });
 
   /* ---------- Setup form on the game slide ---------- */
   let teamCount = 2;
@@ -33,7 +44,7 @@
     namesBox.innerHTML = names.slice(0, teamCount).map((name, i) => `
       <label class="team-row" style="--team:${TEAMS[i].color}">
         <span class="badge" aria-hidden="true">${i + 1}</span>
-        <input type="text" maxlength="18" value="${esc(name)}" data-i="${i}" aria-label="Team ${i + 1} name">
+        <input type="text" dir="auto" maxlength="18" value="${esc(name)}" data-i="${i}" aria-label="${esc(I18n.t('g.teamName', { n: num(i + 1) }))}">
       </label>`).join('');
   }
   function setCount(n) {
@@ -57,10 +68,11 @@
   });
   form.addEventListener('submit', (e) => {
     e.preventDefault();
-    start(names.slice(0, teamCount).map((n, i) => ({ name: n.trim() || `Team ${i + 1}`, color: TEAMS[i].color, score: 0 })));
+    start(names.slice(0, teamCount).map((n, i) => ({ name: n.trim() || I18n.t('g.team', { n: num(i + 1) }), color: TEAMS[i].color, score: 0 })));
   });
   resumeBtn.addEventListener('click', () => { open(); resumeClock(); });
   renderSetup();
+  I18n.onChange(renderSetup);
 
   /* ---------- Overlay ---------- */
   const SPEAKER = '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="wave" d="M16.5 8.5a5 5 0 010 7M19 6a8.5 8.5 0 010 12"/></svg>';
@@ -74,8 +86,9 @@
       </div>
       <ol class="g-teams" aria-label="Scores"></ol>
       <div class="g-tools">
+        <button type="button" class="lang-btn" data-g="lang" data-i18n-label="lang.label"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg><span data-i18n="lang.switch"></span></button>
         <button type="button" class="icon-btn" data-g="sound"></button>
-        <button type="button" class="icon-btn" data-g="close" aria-label="Back to slides">
+        <button type="button" class="icon-btn" data-g="close" data-i18n-label="g.back">
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>
         </button>
       </div>
@@ -93,11 +106,12 @@
       </div>
       <div class="g-feedback" aria-live="polite">
         <p class="g-msg"></p>
-        <button type="button" class="btn" data-g="next" hidden>Next question</button>
+        <button type="button" class="btn" data-g="next" data-i18n="g.next" hidden></button>
       </div>
     </div>
     <div class="g-end" hidden></div>
     <canvas class="g-confetti" width="1920" height="1080" aria-hidden="true"></canvas>`;
+  I18n.apply(overlay);
 
   const $ = (sel) => overlay.querySelector(sel);
   const el = {
@@ -110,7 +124,7 @@
 
   function paintSound() {
     el.sound.innerHTML = window.Sound.muted ? SPEAKER_OFF : SPEAKER;
-    el.sound.setAttribute('aria-label', window.Sound.muted ? 'Turn sounds on' : 'Mute sounds');
+    I18n.label(el.sound, window.Sound.muted ? 'g.unmute' : 'g.mute');
   }
   paintSound();
 
@@ -119,6 +133,7 @@
     if (!b) return;
     const act = b.dataset.g;
     if (act === 'sound') { window.Sound.toggle(); paintSound(); }
+    if (act === 'lang') I18n.toggle();
     if (act === 'close') close();
     if (act === 'next') nextQuestion();
     if (act === 'again') start(game.teams.map((t) => ({ ...t, score: 0 })));
@@ -131,7 +146,7 @@
   function open() {
     overlay.hidden = false;
     document.getElementById('slides').inert = true;
-    document.getElementById('side').inert = true;
+    document.getElementById('bar').inert = true;
     const focusable = overlay.querySelector('.g-opt:not(:disabled), .g-tile, [data-g="next"]:not([hidden]), [data-g="close"]');
     if (focusable) focusable.focus({ preventScroll: true });
   }
@@ -139,7 +154,7 @@
     pauseClock();
     overlay.hidden = true;
     document.getElementById('slides').inert = false;
-    document.getElementById('side').inert = false;
+    document.getElementById('bar').inert = false;
     resumeBtn.hidden = !game || game.finished;
     stopConfetti();
   }
@@ -169,7 +184,8 @@
   function setActor(i, stealing) {
     game.actor = i;
     overlay.style.setProperty('--team', actor().color);
-    el.turn.innerHTML = `<span class="badge" aria-hidden="true">${i + 1}</span>${esc(actor().name)}, ${stealing ? 'steal it for 50 points!' : 'your turn'}`;
+    el.turn.innerHTML = `<span class="badge" aria-hidden="true">${i + 1}</span><span></span>`;
+    I18n.set(el.turn.lastElementChild, stealing ? 'g.steal' : 'g.turn', { team: actor().name });
     renderTeams();
   }
 
@@ -178,9 +194,9 @@
     game.phase = 'answer';
     game.tried = new Set();
     setActor(game.qi % game.teams.length, false);
-    el.count.textContent = `Question ${game.qi + 1} of ${window.QUESTIONS.length}`;
-    el.kind.textContent = q.kind;
-    el.q.textContent = q.q;
+    I18n.set(el.count, 'g.count', { n: game.qi + 1, total: window.QUESTIONS.length });
+    I18n.set(el.kind, `q${game.qi}.kind`);
+    I18n.set(el.q, `q${game.qi}.q`);
     el.visual.innerHTML = q.code
       ? `<pre class="g-code">${q.code.map((line) => {
           const m = line.match(/^(\d+-)\s(.*)$/);
@@ -191,26 +207,26 @@
 
     if (q.type === 'mcq') {
       el.right.innerHTML = `<div class="g-options">${q.options.map((o, i) => `
-        <button type="button" class="g-opt" data-opt="${i}"><span class="g-key" aria-hidden="true">${KEYS[i]}</span><span class="g-opt__text">${esc(o)}</span></button>`).join('')}</div>`;
+        <button type="button" class="g-opt" data-opt="${i}"><span class="g-key" aria-hidden="true">${KEYS[i]}</span><span class="g-opt__text" dir="auto" data-i18n="q${game.qi}.o${i}"></span></button>`).join('')}</div>`;
     } else if (q.type === 'tf') {
       el.right.innerHTML = `<div class="g-options g-options--tf">
-        <button type="button" class="g-opt" data-opt="0"><span class="g-key" aria-hidden="true">T</span><span class="g-opt__text">True</span></button>
-        <button type="button" class="g-opt" data-opt="1"><span class="g-key" aria-hidden="true">F</span><span class="g-opt__text">False</span></button></div>`;
+        <button type="button" class="g-opt" data-opt="0"><span class="g-key" aria-hidden="true">T</span><span class="g-opt__text" data-i18n="g.true"></span></button>
+        <button type="button" class="g-opt" data-opt="1"><span class="g-key" aria-hidden="true">F</span><span class="g-opt__text" data-i18n="g.false"></span></button></div>`;
     } else {
       setupOrder(q);
     }
+    I18n.apply(el.right);
     el.right.querySelectorAll('[data-opt]').forEach((b) => b.addEventListener('click', () => choose(Number(b.dataset.opt))));
 
     el.feedback.className = 'g-feedback';
-    el.msg.textContent = q.type === 'order'
-      ? 'Tap the steps in order. Tap a placed step to send it back.'
-      : 'Call out your answer. The instructor clicks it.';
+    I18n.set(el.msg, q.type === 'order' ? 'g.tapSteps' : 'g.callOut');
     el.next.hidden = true;
     startClock(TIME[q.type]);
   }
 
   function answerIndex(q) { return q.type === 'tf' ? (q.answer ? 0 : 1) : q.answer; }
-  function answerText(q) { return q.type === 'tf' ? (q.answer ? 'True' : 'False') : q.options[q.answer]; }
+  function answerText(q) { return { key: q.type === 'tf' ? (q.answer ? 'g.true' : 'g.false') : `q${game.qi}.o${q.answer}`, bdi: true }; }
+  const why = () => ({ key: `q${game.qi}.why` });
 
   function choose(i) {
     if (game.phase !== 'answer' && game.phase !== 'steal') return;
@@ -224,7 +240,7 @@
       btn.classList.add('is-wrong');
       btn.disabled = true;
       game.tried.add(i);
-      lose('Not quite.');
+      lose({ key: 'g.notQuite' });
     }
   }
 
@@ -239,7 +255,7 @@
     lockOptions();
     window.Sound.play('correct');
     el.feedback.className = 'g-feedback is-good';
-    el.msg.innerHTML = `<b>Correct! +${points} for ${esc(team.name)}.</b> ${esc(q.why)}`;
+    I18n.set(el.msg, 'g.correct', { points, team: team.name, why: why() });
     countUp(game.actor, from, team.score);
     showNext();
   }
@@ -247,13 +263,13 @@
   function lose(lead) {
     const q = current();
     stopClock();
-    window.Sound.play(lead === 'Time is up.' ? 'timeup' : 'wrong');
+    window.Sound.play(lead.key === 'g.timeUp' ? 'timeup' : 'wrong');
     if (game.phase === 'answer' && canSteal(q)) {
       game.phase = 'steal';
       const thief = (game.actor + 1) % game.teams.length;
       setActor(thief, true);
       el.feedback.className = 'g-feedback is-bad';
-      el.msg.innerHTML = `<b>${lead}</b> ${esc(game.teams[thief].name)} can steal it now.`;
+      I18n.set(el.msg, 'g.canSteal', { lead, team: game.teams[thief].name });
       if (q.type === 'order') reopenOrder();
       startClock(STEAL_TIME[q.type]);
       return;
@@ -266,9 +282,7 @@
       lockOptions();
     }
     el.feedback.className = 'g-feedback is-bad';
-    el.msg.innerHTML = q.type === 'order'
-      ? `<b>${lead} Here is the right order.</b> ${esc(q.why)}`
-      : `<b>${lead} The answer is ${esc(answerText(q))}.</b> ${esc(q.why)}`;
+    I18n.set(el.msg, q.type === 'order' ? 'g.rightOrder' : 'g.answerIs', { lead, answer: answerText(q), why: why() });
     renderTeams();
     showNext();
   }
@@ -279,7 +293,7 @@
 
   function showNext() {
     const last = game.qi === window.QUESTIONS.length - 1;
-    el.next.textContent = last ? 'See the final scores' : 'Next question';
+    I18n.set(el.next, last ? 'g.seeScores' : 'g.next');
     el.next.hidden = false;
     el.next.focus({ preventScroll: true });
   }
@@ -330,9 +344,10 @@
       `<button type="button" class="g-tile" data-tile="${i}" ${open ? '' : 'disabled'}>${esc(q.items[i])}</button>`).join('')}</div>`;
     el.right.innerHTML = `
       <ol class="g-slots">${o.slots.map((item, s) => `
-        <li class="g-slot"><span class="g-slot__n">${s + (q.from || 1)}</span><button type="button" class="g-slot__box${item != null ? ' is-filled' : ''}${o.locked.has(s) ? ' is-right' : ''}" data-slot="${s}" ${item == null || o.locked.has(s) || !open ? 'disabled' : ''}>${item != null ? esc(q.items[item]) : ''}</button></li>`).join('')}
+        <li class="g-slot"><span class="g-slot__n">${s + (q.from || 1)}</span><button type="button" class="g-slot__box${item != null ? ' is-filled' : ''}${o.locked.has(s) ? ' is-right' : ''}" data-slot="${s}" ${item == null || o.locked.has(s) || !open ? 'disabled' : ''}>${item != null ? esc(q.items[item]) : '<span class="g-slot__empty" data-i18n="g.tapStep"></span>'}</button></li>`).join('')}
       </ol>
-      <button type="button" class="btn g-check" ${o.slots.every((x) => x != null) && open ? '' : 'disabled'}>Check the order</button>`;
+      <button type="button" class="btn g-check" data-i18n="g.checkOrder" ${o.slots.every((x) => x != null) && open ? '' : 'disabled'}></button>`;
+    I18n.apply(el.right);
     el.visual.querySelectorAll('[data-tile]').forEach((b) => b.addEventListener('click', () => place(Number(b.dataset.tile))));
     el.right.querySelectorAll('[data-slot]').forEach((b) => b.addEventListener('click', () => unplace(Number(b.dataset.slot))));
     el.right.querySelector('.g-check').addEventListener('click', checkOrder);
@@ -372,7 +387,7 @@
     o.slots.forEach((item, s) => {
       if (!o.locked.has(s)) el.right.querySelector(`[data-slot="${s}"]`).classList.add('is-wrong');
     });
-    lose(`${o.locked.size} of ${o.slots.length} in the right place.`);
+    lose({ key: 'g.placed', vars: { n: o.locked.size, total: o.slots.length } });
   }
 
   // Wrong steps go back to the pool so the next team can fix them.
@@ -411,7 +426,7 @@
       clock.sec = sec;
       if (sec > 0 && sec <= 5) window.Sound.play('tick');
     }
-    if (clock.left <= 0) { lose('Time is up.'); return; }
+    if (clock.left <= 0) { lose({ key: 'g.timeUp' }); return; }
     clock.raf = requestAnimationFrame(tick);
   }
   function paintClock() {
@@ -440,7 +455,7 @@
     stopClock();
     game.finished = true;
     renderTeams();
-    el.count.textContent = 'Final scores';
+    I18n.set(el.count, 'g.final');
     const ranked = game.teams.map((t, i) => ({ ...t, i })).sort((a, b) => b.score - a.score);
     const top = ranked[0].score;
     const winners = ranked.filter((t) => t.score === top);
@@ -449,7 +464,7 @@
     el.end.hidden = false;
     el.end.innerHTML = `
       <div>
-        <p class="g-end__sub">${winners.length > 1 ? 'It is a tie between' : 'The winner is'}</p>
+        <p class="g-end__sub" data-i18n="${winners.length > 1 ? 'g.tie' : 'g.winner'}"></p>
         <h2 class="g-end__title">${winners.map((w) => esc(w.name)).join(' &amp; ')}</h2>
       </div>
       <div class="podium">${ranked.map((t, r) => `
@@ -460,9 +475,10 @@
         </div>`).join('')}
       </div>
       <div class="g-end__actions">
-        <button type="button" class="btn btn--go" data-g="again">Play again</button>
-        <button type="button" class="btn btn--line" data-g="close">Back to slides</button>
+        <button type="button" class="btn btn--go" data-g="again" data-i18n="g.again"></button>
+        <button type="button" class="btn btn--line" data-g="close" data-i18n="g.back"></button>
       </div>`;
+    I18n.apply(el.end);
     requestAnimationFrame(() => requestAnimationFrame(() => {
       el.end.querySelectorAll('.podium__bar').forEach((b) => { b.style.height = `${b.dataset.h}%`; });
     }));
@@ -526,6 +542,7 @@
     const onButton = e.target instanceof Element && e.target.matches('button');
     if (key === 'escape') { close(); e.preventDefault(); return; }
     if (key === 'm') { window.Sound.toggle(); paintSound(); return; }
+    if (key === 'l') { I18n.toggle(); return; }
     if (!game || game.finished) return;
     if (game.phase === 'done') {
       if ((key === 'enter' || key === ' ') && onButton) return;

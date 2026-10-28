@@ -1,8 +1,8 @@
-/* Slide deck: scaling, navigation, the sidebar path, thinking timers and the cover animation. */
+/* Slide deck: scaling, navigation, progress bar, language switch, thinking timers and the cover animation. */
 (function () {
   const stage = document.getElementById('stage');
   const slides = [...document.querySelectorAll('.slide')];
-  const pathBtns = [...document.querySelectorAll('#path [data-step]')];
+  const progress = document.getElementById('progress');
   const count = document.getElementById('count');
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
   const TITLE = 'Factorial Series';
@@ -16,21 +16,16 @@
   window.addEventListener('resize', fit);
   fit();
 
-  /* ----- Sidebar path: each item stands for one or more slides ----- */
-  const firstSlide = (step) => slides.findIndex((s) => s.dataset.step === step);
-  const lastSlide = (step) => slides.length - 1 - [...slides].reverse().findIndex((s) => s.dataset.step === step);
-  pathBtns.forEach((b) => b.addEventListener('click', () => go(firstSlide(b.dataset.step))));
-
-  function paintPath() {
-    const step = slides[index].dataset.step;
-    pathBtns.forEach((b) => {
-      const current = b.dataset.step === step;
-      b.parentElement.classList.toggle('is-current', current);
-      b.parentElement.classList.toggle('is-done', !current && lastSlide(b.dataset.step) < index);
-      if (current) b.setAttribute('aria-current', 'step');
-      else b.removeAttribute('aria-current');
-    });
-  }
+  /* ----- Progress bar: one segment per slide, a gap before each example ----- */
+  slides.forEach((slide, i) => {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.setAttribute('aria-label', `Slide ${i + 1}: ${slide.dataset.title}`);
+    if (slide.classList.contains('slide--question') || slide.classList.contains('slide--recap')) b.classList.add('is-gap');
+    b.addEventListener('click', () => go(i));
+    progress.appendChild(b);
+  });
+  const dots = [...progress.children];
 
   /* ----- Navigation ----- */
   function go(target, how = 'jump') {
@@ -60,9 +55,11 @@
       s.setAttribute('aria-hidden', active ? 'false' : 'true');
       s.inert = !active;
     });
-    stage.dataset.layout = arriving.dataset.layout || 'full';
-    document.getElementById('side').inert = stage.dataset.layout === 'cover';
-    paintPath();
+    dots.forEach((d, i) => {
+      d.classList.toggle('is-done', i < index);
+      if (i === index) d.setAttribute('aria-current', 'step');
+      else d.removeAttribute('aria-current');
+    });
     count.textContent = `${index + 1} / ${slides.length}`;
     document.title = index === 0 ? TITLE : `${arriving.dataset.title} | ${TITLE}`;
     history.replaceState(null, '', `#${index + 1}`);
@@ -81,12 +78,13 @@
     else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
   }
 
-  stage.addEventListener('click', (e) => {
+  document.getElementById('bar').addEventListener('click', (e) => {
     const act = e.target.closest('[data-act]');
     if (!act) return;
     if (act.dataset.act === 'prev') prev();
     if (act.dataset.act === 'next') next();
     if (act.dataset.act === 'full') toggleFullscreen();
+    if (act.dataset.act === 'lang') window.I18n.toggle();
   });
 
   document.addEventListener('keydown', (e) => {
@@ -105,6 +103,7 @@
       case 'Home': go(0); break;
       case 'End': go(slides.length - 1); break;
       case 'f': case 'F': toggleFullscreen(); break;
+      case 'l': case 'L': window.I18n.toggle(); break;
       default: return;
     }
     e.preventDefault();
@@ -156,6 +155,7 @@
   /* ----- Thinking timers on question slides ----- */
   const RING = 2 * Math.PI * 180;
   const timers = new Map();
+  const I18n = window.I18n;
 
   function buildTimer(el) {
     el.innerHTML = `
@@ -166,19 +166,17 @@
         </svg>
         <div class="timer__face">
           <p class="timer__time" role="timer" aria-live="off">3:00</p>
-          <p class="timer__cap">Thinking time</p>
+          <p class="timer__cap"></p>
         </div>
       </div>
-      <div class="timer__presets" role="group" aria-label="Timer length">
-        <button type="button" data-min="3" aria-pressed="true">3 min</button>
-        <button type="button" data-min="5" aria-pressed="false">5 min</button>
-        <button type="button" data-min="10" aria-pressed="false">10 min</button>
-        <button type="button" data-min="15" aria-pressed="false">15 min</button>
+      <div class="timer__presets" role="group" data-i18n-label="timer.length">
+        ${[3, 5, 10, 15].map((m) => `<button type="button" data-min="${m}" aria-pressed="${m === 3}" data-i18n="timer.${m}"></button>`).join('')}
       </div>
       <div class="timer__ctrl">
-        <button type="button" class="btn btn--accent" data-t="toggle">Start timer</button>
-        <button type="button" class="btn btn--line" data-t="reset">Reset</button>
+        <button type="button" class="btn btn--accent" data-t="toggle"></button>
+        <button type="button" class="btn btn--line" data-t="reset" data-i18n="timer.reset"></button>
       </div>`;
+    I18n.apply(el);
 
     const arc = el.querySelector('.timer__arc');
     const time = el.querySelector('.timer__time');
@@ -202,14 +200,14 @@
       if (!tick) return;
       clearInterval(tick);
       tick = null;
-      toggle.textContent = 'Resume';
+      I18n.set(toggle, 'timer.resume');
     }
     function start() {
       if (left <= 0) reset();
       endAt = Date.now() + left;
       el.classList.remove('is-done');
-      cap.textContent = 'Thinking time';
-      toggle.textContent = 'Pause';
+      I18n.set(cap, 'timer.thinking');
+      I18n.set(toggle, 'timer.pause');
       tick = setInterval(() => {
         left = Math.max(0, endAt - Date.now());
         paint();
@@ -217,8 +215,8 @@
           clearInterval(tick);
           tick = null;
           el.classList.add('is-done');
-          cap.textContent = 'Time is up';
-          toggle.textContent = 'Start again';
+          I18n.set(cap, 'timer.up');
+          I18n.set(toggle, 'timer.again');
           window.Sound.play('timeup');
         }
       }, 200);
@@ -228,8 +226,8 @@
       tick = null;
       left = total;
       el.classList.remove('is-done', 'is-low');
-      cap.textContent = 'Thinking time';
-      toggle.textContent = 'Start timer';
+      I18n.set(cap, 'timer.thinking');
+      I18n.set(toggle, 'timer.start');
       paint();
     }
 
@@ -240,7 +238,7 @@
       total = Number(b.dataset.min) * 60000;
       reset();
     }));
-    paint();
+    reset();
     return { pause };
   }
 

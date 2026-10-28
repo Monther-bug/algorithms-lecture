@@ -7,6 +7,8 @@
   const frac = (top, bottom) => `<span class="frac"><span>${top}</span><span>${bottom}</span></span>`;
   const x = '<i>x</i>';
   const y = '<i>y</i>';
+  // Arabic notes keep code and maths left to right inside the sentence.
+  const L = window.I18n.ltr;
 
   window.EXAMPLES = {
     1: {
@@ -16,6 +18,9 @@
       table: ['i', 'c', 'fact', 'y'],
       terms: ['8!/x', '6!/x', '4!/x'],
       note: 'The inner loop (steps 4–6) builds one factorial. The outer loop (steps 8–9) moves i to the next term and resets fact and c.',
+      ar: {
+        note: `الـ Inner loop (الخطوات ${L('4–6')}) يحسب Factorial واحدًا. الـ Outer loop (الخطوات ${L('8–9')}) ينقل i إلى الـ Term التالي ويُعيد fact و c إلى 1.`,
+      },
       steps: [
         { text: 'Start' },
         { text: 'Input x', run: (v, input) => { v.x = input.x; } },
@@ -39,6 +44,10 @@
       table: ['x', 'c', 'fact', 'y'],
       terms: ['6!/5!', '4!/3!', '2!', '1!'],
       note: 'fact / x is (x − 1)!, so step 6 divides x! by (x − 1)!. The loop stops at x = 0, so step 9 adds 1! = 1 on its own.',
+      ar: {
+        fixed: `لا حاجة لـ Input: الـ Algorithm يبدأ بـ ${L('x = 6')} بنفسه.`,
+        note: `${L('fact / x')} يساوي ${L('(x − 1)!')}، لذلك الخطوة 6 تقسم ${L('x!')} على ${L('(x − 1)!')}. الـ Loop يتوقف عند ${L('x = 0')}، لذلك الخطوة 9 تضيف ${L('1! = 1')} وحدها.`,
+      },
       steps: [
         { text: 'Start' },
         { text: 'Declare y = 0, x = 6, fact = 1, c = 1', run: (v) => { v.y = 0; v.x = 6; v.fact = 1; v.c = 1; } },
@@ -62,6 +71,10 @@
       table: ['i', 'c', 'fact', 'y'],
       terms: ['2!·4!', '5!·7!', '8!·10!'],
       note: 'The loop finds i!. Since (i + 2)! = i! × (i + 1) × (i + 2), step 6 gets the second factorial without another loop.',
+      ar: {
+        fixed: 'لا حاجة لـ Input: i يبدأ من 2 ويزيد بمقدار 3.',
+        note: `الـ Loop يحسب ${L('i!')}. وبما أن ${L('(i + 2)! = i! × (i + 1) × (i + 2)')}، فالخطوة 6 تحصل على الـ Factorial الثاني بدون Loop آخر.`,
+      },
       steps: [
         { text: 'Start' },
         { text: 'Declare y = 0, i = 2, fact = 1, c = 1', run: (v) => { v.y = 0; v.i = 2; v.fact = 1; v.c = 1; } },
@@ -83,6 +96,9 @@
       table: ['c', 'factx', 'd', 'cd', 'factd', 'y'],
       terms: ['7x!/3!', '5x!/5!', '3x!/7!'],
       note: 'x! is the same in every term, so steps 4–6 work it out once. Then d goes 3, 5, 7 while the multiplier i goes 7, 5, 3.',
+      ar: {
+        note: `${L('x!')} هو نفسه في كل Term، لذلك الخطوات ${L('4–6')} تحسبه مرة واحدة. ثم d يأخذ القيم ${L('3, 5, 7')} بينما المعامل i يأخذ ${L('7, 5, 3')}.`,
+      },
       steps: [
         { text: 'Start' },
         { text: 'Declare y = 0, x, factx = 1, c = 1, i = 7, d = 3, factd = 1, cd = 1', run: (v) => { v.y = 0; v.x = '?'; v.factx = 1; v.c = 1; v.i = 7; v.d = 3; v.factd = 1; v.cd = 1; } },

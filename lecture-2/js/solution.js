@@ -57,25 +57,31 @@
   });
 
   /* ----- Solution slides ----- */
+  const I18n = window.I18n;
+
   function build(root) {
     const id = root.dataset.example;
     const ex = window.EXAMPLES[id];
+    const ar = ex.ar || {};
+    I18n.add(`ex${id}.note`, esc(ex.note), ar.note);
+    if (ex.fixed) I18n.add(`ex${id}.fixed`, esc(ex.fixed), ar.fixed);
+    root.classList.toggle('sol--long', ex.steps.length > 12);
 
     root.innerHTML = `
       <header class="sol__head">
-        <p class="kicker">Example ${id} <span>· Solution</span></p>
+        <p class="kicker" data-i18n="sol.kicker" data-i18n-vars='{"n":${id}}'></p>
         <h2 class="sol__formula">${ex.formula}</h2>
       </header>
       <div class="sol__grid">
         <div class="code-col">
           ${codeMarkup(ex)}
-          <p class="sol__hint" data-hint>Press → to show the next step.</p>
-          <p class="sol__note" data-note hidden>${esc(ex.note)}</p>
+          <p class="sol__hint" data-hint data-i18n="trace.hint"></p>
+          <p class="sol__note" data-note data-i18n="ex${id}.note" hidden></p>
         </div>
         <section class="trace" aria-label="Trace the algorithm">
           <div class="trace__head">
-            <h3>Trace it</h3>
-            <div class="speed" role="group" aria-label="Run speed">
+            <h3 data-i18n="trace.title"></h3>
+            <div class="speed" role="group" data-i18n-label="trace.speed">
               ${SPEEDS.map((s, i) => `<button type="button" data-speed="${i}" aria-pressed="${i === 1}">${s.label}</button>`).join('')}
             </div>
           </div>
@@ -85,11 +91,11 @@
                 <label class="field">${f.key} =
                   <input type="number" inputmode="numeric" step="1" min="${f.min}" max="${f.max}" value="${f.value}" data-key="${f.key}" aria-label="Value of ${f.key}">
                 </label>`).join('')
-              : `<p class="trace__fixed">${esc(ex.fixed)}</p>`}
+              : `<p class="trace__fixed" data-i18n="ex${id}.fixed"></p>`}
             <div class="trace__btns">
-              <button type="button" class="btn btn--accent" data-do="step">Step</button>
-              <button type="button" class="btn" data-do="run">Run</button>
-              <button type="button" class="btn btn--line" data-do="reset">Reset</button>
+              <button type="button" class="btn btn--accent" data-do="step" data-i18n="trace.step"></button>
+              <button type="button" class="btn" data-do="run" data-i18n="trace.run"></button>
+              <button type="button" class="btn btn--line" data-do="reset" data-i18n="trace.reset"></button>
             </div>
           </div>
           <p class="trace__err" role="alert"></p>
@@ -102,13 +108,14 @@
           </div>
           <div class="ttable">
             <table>
-              <thead><tr><th>#</th>${ex.table.map((key) => `<th>${key}</th>`).join('')}<th>Check</th></tr></thead>
+              <thead><tr><th>#</th>${ex.table.map((key) => `<th>${key}</th>`).join('')}<th data-i18n="trace.check"></th></tr></thead>
               <tbody></tbody>
             </table>
           </div>
           <div class="out"><span>Output</span><output></output></div>
         </section>
       </div>`;
+    I18n.apply(root);
 
     const lines = [...root.querySelectorAll('.line')];
     const hint = root.querySelector('[data-hint]');
@@ -157,14 +164,19 @@
         const f = ex.inputs.find((x) => x.key === el.dataset.key);
         const num = Number(el.value);
         if (el.value.trim() === '' || !Number.isInteger(num) || num < f.min || num > f.max) {
-          err.textContent = `Enter a whole number from ${f.min} to ${f.max} for ${f.key}.`;
+          I18n.set(err, 'trace.err', { min: f.min, max: f.max, key: f.key });
           el.focus();
           return null;
         }
         values[f.key] = num;
       }
-      err.textContent = '';
+      clearError();
       return values;
+    }
+
+    function clearError() {
+      delete err.dataset.i18n;
+      err.textContent = '';
     }
 
     function render() {
@@ -194,9 +206,9 @@
             <tr class="lane-${f.row.lane ? 1 : 0}${i === rows.length - 1 && frame.row ? ' is-new' : ''}">
               <td>${f.row.n}</td>
               ${ex.table.map((key) => `<td>${fmt(f.row[key])}</td>`).join('')}
-              <td class="chk"><span>${esc(f.row.check)}</span> <b class="${f.row.again ? 'yes' : 'no'}">${f.row.again ? 'yes' : 'no'}</b></td>
+              <td class="chk"><span>${esc(f.row.check)}</span> <b class="${f.row.again ? 'yes' : 'no'}">${I18n.t(f.row.again ? 'trace.yes' : 'trace.no')}</b></td>
             </tr>`).join('')
-        : `<tr class="ttable__empty"><td colspan="${ex.table.length + 2}">Press Step to start. A row is added every time a loop checks its condition.</td></tr>`;
+        : `<tr class="ttable__empty"><td colspan="${ex.table.length + 2}">${I18n.t('trace.empty')}</td></tr>`;
       tableBox.scrollTop = tableBox.scrollHeight;
 
       const printed = frame && frame.vars.out !== undefined;
@@ -233,7 +245,7 @@
     function stopAuto() {
       clearInterval(timer);
       timer = null;
-      btnRun.textContent = 'Run';
+      I18n.set(btnRun, 'trace.run');
     }
 
     function startAuto() {
@@ -244,7 +256,7 @@
     function toggleRun() {
       if (timer) { stopAuto(); return; }
       if (!prepare()) return;
-      btnRun.textContent = 'Pause';
+      I18n.set(btnRun, 'trace.pause');
       step();
       startAuto();
     }
@@ -253,7 +265,7 @@
       stopAuto();
       frames = null;
       k = -1;
-      err.textContent = '';
+      clearError();
       render();
     }
 
@@ -280,6 +292,8 @@
       showAll() { reveal(ex.steps.length); },
       reset() { resetTrace(); reveal(0); },
       pause: stopAuto,
+      // After a language switch: the table words change and the slide mirrors.
+      relabel() { render(); draw(); },
     };
   }
 
@@ -288,4 +302,5 @@
     controllers.set(root.closest('.slide'), build(root));
   });
   window.Solutions = controllers;
+  I18n.onChange(() => controllers.forEach((c) => c.relabel()));
 })();
