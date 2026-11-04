@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Figtree:wght@400..800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&family=Noto+Kufi+Arabic:wght@500..800&display=swap">
-  <link rel="stylesheet" href="css/style.css?v=2">
+  <link rel="stylesheet" href="css/style.css?v=3">
 </head>
 <body>
   <div class="viewport">
@@ -206,11 +206,11 @@
               <div class="q__shape"><div class="canvas" data-shape="4" data-cell="72"></div></div>
               <div class="q__check">
                 <p class="q__label" data-i18n="q.look">Look closely</p>
-                <p data-i18n="q.check4">Every row ends with <code>5</code>. Before the 5, row <code>i</code> has <code>i − 1</code> stars.</p>
+                <p data-i18n="q.check4">5 rows of the numbers 1 to 5. In each row one number is <code>A</code>, and the <code>A</code> moves one place left on every row.</p>
               </div>
               <details class="q__hint">
                 <summary data-i18n="q.hint">Show a hint</summary>
-                <p data-i18n="q.hint4">Use the same loops as the triangle. Print <code>"5"</code> when <code>j = i</code>, otherwise print <code>"*"</code>.</p>
+                <p data-i18n="q.hint4">Use <code>r</code> for the row and <code>c</code> for the column. At every <code>A</code>, <code>r + c = 6</code>. Print <code>"A"</code> there, otherwise print <code>c</code>.</p>
               </details>
             </div>
             <div class="timer" data-timer></div>
@@ -436,14 +436,14 @@
     </div>
   </div>
 
-  <script src="js/i18n.js?v=2"></script>
-  <script src="js/sound.js?v=2"></script>
-  <script src="js/patterns.js?v=2"></script>
-  <script src="js/views.js?v=2"></script>
-  <script src="js/solution.js?v=2"></script>
-  <script src="js/activities.js?v=2"></script>
-  <script src="js/questions.js?v=2"></script>
-  <script src="js/game.js?v=2"></script>
-  <script src="js/deck.js?v=2"></script>
+  <script src="js/i18n.js?v=3"></script>
+  <script src="js/sound.js?v=3"></script>
+  <script src="js/patterns.js?v=3"></script>
+  <script src="js/views.js?v=3"></script>
+  <script src="js/solution.js?v=3"></script>
+  <script src="js/activities.js?v=3"></script>
+  <script src="js/questions.js?v=3"></script>
+  <script src="js/game.js?v=3"></script>
+  <script src="js/deck.js?v=3"></script>
 </body>
 </html>

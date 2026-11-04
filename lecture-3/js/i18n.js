@@ -143,8 +143,8 @@
       'q.hint2': 'استخدم Loop واحدًا و <code>i</code> من 1 إلى 5. اطبع <code>"#"</code> ثم New line.',
       'q.check3': '4 أسطر. السطر 1 فيه نجمة واحدة، والسطر 2 فيه نجمتان… والسطر <code>i</code> فيه <code>i</code> نجوم.',
       'q.hint3': 'استخدم <code>i</code> لرقم السطر و <code>j</code> للنجمة داخل السطر. بعد كل سطر: New line ثم <code>j = 1</code>.',
-      'q.check4': 'كل سطر ينتهي بـ <code>5</code>. قبل الرقم 5، السطر <code>i</code> فيه <code>i − 1</code> نجوم.',
-      'q.hint4': 'استخدم نفس الـ Loops في المثلث. اطبع <code>"5"</code> عندما <code>j = i</code>، وإلا اطبع <code>"*"</code>.',
+      'q.check4': '5 أسطر من الأرقام 1 إلى 5. في كل سطر رقم واحد مكانه <code>A</code>، و <code>A</code> تتحرك مكانًا واحدًا إلى اليسار في كل سطر.',
+      'q.hint4': 'استخدم <code>r</code> للسطر و <code>c</code> للعمود. عند كل <code>A</code> يكون <code>r + c = 6</code>. اطبع <code>"A"</code> هناك، وإلا اطبع <code>c</code>.',
 
       // Solution slides and trace panel
       'sol.kicker': 'المثال {n} <span>· الحل</span>',

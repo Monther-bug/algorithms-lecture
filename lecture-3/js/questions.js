@@ -69,19 +69,19 @@
     {
       kind: 'Example 4', type: 'mcq',
       q: 'What does row 2 of Example 4 print?',
-      options: ['5*', '*5', '55', '**'], answer: 1,
-      why: 'In row 2, j = 1 prints "*" and j = 2 = i prints "5".',
-      ar: { kind: 'المثال 4', q: 'ماذا يطبع السطر 2 في المثال 4؟', why: `في السطر 2: عندما ${L('j = 1')} يُطبع ${L('"*"')}، وعندما ${L('j = 2 = i')} يُطبع ${L('"5"')}.` },
+      options: ['12A45', '123A5', '1234A', '12345'], answer: 1,
+      why: 'In row 2, r + c = 6 when c = 4, so place 4 is "A" and the other places print c.',
+      ar: { kind: 'المثال 4', q: 'ماذا يطبع السطر 2 في المثال 4؟', why: `في السطر 2 يكون ${L('r + c = 6')} عندما ${L('c = 4')}، لذلك المكان 4 هو ${L('"A"')} وباقي الأماكن تطبع ${L('c')}.` },
     },
     {
       kind: 'Example 4', type: 'mcq',
-      q: 'In Example 4, when is "5" printed?',
-      options: ['When j = 1', 'Always', 'Never', 'When i = j'], answer: 3,
-      why: 'The condition is "If i = j", and that is the last place of each row.',
+      q: 'In Example 4, when is "A" printed?',
+      options: ['When c = 1', 'When r + c = 6', 'Always', 'When r = 5'], answer: 1,
+      why: 'The condition is "If r + c == 6". Every other place prints the number c.',
       ar: {
-        kind: 'المثال 4', q: `في المثال 4، متى يُطبع ${L('"5"')}؟`,
-        options: ['عندما j = 1', 'دائمًا', 'أبدًا', 'عندما i = j'],
-        why: `الشرط هو ${L('If i = j')}، وهذا آخر مكان في كل سطر.`,
+        kind: 'المثال 4', q: `في المثال 4، متى يُطبع ${L('"A"')}؟`,
+        options: ['عندما c = 1', 'عندما r + c = 6', 'دائمًا', 'عندما r = 5'],
+        why: `الشرط هو ${L('If r + c == 6')}. باقي الأماكن تطبع الرقم ${L('c')}.`,
       },
     },
     {

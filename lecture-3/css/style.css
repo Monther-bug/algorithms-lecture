@@ -170,7 +170,7 @@ kbd:not(:first-child) { margin-inline-start: 1.1em; }
 }
 .bar__title { font: 800 24px var(--display); color: var(--ink); }
 .bar__tools { display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
-.bar__count { font: 700 22px var(--mono); margin-right: 18px; font-variant-numeric: tabular-nums; }
+.bar__count { font: 700 22px var(--mono); margin-right: 18px; font-variant-numeric: tabular-nums; white-space: nowrap; }
 
 /* Navigation reads left to right in both languages, so → is always "next". */
 .progress, .bar__tools { direction: ltr; }

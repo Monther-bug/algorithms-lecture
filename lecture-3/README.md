@@ -5,13 +5,13 @@ A browser slide deck (plain HTML, CSS and JavaScript) for the third algorithms l
 1. `*@*@*@*`: one loop, and `i mod 2` picks the character
 2. A column of five `#`: one loop with New line inside it
 3. A triangle of stars: a loop inside a loop (`i` = row, `j` = place in the row)
-4. `5`, `*5`, `**5`, `***5`: the triangle loops with `If i = j`
+4. `1234A`, `123A5`, `12A45`, `1A345`, `A2345`: two loops (`r` = row, `c` = column) that print `c`, or `A` where `r + c == 6`
 
 The deck opens with the goals (a quick reminder of Print and New line) and two short "tool" slides: what `mod` gives, and how rows and columns work. Each of the four examples has a **question slide** (the target shape, a thinking timer and a hint) followed by a **solution slide**. On the solution slide the algorithm appears one step at a time, with loop arrows (green for the inner loop, yellow for the outer one). The **Trace it** panel runs it on an output canvas, character by character, at 1×, 2× or 4× speed, with a print log that shows every character and why it was printed.
 
 ## Activities
 
-- **Predict** (5 rounds): one line of an example is changed, shown in yellow (or crossed out when removed). The class draws its guess on paper, then **Draw it** prints the real shape and explains why. The rounds cover the usual mistakes: stopping early, `mod 3`, forgetting New line and forgetting `j = 1`.
+- **Predict** (5 rounds): one line of an example is changed, shown in yellow (or crossed out when removed). The class draws its guess on paper, then **Draw it** prints the real shape and explains why. The rounds cover the usual mistakes: stopping early, `mod 3`, forgetting New line, forgetting `j = 1`, and `r == c` instead of `r + c == 6`.
 - **Your turn**: three shapes to write an algorithm for (warm-up `@*@*@*@`, core: an upside-down triangle, challenge: `1`, `12`, `123`, `1234`). **Show solution** reveals the algorithm and **Run it** draws it.
 - **Pattern Lab**: pick a row, triangle or stairs, change the size and the characters, and the algorithm and drawing update together. Good for "what if…?" questions from the class.
 
@@ -47,4 +47,4 @@ The bar at the bottom shows where you are; click a segment to jump to that slide
 
 To run it locally, open `index.html` in a browser, or serve the folder with any static server.
 
-After changing a CSS or JS file, raise the `?v=` number on the links at the top and bottom of `index.html` (for example `?v=2` to `?v=3`). Browsers keep old copies of these files for a few minutes, and the new number makes them load the new ones.
+After changing a CSS or JS file, raise the `?v=` number on the links at the top and bottom of `index.html` (for example `?v=3` to `?v=4`). Browsers keep old copies of these files for a few minutes, and the new number makes them load the new ones.

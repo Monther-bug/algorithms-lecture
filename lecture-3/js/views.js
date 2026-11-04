@@ -2,7 +2,7 @@
    code blocks with loop arrows, and the drawings on the "tool" slides. */
 (function () {
   const esc = window.I18n.esc;
-  const KEYWORDS = /\b(Start|End|Declare|Print|print|If|then|else|go to step|New line|mod)\b/g;
+  const KEYWORDS = /\b(Start|End|Declare|Print|print|If|then|else|go to step|[Nn]ew line|mod)\b/g;
   const NUMBERS = /\b(\d+)\b/g;
   const GUTTER = 112;
 
