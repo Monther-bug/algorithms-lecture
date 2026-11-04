@@ -2,7 +2,7 @@
    "Trace it" panel, which runs it on the output canvas with a print log. */
 (function () {
   const I18n = window.I18n;
-  const { Canvas, Code } = window;
+  const { Canvas, Code, Flow } = window;
   const esc = I18n.esc;
   const SPEEDS = [{ label: '1×', ms: 650 }, { label: '2×', ms: 320 }, { label: '4×', ms: 110 }];
   const show = (value) => (value === undefined ? '–' : String(value));
@@ -23,7 +23,7 @@
       </header>
       <div class="sol__grid">
         <div class="code-col">
-          ${Code.markup(ex.steps)}
+          ${ex.flow ? Flow.markup(ex.flow) : Code.markup(ex.steps)}
           <p class="sol__hint" data-hint data-i18n="trace.hint"></p>
           <p class="sol__note" data-note data-i18n="ex${id}.note" hidden></p>
         </div>
@@ -60,7 +60,8 @@
     I18n.apply(root);
     Canvas.render(root.querySelector('[data-target]'), ex.shape, { cell: 24 });
 
-    const lines = [...root.querySelectorAll('.line')];
+    // Code lines, or the flowchart's shapes (one per step, in step order).
+    const lines = [...root.querySelectorAll('.line, .fnode')];
     const hint = root.querySelector('[data-hint]');
     const note = root.querySelector('[data-note]');
     const outEl = root.querySelector('[data-out]');
@@ -80,6 +81,7 @@
 
     function paintArcs() {
       root.querySelectorAll('.arc').forEach((g) => g.classList.toggle('is-shown', shown > Number(g.dataset.from)));
+      root.querySelectorAll('.fedge').forEach((g) => g.classList.toggle('is-shown', shown > Number(g.dataset.at)));
     }
 
     /* ----- Step-by-step reveal (driven by the deck's arrow keys) ----- */

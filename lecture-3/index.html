@@ -10,7 +10,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Figtree:wght@400..800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&family=Noto+Kufi+Arabic:wght@500..800&display=swap">
-  <link rel="stylesheet" href="css/style.css?v=3">
+  <link rel="stylesheet" href="css/style.css?v=4">
 </head>
 <body>
   <div class="viewport">
@@ -65,7 +65,7 @@
                   <span class="goal__n">1</span>
                   <div>
                     <h3 data-i18n="goals.1title">Draw a row</h3>
-                    <p data-i18n="goals.1text">Print the same thing many times with one loop.</p>
+                    <p data-i18n="goals.1text">Print many times with one loop, and draw the steps as a flowchart.</p>
                   </div>
                 </li>
                 <li>
@@ -128,36 +128,73 @@
           <div class="sol" data-example="1"></div>
         </section>
 
-        <!-- 6. Example 2: question -->
+        <!-- 6. Tool 2: flowcharts -->
+        <section class="slide slide--flow" data-title="Tool 2: flowcharts" data-gap>
+          <div class="tool">
+            <header>
+              <p class="kicker" data-i18n="flow.kicker">Tool 2</p>
+              <h2 class="h2" data-i18n="flow.title">Flowcharts</h2>
+              <p class="tool__lead" data-i18n="flow.lead">A flowchart shows the steps of an algorithm as shapes joined by arrows. Begin at <b>Start</b> and follow the arrows.</p>
+            </header>
+            <ul class="fsyms">
+              <li class="fsym" style="--n: 0">
+                <div class="fsym__pic" data-flow-shape="term" data-label="Start"></div>
+                <h3 data-i18n="flow.termTitle">Start / End</h3>
+                <p data-i18n="flow.termText">Where the algorithm begins and where it stops.</p>
+              </li>
+              <li class="fsym" style="--n: 1">
+                <div class="fsym__pic" data-flow-shape="proc" data-label="i = 1"></div>
+                <h3 data-i18n="flow.procTitle">Process</h3>
+                <p data-i18n="flow.procText">Do a step, like giving a variable a value: <code>i = 1</code> or <code>i = i + 1</code>.</p>
+              </li>
+              <li class="fsym" style="--n: 2">
+                <div class="fsym__pic" data-flow-shape="io" data-label="Print i"></div>
+                <h3 data-i18n="flow.ioTitle">Print (output)</h3>
+                <p data-i18n="flow.ioText">Show something on the screen.</p>
+              </li>
+              <li class="fsym" style="--n: 3">
+                <div class="fsym__pic" data-flow-shape="dec" data-label="i &lt;= 5 ?"></div>
+                <h3 data-i18n="flow.decTitle">Decision</h3>
+                <p data-i18n="flow.decText">A yes/no question. It has two arrows: <b>Yes</b> and <b>No</b>.</p>
+              </li>
+            </ul>
+            <p class="flow-arrow">
+              <svg viewBox="0 0 96 40" aria-hidden="true"><path d="M 6 20 H 74"/><path class="head" d="M 92 20 L 72 9 L 72 31 Z"/></svg>
+              <span data-i18n="flow.arrow">Arrows show which step comes next. An arrow that goes back up makes a loop.</span>
+            </p>
+          </div>
+        </section>
+
+        <!-- 7. Example 2: question -->
         <section class="slide slide--question" data-title="Example 2: question">
           <div class="q">
             <div class="q__main">
               <p class="kicker" data-i18n="q.kicker2">Example 2 <span>of 4</span></p>
-              <h2 class="q__text" data-i18n="q.write">Write an algorithm that draws this shape</h2>
-              <div class="q__shape"><div class="canvas" data-shape="2" data-cell="64"></div></div>
+              <h2 class="q__text" data-i18n="q.writeFlow">Draw a flowchart that prints this</h2>
+              <div class="q__shape"><div class="canvas" data-shape="2" data-cell="96"></div></div>
               <div class="q__check">
                 <p class="q__label" data-i18n="q.look">Look closely</p>
-                <p data-i18n="q.check2">5 lines, with one <code>#</code> on each line.</p>
+                <p data-i18n="q.check2">The numbers 1 to 5 on one line. Each number is the value of <code>i</code>.</p>
               </div>
               <details class="q__hint">
                 <summary data-i18n="q.hint">Show a hint</summary>
-                <p data-i18n="q.hint2">Use one loop with <code>i</code> from 1 to 5. Print <code>"#"</code>, then New line.</p>
+                <p data-i18n="q.hint2">Start with <code>i = 1</code>. Print <code>i</code>, then <code>i = i + 1</code>. Ask <code>i &lt;= 5 ?</code> If Yes, go back to Print. If No, go to End.</p>
               </details>
             </div>
             <div class="timer" data-timer></div>
           </div>
         </section>
 
-        <!-- 7. Example 2: solution -->
+        <!-- 8. Example 2: solution (a flowchart) -->
         <section class="slide slide--solution" data-title="Example 2: solution">
           <div class="sol" data-example="2"></div>
         </section>
 
-        <!-- 8. Tool 2: rows and columns -->
-        <section class="slide slide--rows" data-title="Tool 2: rows and columns" data-gap>
+        <!-- 9. Tool 3: rows and columns -->
+        <section class="slide slide--rows" data-title="Tool 3: rows and columns" data-gap>
           <div class="tool">
             <header>
-              <p class="kicker" data-i18n="rows.kicker">Tool 2</p>
+              <p class="kicker" data-i18n="rows.kicker">Tool 3</p>
               <h2 class="h2" data-i18n="rows.title">Rows and columns</h2>
               <p class="tool__lead" data-i18n="rows.lead">We draw a shape one row at a time, from top to bottom.</p>
             </header>
@@ -172,7 +209,7 @@
           </div>
         </section>
 
-        <!-- 9. Example 3: question -->
+        <!-- 10. Example 3: question -->
         <section class="slide slide--question" data-title="Example 3: question">
           <div class="q">
             <div class="q__main">
@@ -192,12 +229,12 @@
           </div>
         </section>
 
-        <!-- 10. Example 3: solution -->
+        <!-- 11. Example 3: solution -->
         <section class="slide slide--solution" data-title="Example 3: solution">
           <div class="sol" data-example="3"></div>
         </section>
 
-        <!-- 11. Example 4: question -->
+        <!-- 12. Example 4: question -->
         <section class="slide slide--question" data-title="Example 4: question">
           <div class="q">
             <div class="q__main">
@@ -217,12 +254,12 @@
           </div>
         </section>
 
-        <!-- 12. Example 4: solution -->
+        <!-- 13. Example 4: solution -->
         <section class="slide slide--solution" data-title="Example 4: solution">
           <div class="sol" data-example="4"></div>
         </section>
 
-        <!-- 13. Activity 1: Predict -->
+        <!-- 14. Activity 1: Predict -->
         <section class="slide slide--act" data-title="Activity 1: Predict" data-gap>
           <div class="act" id="predict">
             <header class="act__head">
@@ -253,7 +290,7 @@
           </div>
         </section>
 
-        <!-- 14. Activity 2: Your turn -->
+        <!-- 15. Activity 2: Your turn -->
         <section class="slide slide--act" data-title="Activity 2: Your turn">
           <div class="act" id="yourturn">
             <header class="act__head">
@@ -280,7 +317,7 @@
           </div>
         </section>
 
-        <!-- 15. Activity 3: Pattern Lab -->
+        <!-- 16. Activity 3: Pattern Lab -->
         <section class="slide slide--act" data-title="Activity 3: Pattern Lab">
           <div class="act" id="lab">
             <header class="act__head">
@@ -321,7 +358,7 @@
           </div>
         </section>
 
-        <!-- 16. Wrap-up -->
+        <!-- 17. Wrap-up -->
         <section class="slide slide--recap" data-title="Wrap-up" data-gap>
           <div class="recap">
             <header>
@@ -338,7 +375,7 @@
           </div>
         </section>
 
-        <!-- 17. Game -->
+        <!-- 18. Game -->
         <section class="slide slide--game" data-title="Pattern Party">
           <div class="gs">
             <div class="gs__intro">
@@ -363,7 +400,7 @@
           </div>
         </section>
 
-        <!-- 18. Meme break -->
+        <!-- 19. Meme break -->
         <section class="slide slide--memes" data-title="Meme break" data-gap>
           <div class="memes">
             <header class="memes__head">
@@ -436,14 +473,14 @@
     </div>
   </div>
 
-  <script src="js/i18n.js?v=3"></script>
-  <script src="js/sound.js?v=3"></script>
-  <script src="js/patterns.js?v=3"></script>
-  <script src="js/views.js?v=3"></script>
-  <script src="js/solution.js?v=3"></script>
-  <script src="js/activities.js?v=3"></script>
-  <script src="js/questions.js?v=3"></script>
-  <script src="js/game.js?v=3"></script>
-  <script src="js/deck.js?v=3"></script>
+  <script src="js/i18n.js?v=4"></script>
+  <script src="js/sound.js?v=4"></script>
+  <script src="js/patterns.js?v=4"></script>
+  <script src="js/views.js?v=4"></script>
+  <script src="js/solution.js?v=4"></script>
+  <script src="js/activities.js?v=4"></script>
+  <script src="js/questions.js?v=4"></script>
+  <script src="js/game.js?v=4"></script>
+  <script src="js/deck.js?v=4"></script>
 </body>
 </html>

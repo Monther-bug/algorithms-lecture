@@ -63,6 +63,7 @@
      loops sit one lane further left; arrows landing on the same line are spread apart. */
   function drawArcs(root, steps, shown = steps.length) {
     const code = root.querySelector('.code');
+    if (!code) return;
     const svg = root.querySelector('.arcs');
     const lines = [...root.querySelectorAll('.line')];
     const loops = steps.map((s, i) => ({ s, i })).filter((l) => l.s.loop != null && !l.s.removed);
@@ -87,12 +88,68 @@
     }).join('');
   }
 
+  /* ----- Flowcharts ----- */
+  function shape(kind, x, y, w, h) {
+    if (kind === 'term') return `<rect class="fshape" x="${x}" y="${y}" width="${w}" height="${h}" rx="${h / 2}"/>`;
+    if (kind === 'io') {
+      const s = 26;
+      return `<polygon class="fshape" points="${x + s},${y} ${x + w},${y} ${x + w - s},${y + h} ${x},${y + h}"/>`;
+    }
+    if (kind === 'dec') return `<polygon class="fshape" points="${x + w / 2},${y} ${x + w},${y + h / 2} ${x + w / 2},${y + h} ${x},${y + h / 2}"/>`;
+    return `<rect class="fshape" x="${x}" y="${y}" width="${w}" height="${h}" rx="8"/>`;
+  }
+  const node = (n, i) => `
+    <g class="fnode fnode--${n.kind}"${i == null ? '' : ` data-i="${i}"`}>
+      ${shape(n.kind, n.x, n.y, n.w, n.h)}
+      <text class="flabel" x="${n.x + n.w / 2}" y="${n.y + n.h / 2}">${esc(n.label)}</text>
+    </g>`;
+
+  // A line through the points, with an arrowhead at the last one.
+  function arrow(pts) {
+    const [x2, y2] = pts[pts.length - 1];
+    const [x1, y1] = pts[pts.length - 2];
+    const len = Math.hypot(x2 - x1, y2 - y1);
+    const dx = (x2 - x1) / len;
+    const dy = (y2 - y1) / len;
+    const end = [x2 - dx * 14, y2 - dy * 14];
+    const line = pts.slice(0, -1).map(([x, y], k) => `${k ? 'L' : 'M'} ${x} ${y}`).join(' ') + ` L ${end[0]} ${end[1]}`;
+    const bx = x2 - dx * 18;
+    const by = y2 - dy * 18;
+    const head = `M ${x2} ${y2} L ${bx - dy * 10} ${by + dx * 10} L ${bx + dy * 10} ${by - dx * 10} Z`;
+    return `<path d="${line}"/><path class="head" d="${head}"/>`;
+  }
+
+  function flowMarkup(flow) {
+    const [w, h] = flow.size;
+    const edges = flow.edges.map((e) => `
+      <g class="fedge${e.loop ? ' fedge--loop arc' : ''}" data-at="${e.at}"${e.loop ? ` data-from="${e.at}"` : ''}>
+        ${arrow(e.pts)}
+        ${e.label ? `<text class="fedge__label fedge__label--${e.label.toLowerCase()}" x="${e.lx}" y="${e.ly}">${e.label}</text>` : ''}
+      </g>`).join('');
+    return `
+      <div class="flow">
+        <svg viewBox="0 0 ${w} ${h}" role="img" aria-label="Flowchart">
+          ${edges}
+          ${flow.nodes.map(node).join('')}
+        </svg>
+      </div>`;
+  }
+
+  // One shape on its own, for the flowchart tool slide.
+  function symbol(kind, label) {
+    const box = kind === 'dec' ? { x: 20, y: 6, w: 280, h: 128 } : { x: 30, y: 30, w: 260, h: 80 };
+    return `<svg viewBox="0 0 320 140" aria-hidden="true">${node({ kind, label, ...box })}</svg>`;
+  }
+
   window.Canvas = { render, tone };
   window.Code = { markup, drawArcs, highlight };
+  window.Flow = { markup: flowMarkup, symbol };
 
   /* ----- Fixed drawings ----- */
   document.querySelectorAll('.canvas[data-rows]').forEach((el) => render(el, JSON.parse(el.dataset.rows)));
   document.querySelectorAll('.canvas[data-shape]').forEach((el) => render(el, window.EXAMPLES[el.dataset.shape].shape));
+
+  document.querySelectorAll('[data-flow-shape]').forEach((el) => { el.innerHTML = symbol(el.dataset.flowShape, el.dataset.label); });
 
   // Tool 1: i mod 2 for i = 1 … 8
   const mods = document.getElementById('mods');

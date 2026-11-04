@@ -3,11 +3,11 @@
 A browser slide deck (plain HTML, CSS and JavaScript) for the third algorithms lecture: drawing shapes by printing characters with loops.
 
 1. `*@*@*@*`: one loop, and `i mod 2` picks the character
-2. A column of five `#`: one loop with New line inside it
+2. `12345`, as a **flowchart**: Start, `i = 1`, `Print i`, `i = i + 1`, then the decision `i <= 5 ?` (Yes goes back to Print, No goes to End)
 3. A triangle of stars: a loop inside a loop (`i` = row, `j` = place in the row)
 4. `1234A`, `123A5`, `12A45`, `1A345`, `A2345`: two loops (`r` = row, `c` = column) that print `c`, or `A` where `r + c == 6`
 
-The deck opens with the goals (a quick reminder of Print and New line) and two short "tool" slides: what `mod` gives, and how rows and columns work. Each of the four examples has a **question slide** (the target shape, a thinking timer and a hint) followed by a **solution slide**. On the solution slide the algorithm appears one step at a time, with loop arrows (green for the inner loop, yellow for the outer one). The **Trace it** panel runs it on an output canvas, character by character, at 1×, 2× or 4× speed, with a print log that shows every character and why it was printed.
+The deck opens with the goals (a quick reminder of Print and New line) and three short "tool" slides: what `mod` gives, what the flowchart shapes mean (Start/End, Process, Print, Decision and arrows), and how rows and columns work. Each of the four examples has a **question slide** (the target shape, a thinking timer and a hint) followed by a **solution slide**. On the solution slide the algorithm appears one step at a time, with loop arrows (green for the inner loop, yellow for the outer one). Example 2 is solved as a flowchart instead: its shapes appear one at a time, and Trace it lights up the current shape. The **Trace it** panel runs it on an output canvas, character by character, at 1×, 2× or 4× speed, with a print log that shows every character and why it was printed.
 
 ## Activities
 
@@ -17,7 +17,7 @@ The deck opens with the goals (a quick reminder of Print and New line) and two s
 
 After a wrap-up slide comes **Pattern Party**, a game of 12 easy questions for 2 to 4 teams, and the deck ends with a **meme break** (three memes, one per → press).
 
-The **العربية** button in the bottom bar switches everything to Arabic (and **English** switches back). English is the default every time the page opens. In Arabic, the sentences and buttons are translated, while concept words (Algorithm, Loop, Print, New line, mod, Trace, Output), code, characters and numbers stay in English, and the drawings are never mirrored.
+The **العربية** button in the bottom bar switches everything to Arabic (and **English** switches back). English is the default every time the page opens. In Arabic, the sentences and buttons are translated, while concept words (Algorithm, Flowchart, Loop, Print, New line, mod, Trace, Output), code, characters and numbers stay in English, and the drawings are never mirrored.
 
 ## Presenting
 
@@ -36,7 +36,7 @@ The bar at the bottom shows where you are; click a segment to jump to that slide
 - `index.html`: the slides
 - `css/style.css`: all styles
 - `js/patterns.js`: every algorithm (examples, Predict rounds, Your turn shapes, Pattern Lab) and the runner that prints them
-- `js/views.js`: the output canvas, code blocks with loop arrows, and the tool-slide drawings
+- `js/views.js`: the output canvas, code blocks with loop arrows, flowcharts, and the tool-slide drawings
 - `js/solution.js`: step-by-step reveal and the Trace it panel
 - `js/activities.js`: Predict, Your turn and Pattern Lab
 - `js/questions.js`: the game questions (with their Arabic text)
@@ -47,4 +47,4 @@ The bar at the bottom shows where you are; click a segment to jump to that slide
 
 To run it locally, open `index.html` in a browser, or serve the folder with any static server.
 
-After changing a CSS or JS file, raise the `?v=` number on the links at the top and bottom of `index.html` (for example `?v=3` to `?v=4`). Browsers keep old copies of these files for a few minutes, and the new number makes them load the new ones.
+After changing a CSS or JS file, raise the `?v=` number on the links at the top and bottom of `index.html` (for example `?v=4` to `?v=5`). Browsers keep old copies of these files for a few minutes, and the new number makes them load the new ones.

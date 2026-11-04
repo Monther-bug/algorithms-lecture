@@ -24,20 +24,41 @@
     },
 
     2: {
-      shape: ['#', '#', '#', '#', '#'],
+      shape: ['12345'],
       vars: ['i'],
       log: [['i', (v) => v.i]],
-      note: 'New line is inside the loop, so every "#" goes on its own line. Without it, you would get #####.',
-      ar: { note: `New line موجود داخل الـ Loop، لذلك كل ${L('"#"')} يكون في سطر خاص به. بدونه ستحصل على ${L('#####')}.` },
+      note: 'The diamond asks "i <= 5 ?". Yes goes back up to Print i, so i is printed 5 times. No goes to End.',
+      ar: { note: `المعيّن يسأل ${L('i <= 5 ?')}. سهم Yes يرجع إلى ${L('Print i')}، لذلك تُطبع i خمس مرات. سهم No يذهب إلى End.` },
       steps: [
         { text: 'Start' },
         { text: 'Declare i = 1', run: (v) => { v.i = 1; } },
-        { text: 'Print "#"', run: (v, out) => out.print('#') },
-        { text: 'New line', run: (v, out) => out.newline() },
+        { text: 'Print i', run: (v, out) => out.print(v.i) },
         { text: 'i = i + 1', run: (v) => { v.i += 1; } },
         { text: 'If i <= 5 then go to step 3', loop: 2, run: (v) => v.i <= 5 },
         { text: 'End' },
       ],
+      /* Shown as a flowchart: one node per step (same order), then the arrows.
+         kind: term = Start/End, proc = process, io = Print, dec = decision.
+         An arrow appears once step `at` is on screen; `loop` marks the Yes arrow back up. */
+      flow: {
+        size: [700, 566],
+        nodes: [
+          { kind: 'term', x: 200, y: 6, w: 180, h: 60, label: 'Start' },
+          { kind: 'proc', x: 170, y: 104, w: 240, h: 66, label: 'i = 1' },
+          { kind: 'io', x: 160, y: 208, w: 260, h: 66, label: 'Print i' },
+          { kind: 'proc', x: 170, y: 312, w: 240, h: 66, label: 'i = i + 1' },
+          { kind: 'dec', x: 140, y: 416, w: 300, h: 140, label: 'i <= 5 ?' },
+          { kind: 'term', x: 530, y: 456, w: 150, h: 60, label: 'End' },
+        ],
+        edges: [
+          { at: 1, pts: [[290, 66], [290, 104]] },
+          { at: 2, pts: [[290, 170], [290, 208]] },
+          { at: 3, pts: [[290, 274], [290, 312]] },
+          { at: 4, pts: [[290, 378], [290, 416]] },
+          { at: 4, loop: true, pts: [[140, 486], [40, 486], [40, 241], [173, 241]], label: 'Yes', lx: 90, ly: 466 },
+          { at: 5, pts: [[440, 486], [530, 486]], label: 'No', lx: 485, ly: 466 },
+        ],
+      },
     },
 
     3: {

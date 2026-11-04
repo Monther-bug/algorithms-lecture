@@ -1,4 +1,4 @@
-/* Game questions: short and easy, about today's four shapes.
+/* Game questions: short and easy, about today's four examples.
    type: 'mcq' (answer = index of the right option) or 'tf' (answer = true/false).
    `ar` holds the Arabic text; Arabic options are plain text, and options
    without an Arabic list stay as they are. */
@@ -21,18 +21,29 @@
       ar: { kind: 'mod', q: `كم يساوي ${L('4 mod 2')}؟`, why: `${L('4 ÷ 2 = 2')} ولا يبقى شيء، لذلك ${L('4 mod 2 = 0')}.` },
     },
     {
-      kind: 'mod', type: 'mcq',
-      q: 'What is 5 mod 2?',
-      options: ['1', '0', '2', '5'], answer: 0,
-      why: '5 ÷ 2 = 2 with 1 left over, so 5 mod 2 = 1.',
-      ar: { kind: 'mod', q: `كم يساوي ${L('5 mod 2')}؟`, why: `${L('5 ÷ 2 = 2')} ويبقى 1، لذلك ${L('5 mod 2 = 1')}.` },
-    },
-    {
       kind: 'True or false', type: 'tf',
       q: 'In Example 1, when i is even, the algorithm prints "@".',
       answer: true,
       why: 'Even numbers give i mod 2 = 0, and then it prints "@".',
       ar: { kind: 'صح أم خطأ', q: `في المثال 1، عندما يكون i زوجيًا يطبع الـ Algorithm ${L('"@"')}.`, why: `الأعداد الزوجية تعطي ${L('i mod 2 = 0')}، وعندها يطبع ${L('"@"')}.` },
+    },
+    {
+      kind: 'Flowchart', type: 'mcq',
+      q: 'In a flowchart, which shape asks a yes/no question?',
+      options: ['Oval', 'Rectangle', 'Diamond', 'Parallelogram'], answer: 2,
+      why: 'A diamond is a decision. It has a Yes arrow and a No arrow.',
+      ar: {
+        kind: 'Flowchart', q: 'في الـ Flowchart، أي شكل يطرح سؤالًا جوابه نعم أو لا؟',
+        options: ['شكل بيضاوي', 'مستطيل', 'معيّن', 'متوازي أضلاع'],
+        why: 'المعيّن هو Decision، ويخرج منه سهم Yes وسهم No.',
+      },
+    },
+    {
+      kind: 'Example 2', type: 'mcq',
+      q: 'What does the flowchart in Example 2 print?',
+      options: ['1234', '12345', '11111', '123456'], answer: 1,
+      why: 'i starts at 1, Print i shows it, and the Yes arrow repeats until i = 5.',
+      ar: { kind: 'المثال 2', q: 'ماذا يطبع الـ Flowchart في المثال 2؟', why: `i يبدأ من 1، و ${L('Print i')} يعرضه، وسهم Yes يكرر حتى ${L('i = 5')}.` },
     },
     {
       kind: 'Example 3', type: 'mcq',
@@ -90,13 +101,6 @@
       answer: true,
       why: 'Without New line nothing moves the drawing down, so it stays on one line.',
       ar: { kind: 'صح أم خطأ', q: 'إذا نسينا New line، تُطبع كل النجوم على سطر واحد.', why: 'بدون New line لا شيء ينقل الرسم إلى الأسفل، لذلك يبقى على سطر واحد.' },
-    },
-    {
-      kind: 'Example 2', type: 'mcq',
-      q: 'How many "#" does Example 2 print?',
-      options: ['1', '4', '5', '6'], answer: 2,
-      why: 'The loop runs for i = 1 to 5, and each time it prints one "#".',
-      ar: { kind: 'المثال 2', q: `كم ${L('"#"')} يطبع المثال 2؟`, why: `الـ Loop يعمل من ${L('i = 1')} إلى ${L('i = 5')}، وفي كل مرة يطبع ${L('"#"')} واحدًا.` },
     },
   ];
 })();
