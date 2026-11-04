@@ -1,0 +1,449 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Drawing Shapes</title>
+  <meta name="description" content="Lecture 3 slides: drawing shapes with loops (print, New line, mod and a loop inside a loop), with three worked examples, three class activities, a team game and a meme break.">
+  <meta name="theme-color" content="#f7f6f2">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%231d1f4a'/%3E%3Ctext x='18' y='44' text-anchor='middle' font-family='monospace' font-weight='700' font-size='30' fill='%23ff4fa3'%3E*%3C/text%3E%3Ctext x='42' y='44' text-anchor='middle' font-family='monospace' font-weight='700' font-size='26' fill='%23ffd23f'%3E@%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Bricolage+Grotesque:opsz,wdth,wght@12..96,75..100,400..800&family=Figtree:wght@400..800&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&family=Noto+Kufi+Arabic:wght@500..800&display=swap">
+  <link rel="stylesheet" href="css/style.css?v=2">
+</head>
+<body>
+  <div class="viewport">
+    <div class="stage" id="stage">
+
+      <main class="slides" id="slides">
+
+        <!-- 1. Cover -->
+        <section class="slide slide--cover" data-title="Drawing shapes">
+          <div class="cover">
+            <div class="cover__text">
+              <p class="kicker" data-i18n="cover.kicker">Lecture 3 · Writing algorithms</p>
+              <h1 class="cover__title"><span class="riso" data-text="Drawing">Drawing</span> <span class="riso riso--b" data-text="shapes">shapes</span></h1>
+              <p class="cover__lead" data-i18n="cover.lead">Print a character, move to a new line, repeat. Four worked examples, three class activities, a team game and a meme break.</p>
+              <p class="cover__author">Monther Ibrahime</p>
+              <p class="cover__keys" data-i18n="cover.keys"><kbd>→</kbd> next <kbd>←</kbd> back <kbd>F</kbd> full screen</p>
+            </div>
+            <div class="hero" aria-label="A loop prints stars row by row to draw a triangle.">
+              <div class="hero__bar" aria-hidden="true"><span></span><span></span><span></span><p>output</p></div>
+              <div class="canvas canvas--hero" id="hero-canvas" aria-hidden="true"></div>
+              <div class="hero__now" aria-hidden="true">
+                <code id="hero-line">Print "*"</code>
+                <p><span>i = <b id="hero-i">4</b></span><span>j = <b id="hero-j">4</b></span></p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Goals -->
+        <section class="slide slide--goals" data-title="Today's goals">
+          <div class="goals">
+            <header>
+              <p class="kicker" data-i18n="goals.kicker">Today's goals</p>
+              <h2 class="h2" data-i18n="goals.title">What will we learn today?</h2>
+            </header>
+            <div class="goals__body">
+              <div class="remind">
+                <p class="remind__tag" data-i18n="goals.remindTag">Quick reminder</p>
+                <h3 data-i18n="goals.remindTitle">Print and New line</h3>
+                <p class="remind__text" data-i18n="goals.remindText">Print puts one character on the screen. New line moves down to start the next line.</p>
+                <div class="remind__demo">
+                  <pre class="remind__code"><span class="kw">Print</span> <span class="str">"*"</span>
+<span class="kw">Print</span> <span class="str">"*"</span>
+<span class="kw">New line</span>
+<span class="kw">Print</span> <span class="str">"*"</span></pre>
+                  <span class="remind__arrow" aria-hidden="true">→</span>
+                  <div class="canvas" data-rows='["**","*"]' data-cell="64" aria-label="Output: two stars, then one star on the next line"></div>
+                </div>
+              </div>
+              <ol class="goal-list">
+                <li>
+                  <span class="goal__n">1</span>
+                  <div>
+                    <h3 data-i18n="goals.1title">Draw a row</h3>
+                    <p data-i18n="goals.1text">Print the same thing many times with one loop.</p>
+                  </div>
+                </li>
+                <li>
+                  <span class="goal__n">2</span>
+                  <div>
+                    <h3 data-i18n="goals.2title">Pick a character</h3>
+                    <p data-i18n="goals.2text">Use <code>i mod 2</code> to choose between <code>"*"</code> and <code>"@"</code>.</p>
+                  </div>
+                </li>
+                <li>
+                  <span class="goal__n">3</span>
+                  <div>
+                    <h3 data-i18n="goals.3title">Draw rows and columns</h3>
+                    <p data-i18n="goals.3text">Use a loop inside a loop: <code>i</code> for the row, <code>j</code> for the place in the row.</p>
+                  </div>
+                </li>
+              </ol>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Tool 1: mod -->
+        <section class="slide slide--mod" data-title="Tool 1: mod" data-gap>
+          <div class="tool">
+            <header>
+              <p class="kicker" data-i18n="mod.kicker">Tool 1</p>
+              <h2 class="h2" data-i18n="mod.title"><code>mod</code> gives the remainder</h2>
+              <p class="tool__lead" data-i18n="mod.lead"><code>i mod 2</code> is what is left after you divide <code>i</code> by 2.</p>
+            </header>
+            <ol class="mods" id="mods" aria-label="i mod 2 for i from 1 to 8"></ol>
+            <div class="mod-rules">
+              <p class="mod-rule mod-rule--odd"><b data-i18n="mod.odd">Odd number</b><span>→</span><code>i mod 2 = 1</code></p>
+              <p class="mod-rule mod-rule--even"><b data-i18n="mod.even">Even number</b><span>→</span><code>i mod 2 = 0</code></p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Example 1: question -->
+        <section class="slide slide--question" data-title="Example 1: question">
+          <div class="q">
+            <div class="q__main">
+              <p class="kicker" data-i18n="q.kicker1">Example 1 <span>of 4</span></p>
+              <h2 class="q__text" data-i18n="q.write">Write an algorithm that draws this shape</h2>
+              <div class="q__shape"><div class="canvas" data-shape="1" data-cell="96"></div></div>
+              <div class="q__check">
+                <p class="q__label" data-i18n="q.look">Look closely</p>
+                <p data-i18n="q.check1">7 characters on one line. Places 1, 3, 5, 7 are <code>*</code> and places 2, 4, 6 are <code>@</code>.</p>
+              </div>
+              <details class="q__hint">
+                <summary data-i18n="q.hint">Show a hint</summary>
+                <p data-i18n="q.hint1">Count with <code>i</code> from 1 to 7. Use <code>i mod 2</code> to choose the character.</p>
+              </details>
+            </div>
+            <div class="timer" data-timer></div>
+          </div>
+        </section>
+
+        <!-- 5. Example 1: solution -->
+        <section class="slide slide--solution" data-title="Example 1: solution">
+          <div class="sol" data-example="1"></div>
+        </section>
+
+        <!-- 6. Example 2: question -->
+        <section class="slide slide--question" data-title="Example 2: question">
+          <div class="q">
+            <div class="q__main">
+              <p class="kicker" data-i18n="q.kicker2">Example 2 <span>of 4</span></p>
+              <h2 class="q__text" data-i18n="q.write">Write an algorithm that draws this shape</h2>
+              <div class="q__shape"><div class="canvas" data-shape="2" data-cell="64"></div></div>
+              <div class="q__check">
+                <p class="q__label" data-i18n="q.look">Look closely</p>
+                <p data-i18n="q.check2">5 lines, with one <code>#</code> on each line.</p>
+              </div>
+              <details class="q__hint">
+                <summary data-i18n="q.hint">Show a hint</summary>
+                <p data-i18n="q.hint2">Use one loop with <code>i</code> from 1 to 5. Print <code>"#"</code>, then New line.</p>
+              </details>
+            </div>
+            <div class="timer" data-timer></div>
+          </div>
+        </section>
+
+        <!-- 7. Example 2: solution -->
+        <section class="slide slide--solution" data-title="Example 2: solution">
+          <div class="sol" data-example="2"></div>
+        </section>
+
+        <!-- 8. Tool 2: rows and columns -->
+        <section class="slide slide--rows" data-title="Tool 2: rows and columns" data-gap>
+          <div class="tool">
+            <header>
+              <p class="kicker" data-i18n="rows.kicker">Tool 2</p>
+              <h2 class="h2" data-i18n="rows.title">Rows and columns</h2>
+              <p class="tool__lead" data-i18n="rows.lead">We draw a shape one row at a time, from top to bottom.</p>
+            </header>
+            <div class="rows-body">
+              <div class="grid-demo" id="grid-demo" aria-label="A triangle of stars on a grid: row i has i stars."></div>
+              <ul class="rows-notes">
+                <li class="rows-note rows-note--i"><span class="rows-note__tag">i</span><p data-i18n="rows.i"><b>i</b> is the row number. The <b>outer loop</b> moves down the rows.</p></li>
+                <li class="rows-note rows-note--j"><span class="rows-note__tag">j</span><p data-i18n="rows.j"><b>j</b> is the place in the row. The <b>inner loop</b> moves along one row.</p></li>
+                <li class="rows-note rows-note--nl"><span class="rows-note__tag">↵</span><p data-i18n="rows.nl"><b>New line</b> and <code>j = 1</code> start the next row from the first place.</p></li>
+              </ul>
+            </div>
+          </div>
+        </section>
+
+        <!-- 9. Example 3: question -->
+        <section class="slide slide--question" data-title="Example 3: question">
+          <div class="q">
+            <div class="q__main">
+              <p class="kicker" data-i18n="q.kicker3">Example 3 <span>of 4</span></p>
+              <h2 class="q__text" data-i18n="q.write">Write an algorithm that draws this shape</h2>
+              <div class="q__shape"><div class="canvas" data-shape="3" data-cell="72"></div></div>
+              <div class="q__check">
+                <p class="q__label" data-i18n="q.look">Look closely</p>
+                <p data-i18n="q.check3">4 rows. Row 1 has 1 star, row 2 has 2 stars… row <code>i</code> has <code>i</code> stars.</p>
+              </div>
+              <details class="q__hint">
+                <summary data-i18n="q.hint">Show a hint</summary>
+                <p data-i18n="q.hint3">Use <code>i</code> for the row and <code>j</code> for the star in the row. After each row: New line, and <code>j = 1</code>.</p>
+              </details>
+            </div>
+            <div class="timer" data-timer></div>
+          </div>
+        </section>
+
+        <!-- 10. Example 3: solution -->
+        <section class="slide slide--solution" data-title="Example 3: solution">
+          <div class="sol" data-example="3"></div>
+        </section>
+
+        <!-- 11. Example 4: question -->
+        <section class="slide slide--question" data-title="Example 4: question">
+          <div class="q">
+            <div class="q__main">
+              <p class="kicker" data-i18n="q.kicker4">Example 4 <span>of 4</span></p>
+              <h2 class="q__text" data-i18n="q.write">Write an algorithm that draws this shape</h2>
+              <div class="q__shape"><div class="canvas" data-shape="4" data-cell="72"></div></div>
+              <div class="q__check">
+                <p class="q__label" data-i18n="q.look">Look closely</p>
+                <p data-i18n="q.check4">Every row ends with <code>5</code>. Before the 5, row <code>i</code> has <code>i − 1</code> stars.</p>
+              </div>
+              <details class="q__hint">
+                <summary data-i18n="q.hint">Show a hint</summary>
+                <p data-i18n="q.hint4">Use the same loops as the triangle. Print <code>"5"</code> when <code>j = i</code>, otherwise print <code>"*"</code>.</p>
+              </details>
+            </div>
+            <div class="timer" data-timer></div>
+          </div>
+        </section>
+
+        <!-- 12. Example 4: solution -->
+        <section class="slide slide--solution" data-title="Example 4: solution">
+          <div class="sol" data-example="4"></div>
+        </section>
+
+        <!-- 13. Activity 1: Predict -->
+        <section class="slide slide--act" data-title="Activity 1: Predict" data-gap>
+          <div class="act" id="predict">
+            <header class="act__head">
+              <div>
+                <p class="kicker" data-i18n="p.kicker">Activity 1 · Predict</p>
+                <h2 class="h2" data-i18n="p.title">What will it draw?</h2>
+              </div>
+              <p class="act__lead" data-i18n="p.lead">Each algorithm changes one line of an example (in yellow). Draw your answer on paper, then press <b>Draw it</b>.</p>
+            </header>
+            <div class="act__body">
+              <div class="act__left">
+                <div class="rounds" role="group" data-i18n-label="p.rounds" aria-label="Rounds"></div>
+                <p class="act__from" data-from></p>
+                <div class="act__code" data-code></div>
+              </div>
+              <div class="act__right">
+                <div class="paper">
+                  <div class="canvas" data-canvas></div>
+                  <p class="paper__q" data-q aria-hidden="true">?</p>
+                </div>
+                <div class="act__btns">
+                  <button type="button" class="btn btn--pink" data-draw data-i18n="p.draw">Draw it</button>
+                  <button type="button" class="btn btn--line" data-clear data-i18n="p.clear">Clear</button>
+                </div>
+                <p class="act__why" data-why hidden></p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 14. Activity 2: Your turn -->
+        <section class="slide slide--act" data-title="Activity 2: Your turn">
+          <div class="act" id="yourturn">
+            <header class="act__head">
+              <div>
+                <p class="kicker" data-i18n="y.kicker">Activity 2 · Your turn</p>
+                <h2 class="h2" data-i18n="y.title">Write the algorithm</h2>
+              </div>
+              <p class="act__lead" data-i18n="y.lead">Pick a shape and write its algorithm on paper. Then compare it with the solution.</p>
+            </header>
+            <div class="act__body act__body--turn">
+              <div class="picks" role="group" data-i18n-label="y.shapes" aria-label="Shapes" data-picks></div>
+              <div class="turn">
+                <div class="turn__top">
+                  <div class="paper paper--small"><div class="canvas" data-canvas></div></div>
+                  <div class="act__btns">
+                    <button type="button" class="btn btn--accent" data-show data-i18n="y.show">Show solution</button>
+                    <button type="button" class="btn btn--pink" data-run data-i18n="y.run" hidden>Run it</button>
+                  </div>
+                </div>
+                <p class="turn__wait" data-wait data-i18n="y.wait">Write your algorithm on paper first. Then press Show solution.</p>
+                <div class="act__code" data-code hidden></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 15. Activity 3: Pattern Lab -->
+        <section class="slide slide--act" data-title="Activity 3: Pattern Lab">
+          <div class="act" id="lab">
+            <header class="act__head">
+              <div>
+                <p class="kicker" data-i18n="l.kicker">Activity 3 · Pattern Lab</p>
+                <h2 class="h2" data-i18n="l.title">What if…?</h2>
+              </div>
+              <p class="act__lead" data-i18n="l.lead">Ask the class: what if we change the size or the characters? Change it here and check the drawing together.</p>
+            </header>
+            <div class="act__body act__body--lab">
+              <div class="lab__side">
+                <div class="lab__controls">
+                  <div class="ctl">
+                    <p class="ctl__label" data-i18n="l.shape">Shape</p>
+                    <div class="seg-light" role="radiogroup" data-shapes></div>
+                  </div>
+                  <div class="ctl">
+                    <p class="ctl__label" data-n-label></p>
+                    <div class="stepper">
+                      <button type="button" data-n="-1" data-i18n-label="l.less" aria-label="Less">−</button>
+                      <output data-n-value>4</output>
+                      <button type="button" data-n="1" data-i18n-label="l.more" aria-label="More">+</button>
+                    </div>
+                  </div>
+                  <div class="ctl" data-ctl-a>
+                    <p class="ctl__label" data-a-label></p>
+                    <div class="chars" role="radiogroup" data-chars="a"></div>
+                  </div>
+                  <div class="ctl" data-ctl-b>
+                    <p class="ctl__label" data-b-label></p>
+                    <div class="chars" role="radiogroup" data-chars="b"></div>
+                  </div>
+                </div>
+                <div class="act__code" data-code></div>
+              </div>
+              <div class="paper paper--lab"><div class="canvas" data-canvas></div></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 16. Wrap-up -->
+        <section class="slide slide--recap" data-title="Wrap-up" data-gap>
+          <div class="recap">
+            <header>
+              <p class="kicker" data-i18n="recap.kicker">Wrap-up</p>
+              <h2 class="h2" data-i18n="recap.title">Four things to remember</h2>
+            </header>
+            <ol class="recap__list">
+              <li><span class="recap__n">1</span><div><h3 data-i18n="recap.1title">Print and New line</h3><p data-i18n="recap.1text">Print adds one character. New line starts the next row.</p></div></li>
+              <li><span class="recap__n">2</span><div><h3 data-i18n="recap.2title">mod picks the character</h3><p data-i18n="recap.2text"><code>i mod 2</code> is 0 for even numbers and 1 for odd numbers.</p></div></li>
+              <li><span class="recap__n">3</span><div><h3 data-i18n="recap.3title">Two loops draw a shape</h3><p data-i18n="recap.3text">The outer loop (<code>i</code>) moves down the rows. The inner loop (<code>j</code>) moves along one row.</p></div></li>
+              <li><span class="recap__n">4</span><div><h3 data-i18n="recap.4title">Start every row fresh</h3><p data-i18n="recap.4text">After New line, set <code>j = 1</code> again.</p></div></li>
+            </ol>
+            <p class="recap__next" data-i18n="recap.next">Up next: <b>Pattern Party</b>, the team game. <kbd>→</kbd></p>
+          </div>
+        </section>
+
+        <!-- 17. Game -->
+        <section class="slide slide--game" data-title="Pattern Party">
+          <div class="gs">
+            <div class="gs__intro">
+              <p class="kicker" data-i18n="gs.kicker">End of lecture game</p>
+              <h2 class="gs__title"><span class="riso" data-text="Pattern">Pattern</span> <span class="riso riso--b" data-text="Party">Party</span></h2>
+              <ul class="gs__rules">
+                <li data-i18n="gs.rule1">12 easy questions about today's shapes.</li>
+                <li data-i18n="gs.rule2">Teams take turns. Each turn has 30 seconds.</li>
+                <li data-i18n="gs.rule3">A right answer scores 100 points, plus up to 50 for speed.</li>
+                <li data-i18n="gs.rule4">Miss it, and the next team can steal it for 50.</li>
+              </ul>
+            </div>
+            <form class="setup" id="game-setup" autocomplete="off">
+              <p class="setup__label" id="team-count-label" data-i18n="gs.teams">How many teams?</p>
+              <div class="seg" role="radiogroup" aria-labelledby="team-count-label" id="team-count"></div>
+              <div class="setup__teams" id="team-names"></div>
+              <div class="setup__actions">
+                <button type="submit" class="btn btn--pink btn--big" id="game-start" data-i18n="gs.start">Start the game</button>
+                <button type="button" class="btn btn--line btn--big" id="game-resume" data-i18n="gs.resume" hidden>Resume game</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- 18. Meme break -->
+        <section class="slide slide--memes" data-title="Meme break" data-gap>
+          <div class="memes">
+            <header class="memes__head">
+              <div>
+                <p class="kicker" data-i18n="m.kicker">Meme break</p>
+                <h2 class="h2" data-i18n="m.title">Before you go…</h2>
+              </div>
+              <p class="memes__hint" data-i18n="m.hint">Press <kbd>→</kbd> for the next meme.</p>
+            </header>
+            <div class="meme-row" data-reveal>
+              <figure class="meme meme--ev" data-reveal-item>
+                <p class="meme__cap" data-i18n="m.1top">When you forget New line</p>
+                <div class="meme__split">
+                  <div class="meme__half">
+                    <p class="meme__tag" data-i18n="m.expect">Expectation</p>
+                    <div class="canvas canvas--dark" data-rows='["*","**","***","****"]' data-cell="44"></div>
+                  </div>
+                  <div class="meme__half meme__half--real">
+                    <p class="meme__tag" data-i18n="m.reality">Reality</p>
+                    <div class="canvas canvas--dark" data-rows='["**********"]' data-cell="42"></div>
+                  </div>
+                </div>
+              </figure>
+              <figure class="meme meme--drake" data-reveal-item>
+                <div class="drake__row">
+                  <span class="drake__face" aria-hidden="true">🙅</span>
+                  <p class="drake__text" data-i18n="m.2no">Typing <code>*@*@*@*</code> by hand</p>
+                </div>
+                <div class="drake__row drake__row--yes">
+                  <span class="drake__face" aria-hidden="true">😎</span>
+                  <p class="drake__text" data-i18n="m.2yes">Letting <code>i mod 2</code> decide</p>
+                </div>
+              </figure>
+              <figure class="meme meme--fresh" data-reveal-item>
+                <p class="meme__cap" data-i18n="m.3top">Me: draws a triangle</p>
+                <div class="meme__mid">
+                  <div class="canvas canvas--dark" data-rows='["*","*","*","*"]' data-cell="66"></div>
+                  <span class="meme__emoji" aria-hidden="true">🥲</span>
+                </div>
+                <p class="meme__cap meme__cap--bottom" data-i18n="m.3bottom">Also me: forgets <code>j = 1</code></p>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <footer class="bar" id="bar">
+        <p class="bar__title">Drawing shapes</p>
+        <nav class="progress" id="progress" aria-label="Slides"></nav>
+        <div class="bar__tools">
+          <p class="bar__count" id="count" aria-live="polite">1 / 16</p>
+          <button class="icon-btn" type="button" data-act="prev" aria-label="Previous slide" data-i18n-label="nav.prev">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <button class="icon-btn" type="button" data-act="next" aria-label="Next" data-i18n-label="nav.next">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+          <button class="icon-btn" type="button" data-act="full" aria-label="Full screen" data-i18n-label="nav.full">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+          </button>
+          <button class="lang-btn" type="button" data-act="lang" aria-label="Show the slides in Arabic" data-i18n-label="lang.label">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
+            <span data-i18n="lang.switch">العربية</span>
+          </button>
+        </div>
+      </footer>
+
+      <div class="game" id="game" hidden></div>
+    </div>
+  </div>
+
+  <script src="js/i18n.js?v=2"></script>
+  <script src="js/sound.js?v=2"></script>
+  <script src="js/patterns.js?v=2"></script>
+  <script src="js/views.js?v=2"></script>
+  <script src="js/solution.js?v=2"></script>
+  <script src="js/activities.js?v=2"></script>
+  <script src="js/questions.js?v=2"></script>
+  <script src="js/game.js?v=2"></script>
+  <script src="js/deck.js?v=2"></script>
+</body>
+</html>

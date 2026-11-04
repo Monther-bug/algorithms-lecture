@@ -37,3 +37,7 @@ To run it locally, open `index.html` in a browser, or serve the folder with any 
 ## Lecture 2
 
 The second lecture, **Factorial series** (four series algorithms with a loop inside a loop, plus the Series Showdown game), is in [`lecture-2/`](lecture-2/).
+
+## Lecture 3
+
+The third lecture, **Drawing shapes** (printing patterns with loops and `mod`, three class activities, the Pattern Party game and a meme break), is in [`lecture-3/`](lecture-3/).
