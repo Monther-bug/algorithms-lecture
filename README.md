@@ -45,3 +45,7 @@ The third lecture, **Drawing shapes** (printing patterns with loops and `mod`, t
 ## Lecture 4 (Python Lab 1)
 
 The first Python lab, **Hello, Python** (reminders on indentation, data types, `input()`, operators and `if` / `else`, five worked examples that run in a VS Code style editor, a bug hunt, practice tasks, the Python Party game and a meme break), is in [`lecture-4/`](lecture-4/).
+
+## Algorithm practice (midterm)
+
+**20 algorithms, from easy to hard** (each with a hint, a simple solution and a trace table students can run with their own numbers) is in [`algorithm-examples/`](algorithm-examples/).
