@@ -1,6 +1,18 @@
 # Algorithm practice: 30 examples for the midterm
 
-A light study page (plain HTML, CSS and JavaScript) with 30 algorithm examples, from the easiest to the hardest. Students use it on their own, on a phone or a laptop, before the midterm.
+A study deck (plain HTML, CSS and JavaScript) with 30 algorithm examples, from the easiest to the hardest. Students use it on their own, on a phone or a laptop, before the midterm.
+
+## Slides
+
+It works like the lecture decks, with the bar at the bottom: → / ← (or swipe on a phone) move between slides, and the bar shows where you are in each level.
+
+1. **Cover**, **Pick a level** (the stairs jump to a level) and **How we write algorithms**.
+2. For each level: a **level slide** (what the level is about, and its examples), then two slides per example:
+   - the **problem**: the task, an example input and output, a **Hint** button, a thinking timer (3 / 5 / 10 min) and **Show solution →**
+   - the **solution** (see below)
+3. **The end**, with the progress and links to the lectures.
+
+The ☰ button (or the M key) opens **All examples**: every example by level with its tick, to jump anywhere. Each slide has its own link, for example `…/algorithm-examples/#ex-13` or `#ex-13-solution`. Other keys: Home / End, F for full screen, L for Arabic.
 
 ## The 30 examples
 
@@ -24,20 +36,18 @@ Every solution uses the simplest method that works, written in the course's styl
   - **The idea** in one or two sentences
   - **The algorithm, line by line**: every numbered step with a short, simple explanation under it (a switch hides the explanations to see the plain algorithm)
   - **Watch it run**: type input values (or keep the example ones) and go through the algorithm one step at a time (Next / Back / Play). For each step it shows the line, why it is there, and what it did with the real numbers, for example `sum = sum + i = 1 + 2 = 3` or `Is b > max? 9 > 4 → Yes`. The variables are shown as boxes (a changed one shows its old value), with the output so far.
-  - the **Trace table** for the same input: one row per executed step, changed values highlighted. Clicking a row opens that step in the player.
-- a **Solved** tick. Ticks are kept in the student's own browser and fill the progress bar at the top.
-
-The level stairs at the top filter the list, and a switch hides the solved ones. A **How we write algorithms** box lists the words and signs used in the course.
+  - the **Trace table** (a tab next to the player) for the same input: one row per executed step, changed values highlighted. Clicking a row opens that step in the player. While the player has focus, → / ← move the player instead of the slides.
+- a **Solved** tick. Ticks are kept in the student's own browser and show on the level slides, in the list and on the end slide.
 
 The **العربية** button switches the page to Arabic (English is the default). Algorithm steps, inputs and tables stay in English and left to right.
 
 ## Files
 
 - `index.html`: the page
-- `css/style.css`: all styles (light mode only)
+- `css/style.css`: all styles (white, with blue and black, and a little green and red)
 - `js/examples.js`: the 30 algorithms (text, the explanation of each line, how each step runs) and the runner used by the player and the trace table
 - `js/explain.js`: reads an algorithm line and says what it did with the numbers (used by the player)
-- `js/app.js`: builds the cards, the solutions, the player, the trace tables, the filters and the progress bar
+- `js/app.js`: builds the level and example slides, the solutions, the player, the trace tables, the bar, the list and the timer
 - `js/i18n.js`: the English / Arabic switch and the Arabic text
 
-After changing a CSS or JS file, raise the `?v=` number on the links in `index.html` (for example `?v=2` to `?v=3`), so browsers load the new files.
+After changing a CSS or JS file, raise the `?v=` number on the links in `index.html` (for example `?v=3` to `?v=4`), so browsers load the new files.

@@ -1,8 +1,10 @@
-/* Builds the page from EXAMPLES: the level stairs (also a filter), one card
-   per example (problem, example run, hint), and on demand its solution:
-   the algorithm explained line by line, the "Watch it run" player that
-   explains every step with the real numbers, and the trace table.
-   Also the "solved" ticks with the progress bar, and the language switch. */
+/* The practice page as a slide deck.
+   Slides: cover, levels, rules, then for every level a level slide followed
+   by two slides per example (the problem, then its solution), and an end
+   slide. The solution slide shows the algorithm explained line by line, the
+   "Watch it run" player (every step explained with the real numbers) and the
+   trace table. Also: the bottom bar, the "All examples" list, the thinking
+   timer, the "solved" ticks and the language switch. */
 (function () {
   const { I18n, Explain } = window;
   const { esc, t } = I18n;
@@ -15,6 +17,8 @@
   const OLD_KEY = 'alg-examples-solved';
   const OLD_ORDER = ['sum-avg', 'rectangle', 'c-to-f', 'swap', 'even-odd', 'greater-two', 'pos-neg-zero', 'greater-total', 'largest-three', 'grade', 'print-1-n', 'sum-1-n', 'times-table', 'factorial', 'sum-evens', 'largest-n', 'avg-passed', 'prime', 'three-largest', 'sum-factorials'];
   const PLAY_MS = 1100;
+  const TIMER_MIN = [3, 5, 10];
+  const pad = (n) => String(n).padStart(2, '0');
 
   /* ----- Solved ticks (kept in this browser only) ----- */
   let solved = new Set();
@@ -48,10 +52,12 @@
     play: '<svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="i-pause" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5h3v14H8zM13 5h3v14h-3z"/></svg>',
     bulb: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 00-3.6 10.8c.6.5 1 1.2 1.1 2V16h5v-.2c.1-.8.5-1.5 1.1-2A6 6 0 0012 3z"/></svg>',
     list: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6h11M9 12h11M9 18h11M4 6h.01M4 12h.01M4 18h.01"/></svg>',
-    eye: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>',
     table: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 10v10"/></svg>',
     check: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
     run: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>',
+    arrow: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>',
+    clock: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg>',
+    reset: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12a8 8 0 108-8 8 8 0 00-6 2.7M4 4v4h4"/></svg>',
   };
 
   /* ----- Strings for every example ----- */
@@ -64,70 +70,131 @@
   });
   const whyKey = (i, s, k) => (s.say ? `ex${i}.s${k}` : s.t === 'Start' ? 'why.start' : s.t === 'End' ? 'why.end' : 'why.declare');
 
-  /* ----- Level stairs (filter) ----- */
-  const ladder = document.getElementById('ladder');
-  const allBtn = document.getElementById('all-btn');
-  let level = 0;
-  ladder.innerHTML = LEVELS.map((n) => {
+  /* ----- Building the level and example slides ----- */
+  const slidesEl = document.getElementById('slides');
+  const levelLine = (lv) => `<span data-i18n="lvl.word" data-i18n-vars='{"n":${lv}}'></span><span aria-hidden="true">·</span><span data-i18n="lvl.${lv}"></span>`;
+  const doneBtn = (i) => `<button type="button" class="ex__done" data-done data-i="${i}" aria-pressed="false" data-i18n-label="ex.mark" data-i18n-vars='{"n":${i + 1}}'>${ICON.check}<span data-i18n="ex.solved"></span></button>`;
+  const pick = (i) => `<button type="button" class="pick lv-${EX[i].level}" data-go-slide="s-ex-${i + 1}" data-i="${i}"><span class="pick__num">${pad(i + 1)}</span><span class="pick__title" data-i18n="ex${i}.title"></span><span class="pick__tick" aria-hidden="true">${ICON.check}</span></button>`;
+  function sampleOutput(ex) {
+    const out = window.runAlgorithm(ex, ex.sample.split(/\s+/).map(Number)).output;
+    return out.length > 5 ? [...out.slice(0, 3), '…'] : out;
+  }
+
+  function levelSlide(lv) {
+    const list = EX.map((e, i) => i).filter((i) => EX[i].level === lv);
+    return `
+      <section class="slide slide--level lv-${lv}" id="s-level-${lv}" data-section="${lv}">
+        <div class="slide__in lvl">
+          <div class="lvl__head">
+            <div class="lvl__stairs" aria-hidden="true">${LEVELS.map((n) => `<span class="lv-${n}${n === lv ? ' is-on' : ''}${n < lv ? ' is-past' : ''}" style="--k:${n}"></span>`).join('')}</div>
+            <p class="kicker kicker--lv"><span class="kicker__dot" aria-hidden="true"></span><span data-i18n="lvl.of" data-i18n-vars='{"n":${lv},"total":${LEVELS.length}}'></span></p>
+            <h2 class="h2 lvl__title" data-i18n="lvl.${lv}"></h2>
+            <p class="lead" data-i18n="lvl.d${lv}"></p>
+          </div>
+          <ol class="lvl__list">${list.map((i) => `<li>${pick(i)}</li>`).join('')}</ol>
+        </div>
+      </section>`;
+  }
+
+  function problemSlide(i) {
+    const ex = EX[i];
+    return `
+      <section class="slide slide--q lv-${ex.level}" id="s-ex-${i + 1}" data-i="${i}" data-kind="q" data-section="${ex.level}">
+        <div class="slide__in q">
+          <div class="q__top">
+            <p class="ex__level">${levelLine(ex.level)}</p>
+            ${doneBtn(i)}
+          </div>
+          <div class="q__head">
+            <span class="ex__num">${pad(i + 1)}</span>
+            <h2 class="q__title" data-i18n="ex${i}.title"></h2>
+          </div>
+          <p class="q__task" data-i18n="ex${i}.task"></p>
+          <div class="ex__example">
+            <div class="ex__io"><span class="ex__label" data-i18n="ex.input"></span><code>${esc(ex.sample)}</code></div>
+            <span class="ex__arrow" aria-hidden="true">${ICON.arrow}</span>
+            <div class="ex__io"><span class="ex__label" data-i18n="ex.output"></span><pre>${sampleOutput(ex).map(esc).join('\n')}</pre></div>
+          </div>
+          <ul class="ex__skills">${ex.skills.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
+          <div class="q__actions">
+            <button type="button" class="btn btn--soft" data-hint aria-expanded="false">${ICON.bulb}<span data-i18n="ex.hint"></span></button>
+            <div class="timer" data-timer>
+              <span class="timer__icon">${ICON.clock}</span>
+              <span class="timer__time" data-time role="timer">5:00</span>
+              <button type="button" class="timer__btn" data-t="toggle" data-i18n-label="timer.start" aria-pressed="false">${ICON.play}</button>
+              <button type="button" class="timer__btn" data-t="reset" data-i18n-label="timer.reset">${ICON.reset}</button>
+              <span class="timer__mins" role="group" data-i18n-label="timer.length">${TIMER_MIN.map((m) => `<button type="button" class="timer__min" data-min="${m}" aria-pressed="${m === 5}" data-i18n="timer.m" data-i18n-vars='{"n":${m}}'></button>`).join('')}</span>
+            </div>
+            <button type="button" class="btn btn--main q__go" data-act="next"><span data-i18n="q.solution"></span>${ICON.arrow}</button>
+          </div>
+          <p class="ex__hint" data-hint-box hidden>${ICON.bulb}<span data-i18n="ex${i}.hint"></span></p>
+        </div>
+      </section>`;
+  }
+
+  function solutionSlide(i) {
+    const ex = EX[i];
+    return `
+      <section class="slide slide--sol lv-${ex.level}" id="s-ex-${i + 1}-solution" data-i="${i}" data-kind="sol" data-section="${ex.level}">
+        <div class="slide__in sol">
+          <header class="sol__head">
+            <span class="ex__num">${pad(i + 1)}</span>
+            <div class="sol__titles">
+              <p class="ex__level"><span data-i18n="sol.title"></span><span aria-hidden="true">·</span>${levelLine(ex.level)}</p>
+              <h2 class="sol__title" data-i18n="ex${i}.title"></h2>
+            </div>
+            ${doneBtn(i)}
+          </header>
+          <div data-sol-body></div>
+        </div>
+      </section>`;
+  }
+
+  let built = '';
+  LEVELS.forEach((lv) => {
+    built += levelSlide(lv);
+    EX.forEach((ex, i) => { if (ex.level === lv) built += problemSlide(i) + solutionSlide(i); });
+  });
+  document.getElementById('s-end').insertAdjacentHTML('beforebegin', built);
+
+  // Levels slide: the stairs jump to a level.
+  document.getElementById('ladder').innerHTML = LEVELS.map((n) => {
     const count = EX.filter((e) => e.level === n).length;
     return `
-      <button type="button" class="stair lv-${n}" data-level="${n}" aria-pressed="false" style="--k:${n}">
+      <button type="button" class="stair lv-${n}" data-go-slide="s-level-${n}" style="--k:${n}">
         <span class="stair__bar"><span class="stair__num">${n}</span></span>
         <span class="stair__name" data-i18n="lvl.${n}"></span>
         <span class="stair__count" data-i18n="lvl.count" data-i18n-vars='{"n":${count}}'></span>
       </button>`;
   }).join('');
-  allBtn.dataset.i18nVars = JSON.stringify({ n: TOTAL });
 
-  /* ----- Cards ----- */
-  const list = document.getElementById('list');
-  function sampleOutput(ex) {
-    const out = window.runAlgorithm(ex, ex.sample.split(/\s+/).map(Number)).output;
-    return out.length > 5 ? [...out.slice(0, 3), '…'] : out;
-  }
-  list.innerHTML = EX.map((ex, i) => {
-    const n = i + 1;
-    return `
-      <article class="ex lv-${ex.level}" id="ex-${n}" data-i="${i}" data-level="${ex.level}">
-        <header class="ex__head">
-          <span class="ex__num">${String(n).padStart(2, '0')}</span>
-          <div class="ex__titles">
-            <p class="ex__level"><span data-i18n="lvl.word" data-i18n-vars='{"n":${ex.level}}'></span><span aria-hidden="true">·</span><span data-i18n="lvl.${ex.level}"></span></p>
-            <h2 class="ex__title" data-i18n="ex${i}.title"></h2>
-          </div>
-          <button type="button" class="ex__done" data-done aria-pressed="false" data-i18n-label="ex.mark" data-i18n-vars='{"n":${n}}'>${ICON.check}<span data-i18n="ex.solved"></span></button>
-        </header>
-        <p class="ex__task" data-i18n="ex${i}.task"></p>
-        <div class="ex__example">
-          <div class="ex__io"><span class="ex__label" data-i18n="ex.input"></span><code>${esc(ex.sample)}</code></div>
-          <span class="ex__arrow" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-          <div class="ex__io"><span class="ex__label" data-i18n="ex.output"></span><pre>${sampleOutput(ex).map(esc).join('\n')}</pre></div>
-        </div>
-        <ul class="ex__skills">${ex.skills.map((s) => `<li>${esc(s)}</li>`).join('')}</ul>
-        <div class="ex__actions">
-          <button type="button" class="btn btn--soft" data-toggle="hint" aria-expanded="false">${ICON.bulb}<span data-i18n="ex.hint"></span></button>
-          <button type="button" class="btn btn--main" data-toggle="sol" aria-expanded="false">${ICON.eye}<span data-i18n="ex.show"></span></button>
-        </div>
-        <p class="ex__hint" data-hint hidden><span data-i18n="ex${i}.hint"></span></p>
-        <div class="sol" data-sol hidden></div>
-      </article>`;
-  }).join('');
-  I18n.apply();
-  const cards = [...list.querySelectorAll('.ex')];
+  // The "All examples" list.
+  document.getElementById('menu-body').innerHTML = `
+    <div class="menu__start">
+      <button type="button" class="chip" data-go-slide="s-start" data-i18n="menu.start"></button>
+      <button type="button" class="chip" data-go-slide="s-levels" data-i18n="levels.title"></button>
+      <button type="button" class="chip" data-go-slide="s-rules" data-i18n="rules.title"></button>
+    </div>
+    ${LEVELS.map((lv) => `
+      <section class="menu__level lv-${lv}">
+        <button type="button" class="menu__lvl" data-go-slide="s-level-${lv}"><span class="menu__lvn">${lv}</span><span data-i18n="lvl.${lv}"></span><span class="menu__count" data-level-count="${lv}"></span></button>
+        <div class="menu__picks">${EX.map((e, i) => i).filter((i) => EX[i].level === lv).map(pick).join('')}</div>
+      </section>`).join('')}`;
 
-  /* ----- The solution, built the first time it is opened ----- */
-  function buildSolution(card) {
-    const i = Number(card.dataset.i);
+  /* ----- The solution, built the first time its slide is shown ----- */
+  function buildSolution(slide) {
+    const i = Number(slide.dataset.i);
     const ex = EX[i];
-    const box = card.querySelector('[data-sol]');
+    const body = slide.querySelector('[data-sol-body]');
     const loops = ex.steps.some((s) => s.loop != null);
-    box.innerHTML = `
+    body.className = 'sol__body';
+    body.innerHTML = `
       <p class="sol__idea">${ICON.bulb}<span><b data-i18n="ex.idea"></b> <span data-i18n="ex${i}.hint"></span></span></p>
       <div class="sol__grid">
         <section class="panel sol__alg">
           <div class="panel__head">
             <h3 class="panel__title">${ICON.list}<span data-i18n="sol.alg"></span></h3>
-            <label class="switch switch--small"><input type="checkbox" data-why checked><span class="switch__ui" aria-hidden="true"></span><span data-i18n="sol.why"></span></label>
+            <label class="switch"><input type="checkbox" data-why checked><span class="switch__ui" aria-hidden="true"></span><span data-i18n="sol.why"></span></label>
           </div>
           <ol class="alg">${ex.steps.map((s, k) => `
             <li class="alg__step${s.loop != null ? ' is-loop' : ''}" data-step="${k + 1}"${s.loop != null ? ` data-to="${s.loop}"` : ''}>
@@ -142,10 +209,7 @@
           ${ex.note ? `<p class="sol__note"><b data-i18n="ex.note"></b> <span data-i18n="ex${i}.note"></span></p>` : ''}
         </section>
 
-        <section class="panel run" aria-labelledby="run-${i}">
-          <div class="panel__head">
-            <h3 class="panel__title" id="run-${i}">${ICON.run}<span data-i18n="sol.run"></span></h3>
-          </div>
+        <section class="panel sol__side">
           <div class="run__form">
             <label class="run__label" for="in-${i}" data-i18n="run.input"></label>
             <input id="in-${i}" type="text" inputmode="decimal" spellcheck="false" autocomplete="off" value="${esc(ex.sample)}" data-inputs>
@@ -154,7 +218,12 @@
           </div>
           <p class="run__order" data-i18n="run.order" data-i18n-vars='${esc(JSON.stringify({ order: { html: `<code>${esc(ex.order)}</code>` } }))}'></p>
           <p class="run__msg" data-msg hidden></p>
-          <div class="run__player" data-player tabindex="-1">
+          <div class="tabs" role="tablist">
+            <button type="button" role="tab" class="tab" data-tab="run" aria-selected="true">${ICON.run}<span data-i18n="sol.run"></span></button>
+            <button type="button" role="tab" class="tab" data-tab="trace" aria-selected="false">${ICON.table}<span data-i18n="tr.title"></span></button>
+          </div>
+
+          <div class="tabpanel run__player" data-panel="run" data-player role="tabpanel">
             <div class="run__top">
               <p class="run__count"><b data-count></b><span data-pos></span></p>
               <div class="run__ctrls">
@@ -180,41 +249,33 @@
               <pre data-screen></pre>
             </div>
           </div>
-        </section>
-      </div>
 
-      <section class="panel trace">
-        <div class="panel__head">
-          <div>
-            <h3 class="panel__title">${ICON.table}<span data-i18n="tr.title"></span></h3>
-            <p class="panel__sub" data-i18n="tr.sub"></p>
+          <div class="tabpanel trace" data-panel="trace" role="tabpanel" hidden>
+            <p class="trace__sub" data-i18n="tr.sub"></p>
+            <div class="trace__wrap" data-wrap><table class="ttable" data-table></table></div>
+            ${loops ? '<p class="trace__legend" data-i18n="tr.legend"></p>' : ''}
           </div>
-        </div>
-        <div class="trace__wrap" data-wrap><table class="ttable" data-table></table></div>
-        ${loops ? '<p class="trace__legend" data-i18n="tr.legend"></p>' : ''}
-      </section>`;
-    I18n.apply(box);
-    box.dataset.built = '1';
+        </section>
+      </div>`;
+    I18n.apply(body);
+    slide.dataset.built = '1';
   }
 
   /* ----- Running an algorithm and the player ----- */
-  const state = new Map(); // card → { ex, i, r, pos, timer }
+  const state = new Map(); // slide → { ex, i, r, pos, timer }
 
-  function runCard(card) {
-    const i = Number(card.dataset.i);
+  function runSlide(slide) {
+    const i = Number(slide.dataset.i);
     const ex = EX[i];
-    const field = card.querySelector('[data-inputs]');
-    const msg = card.querySelector('[data-msg]');
-    const player = card.querySelector('[data-player]');
-    stop(card);
+    const field = slide.querySelector('[data-inputs]');
+    const msg = slide.querySelector('[data-msg]');
+    stop(slide);
     const raw = field.value.trim().split(/[\s,]+/).filter(Boolean);
     const values = raw.map(Number);
     msg.hidden = true;
     if (!raw.length || values.some((x) => !Number.isFinite(x))) {
       I18n.set(msg, 'tr.bad');
       msg.hidden = false;
-      player.hidden = true;
-      card.querySelector('.trace').hidden = true;
       return;
     }
     const r = window.runAlgorithm(ex, values);
@@ -222,15 +283,14 @@
     else if (r.stopped) I18n.set(msg, 'tr.stopped');
     else if (r.extra > 0) I18n.set(msg, 'tr.extra', { n: r.extra });
     msg.hidden = !(r.missing || r.stopped || r.extra > 0);
-    player.hidden = !r.rows.length;
-    card.querySelector('.trace').hidden = !r.rows.length;
+    if (!r.rows.length) return;
     const s = { ex, i, r, pos: 0, timer: null };
-    state.set(card, s);
-    buildTable(card, s);
-    render(card);
+    state.set(slide, s);
+    buildTable(slide, s);
+    render(slide);
   }
 
-  function buildTable(card, s) {
+  function buildTable(slide, s) {
     const { ex, r } = s;
     let prev = {};
     const body = r.rows.map((row, k) => {
@@ -246,7 +306,7 @@
       else if (row.printed != null) out = row.printed.trim() === '' ? '<span class="tsp">␣</span>' : esc(row.printed);
       return `<tr data-k="${k}"><th scope="row">${row.step}${jump}</th>${cells}<td class="tout">${out}</td></tr>`;
     }).join('');
-    const table = card.querySelector('[data-table]');
+    const table = slide.querySelector('[data-table]');
     table.innerHTML = `
       <thead><tr><th scope="col" data-i18n="tr.step"></th>${ex.vars.map((v) => `<th scope="col">${esc(v)}</th>`).join('')}<th scope="col" data-i18n="tr.output"></th></tr></thead>
       <tbody>${body}</tbody>`;
@@ -284,8 +344,8 @@
     }
   }
 
-  function render(card) {
-    const s = state.get(card);
+  function render(slide) {
+    const s = state.get(slide);
     if (!s) return;
     const { ex, i, r, pos } = s;
     const row = r.rows[pos];
@@ -294,14 +354,14 @@
     const prev = pos ? r.rows[pos - 1].vars : {};
     const { parts } = Explain.narrate(ex, r.rows, pos);
 
-    card.querySelector('[data-count]').innerHTML = t('run.step', { n: row.step });
-    card.querySelector('[data-pos]').textContent = `${pos + 1} / ${r.rows.length}`;
-    card.querySelector('[data-fill]').style.width = `${((pos + 1) / r.rows.length) * 100}%`;
-    card.querySelector('[data-line-n]').textContent = `${row.step}-`;
-    card.querySelector('[data-line]').innerHTML = codeLines(step.t);
-    card.querySelector('[data-why-now]').innerHTML = t(whyKey(i, step, row.step - 1));
-    card.querySelector('[data-say]').innerHTML = parts.map((p) => partHTML(p, step)).join('');
-    card.querySelector('[data-vars]').innerHTML = ex.vars.map((name) => {
+    slide.querySelector('[data-count]').innerHTML = t('run.step', { n: row.step });
+    slide.querySelector('[data-pos]').textContent = `${pos + 1} / ${r.rows.length}`;
+    slide.querySelector('[data-fill]').style.width = `${((pos + 1) / r.rows.length) * 100}%`;
+    slide.querySelector('[data-line-n]').textContent = `${row.step}-`;
+    slide.querySelector('[data-line]').innerHTML = codeLines(step.t);
+    slide.querySelector('[data-why-now]').innerHTML = t(whyKey(i, step, row.step - 1));
+    slide.querySelector('[data-say]').innerHTML = parts.map((p) => partHTML(p, step)).join('');
+    slide.querySelector('[data-vars]').innerHTML = ex.vars.map((name) => {
       const val = row.vars[name];
       const old = prev[name];
       const changed = val !== undefined && val !== old;
@@ -311,13 +371,13 @@
           ${changed && old !== undefined ? `<span class="vbox__was">${t('run.was', { v: fmt(old) })}</span>` : ''}
         </div>`;
     }).join('');
-    const screen = card.querySelector('[data-screen]');
+    const screen = slide.querySelector('[data-screen]');
     screen.classList.toggle('is-empty', !row.screen);
     screen.textContent = row.screen || t('run.empty');
     screen.classList.toggle('is-new', row.printed != null || row.newline);
     screen.scrollTop = screen.scrollHeight;
 
-    const at = (go) => card.querySelector(`[data-go="${go}"]`);
+    const at = (g) => slide.querySelector(`[data-go="${g}"]`);
     at('first').disabled = at('back').disabled = pos === 0;
     at('next').disabled = at('last').disabled = pos === r.rows.length - 1;
     const playing = !!s.timer;
@@ -326,167 +386,379 @@
     at('play').disabled = !playing && pos === r.rows.length - 1;
 
     // Show the same step in the algorithm and in the trace table.
-    card.querySelectorAll('.alg__step.is-now').forEach((li) => li.classList.remove('is-now'));
-    const li = card.querySelector(`.alg__step[data-step="${row.step}"]`);
-    if (li) li.classList.add('is-now');
-    const wrap = card.querySelector('[data-wrap]');
+    slide.querySelectorAll('.alg__step.is-now').forEach((li) => li.classList.remove('is-now'));
+    const li = slide.querySelector(`.alg__step[data-step="${row.step}"]`);
+    if (li) {
+      li.classList.add('is-now');
+      keepVisible(li, li.closest('.alg'));
+    }
+    const wrap = slide.querySelector('[data-wrap]');
     wrap.querySelectorAll('tr.is-now').forEach((tr) => tr.classList.remove('is-now'));
     const tr = wrap.querySelector(`tr[data-k="${pos}"]`);
     if (tr) {
       tr.classList.add('is-now');
-      const head = wrap.querySelector('thead').offsetHeight;
-      if (tr.offsetTop < wrap.scrollTop + head || tr.offsetTop + tr.offsetHeight > wrap.scrollTop + wrap.clientHeight) {
-        wrap.scrollTop = Math.max(0, tr.offsetTop - head - wrap.clientHeight / 3);
-      }
+      keepVisible(tr, wrap, wrap.querySelector('thead').offsetHeight);
     }
   }
 
-  function go(card, pos) {
-    const s = state.get(card);
+  // Scroll a box (only that box, not the page) so that el is inside it.
+  function keepVisible(el, box, head = 0) {
+    if (!box || box.scrollHeight <= box.clientHeight + 1 || !box.offsetParent) return;
+    const top = el.getBoundingClientRect().top - box.getBoundingClientRect().top + box.scrollTop;
+    if (top - head < box.scrollTop || top + el.offsetHeight > box.scrollTop + box.clientHeight) {
+      box.scrollTop = Math.max(0, top - head - box.clientHeight / 3);
+    }
+  }
+
+  function step(slide, pos) {
+    const s = state.get(slide);
     if (!s) return;
     s.pos = Math.max(0, Math.min(s.r.rows.length - 1, pos));
-    render(card);
+    render(slide);
   }
-  function stop(card) {
-    const s = state.get(card);
+  function stop(slide) {
+    const s = state.get(slide);
     if (s && s.timer) { clearInterval(s.timer); s.timer = null; }
   }
-  function play(card) {
-    const s = state.get(card);
+  function play(slide) {
+    const s = state.get(slide);
     if (!s) return;
-    if (s.timer) { stop(card); render(card); return; }
+    if (s.timer) { stop(slide); render(slide); return; }
     if (s.pos >= s.r.rows.length - 1) s.pos = 0;
     s.timer = setInterval(() => {
-      if (s.pos >= s.r.rows.length - 1) { stop(card); render(card); return; }
+      if (s.pos >= s.r.rows.length - 1) { stop(slide); render(slide); return; }
       s.pos += 1;
-      render(card);
+      render(slide);
     }, PLAY_MS);
-    render(card);
+    render(slide);
+  }
+
+  function showTab(slide, name) {
+    slide.querySelectorAll('[data-tab]').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.tab === name)));
+    slide.querySelectorAll('[data-panel]').forEach((p) => { p.hidden = p.dataset.panel !== name; });
+    render(slide);
+  }
+
+  /* ----- Thinking timer on the problem slides ----- */
+  const timers = new Map(); // slide → { total, left, endAt, tick }
+  const clock = (ms) => { const sec = Math.ceil(ms / 1000); return `${Math.floor(sec / 60)}:${String(sec % 60).padStart(2, '0')}`; };
+  function timerOf(slide) {
+    if (!timers.has(slide)) timers.set(slide, { total: 300000, left: 300000, endAt: 0, tick: null });
+    return timers.get(slide);
+  }
+  function paintTimer(slide) {
+    const tm = timerOf(slide);
+    const box = slide.querySelector('[data-timer]');
+    box.querySelector('[data-time]').textContent = clock(tm.left);
+    box.classList.toggle('is-running', !!tm.tick);
+    box.classList.toggle('is-low', tm.left > 0 && tm.left <= 30000);
+    box.classList.toggle('is-done', tm.left === 0);
+    const toggle = box.querySelector('[data-t="toggle"]');
+    toggle.setAttribute('aria-pressed', String(!!tm.tick));
+    I18n.label(toggle, tm.tick ? 'timer.pause' : 'timer.start');
+    box.querySelectorAll('[data-min]').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.min) * 60000 === tm.total)));
+  }
+  function pauseTimer(slide) {
+    const tm = timers.get(slide);
+    if (!tm || !tm.tick) return;
+    clearInterval(tm.tick);
+    tm.tick = null;
+    paintTimer(slide);
+  }
+  function startTimer(slide) {
+    const tm = timerOf(slide);
+    if (tm.left <= 0) tm.left = tm.total;
+    tm.endAt = Date.now() + tm.left;
+    tm.tick = setInterval(() => {
+      tm.left = Math.max(0, tm.endAt - Date.now());
+      if (tm.left === 0) { clearInterval(tm.tick); tm.tick = null; }
+      paintTimer(slide);
+    }, 250);
+    paintTimer(slide);
+  }
+  function resetTimer(slide, total) {
+    const tm = timerOf(slide);
+    clearInterval(tm.tick);
+    tm.tick = null;
+    if (total) tm.total = total;
+    tm.left = tm.total;
+    paintTimer(slide);
+  }
+
+  /* ----- The deck ----- */
+  const slides = [...slidesEl.querySelectorAll('.slide')];
+  const bar = document.getElementById('bar');
+  const count = document.getElementById('count');
+  const where = document.getElementById('where');
+  const track = document.getElementById('track');
+  const menu = document.getElementById('menu');
+  const SECTIONS = ['start', ...LEVELS.map(String), 'end'];
+  let index = -1;
+
+  // The bar's track: one part for the start, one per level, one for the end.
+  track.innerHTML = SECTIONS.map((sec) => {
+    const n = slides.filter((s) => s.dataset.section === sec).length;
+    const first = slides.find((s) => s.dataset.section === sec);
+    const lv = /^\d+$/.test(sec) ? ` lv-${sec}` : '';
+    return `<button type="button" class="track__part${lv}" style="flex-grow:${n}" data-go-slide="${first.id}" data-sec="${sec}"><span class="track__fill"></span></button>`;
+  }).join('');
+  const parts = [...track.children];
+
+  const secLabel = (sec) => (sec === 'start' ? t('where.start') : sec === 'end' ? t('where.end') : `${t('lvl.word', { n: sec })} · ${t(`lvl.${sec}`)}`);
+  const plain = (html) => { const d = document.createElement('div'); d.innerHTML = html; return d.textContent; };
+  function slideLabel(slide) {
+    const i = Number(slide.dataset.i);
+    if (slide.dataset.kind === 'q') return t('where.ex', { n: i + 1 });
+    if (slide.dataset.kind === 'sol') return t('where.sol', { n: i + 1 });
+    if (slide.dataset.titleKey) return t(slide.dataset.titleKey);
+    return secLabel(slide.dataset.section);
+  }
+  function paintBar() {
+    const slide = slides[index];
+    count.textContent = `${index + 1} / ${slides.length}`;
+    where.innerHTML = slideLabel(slide);
+    parts.forEach((p) => {
+      const mine = slides.filter((s) => s.dataset.section === p.dataset.sec);
+      const at = mine.indexOf(slide);
+      const before = slides.indexOf(mine[0]) < index;
+      const fill = at >= 0 ? (at + 1) / mine.length : before ? 1 : 0;
+      p.querySelector('.track__fill').style.width = `${fill * 100}%`;
+      p.classList.toggle('is-here', at >= 0);
+      p.setAttribute('aria-label', plain(secLabel(p.dataset.sec)));
+      if (at >= 0) p.setAttribute('aria-current', 'step'); else p.removeAttribute('aria-current');
+    });
+    bar.querySelector('[data-act="prev"]').disabled = index === 0;
+    bar.querySelector('[data-act="next"]').disabled = index === slides.length - 1;
+    const i = Number(slide.dataset.i);
+    const name = slide.dataset.kind ? `${pad(i + 1)}. ${plain(t(`ex${i}.title`))}` : plain(slideLabel(slide));
+    document.title = index === 0 ? t('doc.title') : `${name} | ${t('doc.title')}`;
+  }
+
+  function go(target) {
+    if (typeof target === 'string') target = slides.findIndex((s) => s.id === target);
+    target = Math.max(0, Math.min(slides.length - 1, target));
+    if (target === index || Number.isNaN(target)) return;
+    const leaving = slides[index];
+    if (leaving) {
+      if (state.has(leaving)) { stop(leaving); render(leaving); }
+      pauseTimer(leaving);
+    }
+    const arriving = slides[target];
+    const forward = target > index;
+    index = target;
+    slides.forEach((s, k) => {
+      const active = k === index;
+      s.classList.toggle('is-active', active);
+      s.classList.toggle('is-before', k < index);
+      s.setAttribute('aria-hidden', String(!active));
+      s.inert = !active;
+    });
+    arriving.classList.toggle('from-back', !forward);
+    arriving.scrollTop = 0;
+    if (arriving.dataset.kind === 'sol') {
+      if (!arriving.dataset.built) buildSolution(arriving);
+      if (!state.has(arriving)) runSlide(arriving);
+    }
+    paintBar();
+    history.replaceState(null, '', `#${arriving.id.slice(2)}`);
+  }
+  const next = () => go(index + 1);
+  const prev = () => go(index - 1);
+
+  /* ----- The "All examples" list ----- */
+  let lastFocus = null;
+  function openMenu() {
+    lastFocus = document.activeElement;
+    menu.hidden = false;
+    document.body.classList.add('menu-open');
+    slides.forEach((s) => { s.inert = true; });
+    bar.inert = true;
+    const here = slides[index];
+    const target = menu.querySelector(here.dataset.i != null ? `.pick[data-i="${here.dataset.i}"]` : '.chip');
+    if (target) { target.focus(); target.scrollIntoView({ block: 'center' }); }
+  }
+  function closeMenu() {
+    if (menu.hidden) return;
+    menu.hidden = true;
+    document.body.classList.remove('menu-open');
+    bar.inert = false;
+    slides.forEach((s, k) => { s.inert = k !== index; });
+    if (lastFocus && document.contains(lastFocus) && !lastFocus.closest('[inert]')) lastFocus.focus();
+  }
+
+  function toggleFullscreen() {
+    if (document.fullscreenElement) document.exitFullscreen();
+    else if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen().catch(() => {});
+  }
+  if (!document.documentElement.requestFullscreen) bar.querySelector('[data-act="full"]').hidden = true;
+
+  /* ----- Progress ----- */
+  function paintSolved() {
+    document.querySelectorAll('[data-done]').forEach((b) => {
+      const on = solved.has(EX[Number(b.dataset.i)].id);
+      b.setAttribute('aria-pressed', String(on));
+    });
+    document.querySelectorAll('.pick[data-i]').forEach((p) => p.classList.toggle('is-solved', solved.has(EX[Number(p.dataset.i)].id)));
+    const n = EX.filter((ex) => solved.has(ex.id)).length;
+    document.querySelectorAll('[data-solved-fill]').forEach((f) => { f.style.width = `${(n / TOTAL) * 100}%`; });
+    document.querySelectorAll('[data-solved-text]').forEach((el) => I18n.set(el, 'progress', { n, total: TOTAL }));
+    document.querySelectorAll('[data-level-count]').forEach((el) => {
+      const lv = Number(el.dataset.levelCount);
+      const all = EX.filter((e) => e.level === lv);
+      el.textContent = `${all.filter((e) => solved.has(e.id)).length} / ${all.length}`;
+    });
   }
 
   /* ----- Clicks ----- */
-  function toggle(card, which) {
-    const btn = card.querySelector(`[data-toggle="${which}"]`);
-    const box = card.querySelector(which === 'hint' ? '[data-hint]' : '[data-sol]');
-    if (which === 'sol' && !box.dataset.built) buildSolution(card);
-    box.hidden = !box.hidden;
-    btn.setAttribute('aria-expanded', String(!box.hidden));
-    if (which !== 'sol') return;
-    I18n.set(btn.querySelector('span'), box.hidden ? 'ex.show' : 'ex.hide');
-    if (box.hidden) { stop(card); render(card); return; }
-    // The solution starts with the same idea as the hint, so close the hint.
-    card.querySelector('[data-hint]').hidden = true;
-    card.querySelector('[data-toggle="hint"]').setAttribute('aria-expanded', 'false');
-    if (!state.has(card)) runCard(card);
-  }
-
-  list.addEventListener('click', (e) => {
-    const card = e.target.closest('.ex');
-    if (!card) return;
-    const tog = e.target.closest('[data-toggle]');
-    if (tog) { toggle(card, tog.dataset.toggle); return; }
-    if (e.target.closest('[data-run]')) { runCard(card); return; }
-    if (e.target.closest('[data-sample]')) {
-      card.querySelector('[data-inputs]').value = EX[Number(card.dataset.i)].sample;
-      runCard(card);
+  document.addEventListener('click', (e) => {
+    const el = e.target instanceof Element ? e.target : null;
+    if (!el) return;
+    const act = el.closest('[data-act]');
+    if (act) {
+      const a = act.dataset.act;
+      if (a === 'next') next();
+      else if (a === 'prev') prev();
+      else if (a === 'menu') openMenu();
+      else if (a === 'close') closeMenu();
+      else if (a === 'full') toggleFullscreen();
+      else if (a === 'lang') I18n.toggle();
       return;
     }
-    const btn = e.target.closest('[data-go]');
-    if (btn) {
-      const s = state.get(card);
-      if (!s) return;
-      const g = btn.dataset.go;
-      if (g === 'play') { play(card); return; }
-      stop(card);
-      go(card, g === 'first' ? 0 : g === 'last' ? s.r.rows.length - 1 : s.pos + (g === 'next' ? 1 : -1));
-      return;
-    }
-    const tr = e.target.closest('tr[data-k]');
-    if (tr) { stop(card); go(card, Number(tr.dataset.k)); return; }
-    const done = e.target.closest('[data-done]');
+    const jump = el.closest('[data-go-slide]');
+    if (jump) { closeMenu(); go(jump.dataset.goSlide); return; }
+    const done = el.closest('[data-done]');
     if (done) {
-      const id = EX[Number(card.dataset.i)].id;
+      const id = EX[Number(done.dataset.i)].id;
       if (solved.has(id)) solved.delete(id); else solved.add(id);
       saveSolved();
       paintSolved();
-      applyFilter();
+      return;
     }
+    const slide = el.closest('.slide');
+    if (!slide) return;
+    const hint = el.closest('[data-hint]');
+    if (hint) {
+      const box = slide.querySelector('[data-hint-box]');
+      box.hidden = !box.hidden;
+      hint.setAttribute('aria-expanded', String(!box.hidden));
+      return;
+    }
+    const tbtn = el.closest('[data-t], [data-min]');
+    if (tbtn) {
+      if (tbtn.dataset.min) resetTimer(slide, Number(tbtn.dataset.min) * 60000);
+      else if (tbtn.dataset.t === 'reset') resetTimer(slide);
+      else if (timerOf(slide).tick) pauseTimer(slide);
+      else startTimer(slide);
+      return;
+    }
+    if (el.closest('[data-run]')) { runSlide(slide); return; }
+    if (el.closest('[data-sample]')) {
+      slide.querySelector('[data-inputs]').value = EX[Number(slide.dataset.i)].sample;
+      runSlide(slide);
+      return;
+    }
+    const tab = el.closest('[data-tab]');
+    if (tab) { showTab(slide, tab.dataset.tab); return; }
+    const btn = el.closest('[data-go]');
+    if (btn) {
+      const s = state.get(slide);
+      if (!s) return;
+      const g = btn.dataset.go;
+      if (g === 'play') { play(slide); return; }
+      stop(slide);
+      step(slide, g === 'first' ? 0 : g === 'last' ? s.r.rows.length - 1 : s.pos + (g === 'next' ? 1 : -1));
+      return;
+    }
+    const tr = el.closest('tr[data-k]');
+    if (tr) { stop(slide); step(slide, Number(tr.dataset.k)); }
   });
-  list.addEventListener('change', (e) => {
-    if (e.target.matches('[data-why]')) e.target.closest('.ex').classList.toggle('hide-why', !e.target.checked);
+
+  document.addEventListener('change', (e) => {
+    if (e.target.matches('[data-why]')) e.target.closest('.slide').classList.toggle('hide-why', !e.target.checked);
   });
-  list.addEventListener('keydown', (e) => {
-    const card = e.target.closest('.ex');
-    if (!card) return;
-    if (e.key === 'Enter' && e.target.matches('[data-inputs]')) { e.preventDefault(); runCard(card); return; }
-    // Arrow keys move the player while it (or one of its buttons) has focus.
-    if (!e.target.closest('[data-player]') || !state.has(card)) return;
-    const fwd = document.documentElement.dir === 'rtl' ? 'ArrowLeft' : 'ArrowRight';
-    const bwd = fwd === 'ArrowRight' ? 'ArrowLeft' : 'ArrowRight';
-    if (e.key !== fwd && e.key !== bwd) return;
-    e.preventDefault();
-    stop(card);
-    go(card, state.get(card).pos + (e.key === fwd ? 1 : -1));
-  });
+
   // Pointing at a loop line shows where it jumps back to.
-  list.addEventListener('mouseover', (e) => {
-    const card = e.target.closest('.ex');
-    if (!card) return;
-    card.querySelectorAll('.alg__step.is-target').forEach((li) => li.classList.remove('is-target'));
+  slidesEl.addEventListener('mouseover', (e) => {
+    const slide = e.target.closest('.slide--sol');
+    if (!slide) return;
+    slide.querySelectorAll('.alg__step.is-target').forEach((li) => li.classList.remove('is-target'));
     const loop = e.target.closest('.alg__step.is-loop');
     if (loop) {
-      const to = card.querySelector(`.alg__step[data-step="${loop.dataset.to}"]`);
+      const to = slide.querySelector(`.alg__step[data-step="${loop.dataset.to}"]`);
       if (to) to.classList.add('is-target');
     }
   });
 
-  /* ----- Progress and filters ----- */
-  const hideSolved = document.getElementById('hide-solved');
-  const count = document.getElementById('count');
-  const empty = document.getElementById('empty');
-
-  function paintSolved() {
-    cards.forEach((card) => {
-      const on = solved.has(EX[Number(card.dataset.i)].id);
-      card.classList.toggle('is-solved', on);
-      card.querySelector('[data-done]').setAttribute('aria-pressed', String(on));
-    });
-    const n = EX.filter((ex) => solved.has(ex.id)).length;
-    document.getElementById('progress-fill').style.width = `${(n / TOTAL) * 100}%`;
-    I18n.set(document.getElementById('progress-text'), 'progress', { n, total: TOTAL });
-  }
-
-  function applyFilter() {
-    let shown = 0;
-    cards.forEach((card) => {
-      const ex = EX[Number(card.dataset.i)];
-      const ok = (!level || ex.level === level) && !(hideSolved.checked && solved.has(ex.id));
-      card.hidden = !ok;
-      if (!ok && state.get(card)?.timer) { stop(card); render(card); }
-      if (ok) shown += 1;
-    });
-    I18n.set(count, 'count', { n: shown, total: TOTAL });
-    empty.hidden = shown > 0;
-  }
-
-  function pickLevel(n) {
-    level = n;
-    allBtn.setAttribute('aria-pressed', String(n === 0));
-    ladder.querySelectorAll('[data-level]').forEach((b) => b.setAttribute('aria-pressed', String(Number(b.dataset.level) === n)));
-    applyFilter();
-  }
-  ladder.addEventListener('click', (e) => {
-    const b = e.target.closest('[data-level]');
-    if (!b) return;
-    const n = Number(b.dataset.level);
-    pickLevel(level === n ? 0 : n);
+  /* ----- Keys: → / ← move the slides (or the player, while it has focus) ----- */
+  document.addEventListener('keydown', (e) => {
+    if (!menu.hidden) {
+      if (e.key === 'Escape') { e.preventDefault(); closeMenu(); }
+      return;
+    }
+    if (e.metaKey || e.ctrlKey || e.altKey) return;
+    const tgt = e.target instanceof Element ? e.target : document.body;
+    if (tgt.matches('input, textarea, select')) {
+      if (e.key === 'Enter' && tgt.matches('[data-inputs]')) { e.preventDefault(); runSlide(tgt.closest('.slide')); }
+      if (e.key === 'Escape') tgt.blur();
+      return;
+    }
+    const slide = slides[index];
+    if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && tgt.closest('.sol__side') && state.has(slide)) {
+      e.preventDefault();
+      stop(slide);
+      step(slide, state.get(slide).pos + (e.key === 'ArrowRight' ? 1 : -1));
+      return;
+    }
+    const onButton = tgt.matches('button, summary, label');
+    switch (e.key) {
+      case 'ArrowRight': case 'PageDown': next(); break;
+      case 'ArrowLeft': case 'PageUp': prev(); break;
+      case ' ': if (onButton) return; next(); break;
+      case 'Home': go(0); break;
+      case 'End': go(slides.length - 1); break;
+      case 'm': case 'M': openMenu(); break;
+      case 'f': case 'F': toggleFullscreen(); break;
+      case 'l': case 'L': I18n.toggle(); break;
+      default: return;
+    }
+    e.preventDefault();
   });
-  allBtn.addEventListener('click', () => pickLevel(0));
-  hideSolved.addEventListener('change', applyFilter);
-  document.getElementById('lang').addEventListener('click', () => I18n.toggle());
-  I18n.onChange(() => state.forEach((s, card) => render(card)));
 
+  /* ----- Swipe left / right on phones (not inside boxes that scroll sideways) ----- */
+  let touch = null;
+  function scrollsSideways(el) {
+    for (let n = el; n && n !== slidesEl; n = n.parentElement) {
+      if (n.scrollWidth > n.clientWidth + 1 && /auto|scroll/.test(getComputedStyle(n).overflowX)) return true;
+    }
+    return false;
+  }
+  slidesEl.addEventListener('touchstart', (e) => {
+    const p = e.touches[0];
+    touch = e.touches.length === 1 && !e.target.closest('input') && !scrollsSideways(e.target) ? { x: p.clientX, y: p.clientY } : null;
+  }, { passive: true });
+  slidesEl.addEventListener('touchend', (e) => {
+    if (!touch) return;
+    const p = e.changedTouches[0];
+    const dx = p.clientX - touch.x;
+    const dy = p.clientY - touch.y;
+    touch = null;
+    if (Math.abs(dx) > 60 && Math.abs(dx) > Math.abs(dy) * 1.6) (dx < 0 ? next : prev)();
+  }, { passive: true });
+
+  /* ----- Start ----- */
+  I18n.onChange(() => {
+    state.forEach((s, slide) => render(slide));
+    timers.forEach((tm, slide) => paintTimer(slide));
+    paintBar();
+  });
   I18n.apply();
   paintSolved();
-  applyFilter();
+  const fromHash = () => {
+    const h = decodeURIComponent(location.hash.slice(1));
+    if (/^\d+$/.test(h)) return Number(h) - 1;
+    const k = slides.findIndex((s) => s.id === `s-${h}`);
+    return k < 0 ? 0 : k;
+  };
+  window.addEventListener('hashchange', () => go(fromHash()));
+  go(fromHash());
 })();

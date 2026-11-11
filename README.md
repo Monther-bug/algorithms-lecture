@@ -48,4 +48,4 @@ The first Python lab, **Hello, Python** (reminders on indentation, data types, `
 
 ## Algorithm practice (midterm)
 
-**30 algorithms, from easy to hard** (each with a hint, a solution explained line by line, a step-by-step player that shows what every step does with the student's own numbers, and a trace table) is in [`algorithm-examples/`](algorithm-examples/).
+**30 algorithms, from easy to hard**, as slides (each with a hint, a solution explained line by line, a step-by-step player that shows what every step does with the student's own numbers, and a trace table) is in [`algorithm-examples/`](algorithm-examples/).
