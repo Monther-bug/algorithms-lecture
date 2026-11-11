@@ -1,0 +1,634 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Python Lab 1</title>
+  <meta name="description" content="Python Lab 1 slides: from algorithms to Python. Reminders (indentation, data types, input, operators, if / else), five worked examples run in a VS Code style editor, a bug hunt, practice tasks, a team game and a meme break.">
+  <meta name="theme-color" content="#f3f6fb">
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='16' fill='%230c1b33'/%3E%3Ctext x='32' y='42' text-anchor='middle' font-family='monospace' font-weight='700' font-size='26' fill='%23ffd43b'%3E%3E_%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=IBM+Plex+Sans+Arabic:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700;800&family=Noto+Kufi+Arabic:wght@500..800&family=Plus+Jakarta+Sans:wght@400..800&family=Sora:wght@400..800&display=swap">
+  <link rel="stylesheet" href="css/style.css?v=1">
+</head>
+<body>
+  <div class="viewport">
+    <div class="stage" id="stage">
+
+      <main class="slides" id="slides">
+
+        <!-- 1. Cover -->
+        <section class="slide slide--cover" data-title="Hello, Python">
+          <div class="cover">
+            <div class="cover__text">
+              <p class="kicker" data-i18n="cover.kicker">Lab 1 · Python</p>
+              <h1 class="cover__title">Hello,<br><span class="cover__py">Python</span></h1>
+              <p class="cover__lead" data-i18n="cover.lead">Your algorithms become real programs. We remember the basics, solve five examples together in VS Code, then you practise on your own.</p>
+              <p class="cover__author">Monther Ibrahime</p>
+              <p class="cover__keys" data-i18n="cover.keys"><kbd>→</kbd> next <kbd>←</kbd> back <kbd>F</kbd> full screen</p>
+            </div>
+            <div class="hero" aria-label="VS Code runs a two-line Python program: it asks for a name and says hello.">
+              <div class="hero__ed" id="hero-ed"></div>
+              <div class="hero__term" id="hero-term"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 2. Goals -->
+        <section class="slide slide--goals" data-title="Today's plan">
+          <div class="goals">
+            <header>
+              <p class="kicker" data-i18n="goals.kicker">Today</p>
+              <h2 class="h2" data-i18n="goals.title">What will we do today?</h2>
+            </header>
+            <div class="goals__body">
+              <ol class="goal-list">
+                <li>
+                  <span class="goal__n">1</span>
+                  <div>
+                    <h3 data-i18n="goals.1title">Remember the basics</h3>
+                    <p data-i18n="goals.1text">Indentation, data types, <code>input()</code>, <code>print()</code>, operators, and <code>if</code> / <code>else</code>.</p>
+                  </div>
+                </li>
+                <li>
+                  <span class="goal__n">2</span>
+                  <div>
+                    <h3 data-i18n="goals.2title">Solve 5 examples together</h3>
+                    <p data-i18n="goals.2text">Algorithms you already know. I write the code in VS Code, you follow on your computer.</p>
+                  </div>
+                </li>
+                <li>
+                  <span class="goal__n">3</span>
+                  <div>
+                    <h3 data-i18n="goals.3title">Practise on your own</h3>
+                    <p data-i18n="goals.3text">Find six bugs, then write three small programs yourself.</p>
+                  </div>
+                </li>
+              </ol>
+              <div class="ready">
+                <p class="ready__tag" data-i18n="goals.readyTag">Before we start</p>
+                <ul class="ready__list">
+                  <li><span class="tick" aria-hidden="true">✓</span><span data-i18n="goals.ready1">VS Code is open.</span></li>
+                  <li><span class="tick" aria-hidden="true">✓</span><span data-i18n="goals.ready2">You have a folder for today: <code>lab1</code>.</span></li>
+                  <li><span class="tick" aria-hidden="true">✓</span><span data-i18n="goals.ready3">Python works. Type this in the terminal:</span></li>
+                </ul>
+                <div class="mini-term ready__term">
+                  <div class="t-line t-cmd">PS C:\lab1&gt; <span class="t-in">python --version</span></div>
+                  <div class="t-line">Python 3.12.3</div>
+                </div>
+                <p class="ready__note" data-i18n="goals.readyNote">Your version number can be different. Any Python 3 is fine.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 3. Working in VS Code -->
+        <section class="slide slide--vscode" data-title="Working in VS Code">
+          <div class="vsc">
+            <header>
+              <p class="kicker" data-i18n="vs.kicker">In the lab</p>
+              <h2 class="h2" data-i18n="vs.title">How we work in VS Code</h2>
+            </header>
+            <div class="vsc__body">
+              <div class="mock" aria-label="A VS Code window: the lab1 folder with sum.py open, the run button at the top right and the terminal at the bottom.">
+                <div class="mock__bar"><span class="win__dots" aria-hidden="true"><i></i><i></i><i></i></span><span>lab1 — Visual Studio Code</span></div>
+                <div class="mock__main">
+                  <aside class="mock__side">
+                    <p class="mock__h">EXPLORER</p>
+                    <p class="mock__folder">⌄ LAB1 <span class="pin">1</span></p>
+                    <p class="mock__file">sum.py <span class="pin">2</span></p>
+                  </aside>
+                  <div class="mock__editor">
+                    <div class="mock__tabs"><span class="mock__tab">sum.py</span><span class="mock__run"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span class="pin">4</span></span></div>
+                    <pre class="mock__code" data-py>a = int(input("enter first number : "))
+b = int(input("enter second number : "))
+total = a + b
+print("sum =", total)</pre>
+                    <span class="pin pin--code">3</span>
+                  </div>
+                </div>
+                <div class="mock__term">
+                  <p class="mock__h">TERMINAL <span class="pin">5</span></p>
+                  <div class="t-line t-cmd">PS C:\lab1&gt; python sum.py</div>
+                  <div class="t-line">enter first number : <span class="t-in">5</span></div>
+                  <div class="t-line">enter second number : <span class="t-in">7</span></div>
+                  <div class="t-line">sum = 12</div>
+                </div>
+              </div>
+              <ol class="steps">
+                <li><span class="pin">1</span><div><h3 data-i18n="vs.1t">Open your folder</h3><p data-i18n="vs.1p">File → Open Folder → <code>lab1</code></p></div></li>
+                <li><span class="pin">2</span><div><h3 data-i18n="vs.2t">Make a new file</h3><p data-i18n="vs.2p">Name it <code>sum.py</code>. The <code>.py</code> at the end is important.</p></div></li>
+                <li><span class="pin">3</span><div><h3 data-i18n="vs.3t">Write the code and save</h3><p data-i18n="vs.3p">Save with <kbd>Ctrl</kbd> + <kbd>S</kbd> every time you change it.</p></div></li>
+                <li><span class="pin">4</span><div><h3 data-i18n="vs.4t">Run it</h3><p data-i18n="vs.4p">Click ▶ at the top right, or type <code>python sum.py</code> in the terminal.</p></div></li>
+                <li><span class="pin">5</span><div><h3 data-i18n="vs.5t">Type the input</h3><p data-i18n="vs.5p">The terminal waits for you. Type the value and press <kbd>Enter</kbd>.</p></div></li>
+              </ol>
+            </div>
+          </div>
+        </section>
+
+        <!-- 4. Remember 1: algorithm → Python -->
+        <section class="slide slide--map" data-title="Remember: algorithm to Python" data-gap>
+          <div class="tool">
+            <header>
+              <p class="kicker" data-i18n="map.kicker">Remember <span>· 1</span></p>
+              <h2 class="h2" data-i18n="map.title">From algorithm to Python</h2>
+              <p class="tool__lead" data-i18n="map.lead">You already know the steps. Python just writes them its own way.</p>
+            </header>
+            <div class="map">
+              <div class="map__head"><span data-i18n="map.alg">Algorithm</span><span data-i18n="map.py">Python</span></div>
+              <div class="map__row"><code class="map__alg">Start … End</code><p class="map__none" data-i18n="map.r1">Nothing to write. Python runs the lines from top to bottom.</p></div>
+              <div class="map__row"><code class="map__alg">Declare a, b</code><p class="map__none" data-i18n="map.r2">Nothing to write. A variable is made when you give it a value.</p></div>
+              <div class="map__row"><code class="map__alg">Input a</code><code class="map__py" data-py>a = int(input("enter a : "))</code></div>
+              <div class="map__row"><code class="map__alg">total = a + b</code><code class="map__py" data-py>total = a + b</code></div>
+              <div class="map__row"><code class="map__alg">Print total</code><div class="map__out"><code class="map__py" data-py>print("sum =", total)</code><span class="map__shows" data-i18n="map.shows">shows <code>sum = 12</code>: the comma adds one space</span></div></div>
+              <div class="map__row"><code class="map__alg">If n mod 2 = 0 then … else …</code><pre class="map__py" data-py>if n % 2 == 0:
+    ...
+else:
+    ...</pre></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 5. Remember 2: data types -->
+        <section class="slide slide--types" data-title="Remember: data types">
+          <div class="tool">
+            <header>
+              <p class="kicker" data-i18n="types.kicker">Remember <span>· 2</span></p>
+              <h2 class="h2" data-i18n="types.title">Data types</h2>
+              <p class="tool__lead" data-i18n="types.lead">Every value has a type. Python knows the type from the way you write the value.</p>
+            </header>
+            <ul class="types">
+              <li class="type type--int" style="--n: 0"><code class="type__name">int</code><h3 data-i18n="types.int">Whole numbers</h3><p class="type__ex"><code>7</code><code>-3</code><code>2026</code></p></li>
+              <li class="type type--float" style="--n: 1"><code class="type__name">float</code><h3 data-i18n="types.float">Numbers with a point</h3><p class="type__ex"><code>3.5</code><code>98.6</code><code>5.0</code></p></li>
+              <li class="type type--str" style="--n: 2"><code class="type__name">str</code><h3 data-i18n="types.str">Text, always in quotes</h3><p class="type__ex"><code>"Ali"</code><code>"hello"</code><code>"5"</code></p></li>
+              <li class="type type--bool" style="--n: 3"><code class="type__name">bool</code><h3 data-i18n="types.bool">True or False</h3><p class="type__ex"><code>True</code><code>False</code><code>7 &gt; 3</code></p></li>
+            </ul>
+            <div class="types__foot">
+              <div class="mini-term">
+                <div class="t-line t-cmd">&gt;&gt;&gt; <span class="t-in">type(5)</span></div>
+                <div class="t-line">&lt;class 'int'&gt;</div>
+                <div class="t-line t-cmd">&gt;&gt;&gt; <span class="t-in">type("5")</span></div>
+                <div class="t-line">&lt;class 'str'&gt;</div>
+              </div>
+              <p class="tip" data-i18n="types.tip"><code>5</code> and <code>"5"</code> are not the same. The first is a number. The second is text, because of the quotes.</p>
+            </div>
+          </div>
+        </section>
+
+        <!-- 6. Remember 3: input() -->
+        <section class="slide slide--input" data-title="Remember: input()">
+          <div class="tool">
+            <header>
+              <p class="kicker" data-i18n="inp.kicker">Remember <span>· 3</span></p>
+              <h2 class="h2" data-i18n="inp.title"><code>input()</code> always gives text</h2>
+              <p class="tool__lead" data-i18n="inp.lead">Whatever the user types, <code>input()</code> gives it back as a <code>str</code>. Turn it into a number before you do maths.</p>
+            </header>
+            <div class="inp">
+              <ul class="rules">
+                <li><p data-i18n="inp.whole">Whole numbers</p><code data-py>age = int(input("enter age : "))</code></li>
+                <li><p data-i18n="inp.dec">Numbers with a point</p><code data-py>mark = float(input("enter mark : "))</code></li>
+                <li><p data-i18n="inp.text">Text, like a name</p><code data-py>name = input("enter name : ")</code></li>
+              </ul>
+              <div class="try" id="input-demo">
+                <p class="try__tag" data-i18n="inp.try">Try it</p>
+                <label class="try__ask"><span data-i18n="inp.types">The user types</span><input type="text" value="7" spellcheck="false" autocomplete="off" data-try></label>
+                <div class="try__rows" data-rows></div>
+                <p class="try__hint" data-i18n="inp.hint">Try <code>7</code>, then <code>7.5</code>, then <code>Ali</code>.</p>
+              </div>
+            </div>
+            <p class="warn" data-i18n="inp.warn">Forget <code>int()</code>, and <code>"5" + "3"</code> gives <code>"53"</code>, not <code>8</code>.</p>
+          </div>
+        </section>
+
+        <!-- 7. Remember 4: operators -->
+        <section class="slide slide--ops" data-title="Remember: operators">
+          <div class="tool">
+            <header>
+              <p class="kicker" data-i18n="ops.kicker">Remember <span>· 4</span></p>
+              <h2 class="h2" data-i18n="ops.title">Operators</h2>
+            </header>
+            <div class="ops">
+              <div class="ops__box">
+                <p class="ops__title" data-i18n="ops.maths">Maths</p>
+                <table class="ops__table">
+                  <tr><td><code>+</code></td><td data-i18n="ops.add">add</td><td><code data-py>7 + 2</code></td><td><code>9</code></td></tr>
+                  <tr><td><code>-</code></td><td data-i18n="ops.sub">subtract</td><td><code data-py>7 - 2</code></td><td><code>5</code></td></tr>
+                  <tr><td><code>*</code></td><td data-i18n="ops.mul">multiply</td><td><code data-py>7 * 2</code></td><td><code>14</code></td></tr>
+                  <tr><td><code>/</code></td><td data-i18n="ops.div">divide</td><td><code data-py>7 / 2</code></td><td><code>3.5</code></td></tr>
+                  <tr><td><code>%</code></td><td data-i18n="ops.mod">remainder (mod)</td><td><code data-py>7 % 2</code></td><td><code>1</code></td></tr>
+                  <tr><td><code>**</code></td><td data-i18n="ops.pow">power</td><td><code data-py>7 ** 2</code></td><td><code>49</code></td></tr>
+                </table>
+                <p class="ops__note" data-i18n="ops.note"><code>/</code> always gives a float: <code>6 / 2</code> is <code>3.0</code>.</p>
+              </div>
+              <div class="ops__box">
+                <p class="ops__title" data-i18n="ops.compare">Compare: the answer is True or False</p>
+                <table class="ops__table">
+                  <tr><td><code>==</code></td><td data-i18n="ops.eq">equal to</td><td><code data-py>7 == 7</code></td><td><code class="c-const">True</code></td></tr>
+                  <tr><td><code>!=</code></td><td data-i18n="ops.ne">not equal to</td><td><code data-py>7 != 2</code></td><td><code class="c-const">True</code></td></tr>
+                  <tr><td><code>&gt;</code></td><td data-i18n="ops.gt">bigger than</td><td><code data-py>7 > 2</code></td><td><code class="c-const">True</code></td></tr>
+                  <tr><td><code>&lt;</code></td><td data-i18n="ops.lt">smaller than</td><td><code data-py>7 < 2</code></td><td><code class="c-const">False</code></td></tr>
+                  <tr><td><code>&gt;=</code></td><td data-i18n="ops.ge">bigger or equal</td><td><code data-py>7 >= 7</code></td><td><code class="c-const">True</code></td></tr>
+                  <tr><td><code>&lt;=</code></td><td data-i18n="ops.le">smaller or equal</td><td><code data-py>2 <= 7</code></td><td><code class="c-const">True</code></td></tr>
+                </table>
+                <p class="ops__note" data-i18n="ops.and"><code>and</code>: both must be True. <code>or</code>: one is enough.</p>
+              </div>
+            </div>
+            <p class="warn warn--soft" data-i18n="ops.warn"><code>=</code> gives a value: <code>x = 5</code>. <code>==</code> asks a question: <code>x == 5</code>.</p>
+          </div>
+        </section>
+
+        <!-- 8. Remember 5: indentation -->
+        <section class="slide slide--ind" data-title="Remember: indentation">
+          <div class="tool">
+            <header>
+              <p class="kicker" data-i18n="ind.kicker">Remember <span>· 5</span></p>
+              <h2 class="h2" data-i18n="ind.title">Indentation</h2>
+              <p class="tool__lead" data-i18n="ind.lead">The spaces at the start of a line tell Python which lines belong together.</p>
+            </header>
+            <div class="ind">
+              <div class="ind__code">
+                <div class="win win--editor">
+                  <div class="win__bar"><span class="win__dots" aria-hidden="true"><i></i><i></i><i></i></span><span class="win__tab">even_odd.py</span></div>
+                  <ol class="ed ed--notes">
+                    <li class="ed__line is-shown"><span class="ed__n">1</span><code class="ed__code" data-py>n = int(input("enter number : "))</code></li>
+                    <li class="ed__line is-shown"><span class="ed__n">2</span><code class="ed__code" data-py>if n % 2 == 0:</code><span class="ed__note" data-i18n="ind.n1">ends with :</span></li>
+                    <li class="ed__line is-shown is-block"><span class="ed__n">3</span><code class="ed__code" data-py>    print("The number is even")</code><span class="ed__note ed__note--in" data-i18n="ind.n2">4 spaces: belongs to if</span></li>
+                    <li class="ed__line is-shown"><span class="ed__n">4</span><code class="ed__code" data-py>else:</code><span class="ed__note" data-i18n="ind.n3">back to the left</span></li>
+                    <li class="ed__line is-shown is-block"><span class="ed__n">5</span><code class="ed__code" data-py>    print("The number is odd")</code><span class="ed__note ed__note--in" data-i18n="ind.n4">4 spaces: belongs to else</span></li>
+                  </ol>
+                </div>
+              </div>
+              <ol class="ind__rules">
+                <li data-i18n="ind.r1">A line that ends with a colon <code>:</code> starts a group.</li>
+                <li data-i18n="ind.r2">The lines in the group move 4 spaces to the right. In VS Code, press <kbd>Tab</kbd>.</li>
+                <li data-i18n="ind.r3">When the group ends, go back to the left.</li>
+                <li data-i18n="ind.r4">Don't add spaces anywhere else. Even one extra space is an error:</li>
+              </ol>
+            </div>
+            <div class="mini-term mini-term--err ind__err">
+              <div class="t-line t-err">    total = a + b</div>
+              <div class="t-line t-err">IndentationError: unexpected indent</div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 9. Remember 6: if / else -->
+        <section class="slide slide--if" data-title="Remember: if and else">
+          <div class="tool">
+            <header>
+              <p class="kicker" data-i18n="if.kicker">Remember <span>· 6</span></p>
+              <h2 class="h2" data-i18n="if.title"><code>if</code> and <code>else</code></h2>
+              <p class="tool__lead" data-i18n="if.lead"><code>if</code> asks a question. Python runs one group of lines when the answer is True, and the other group when it is False.</p>
+            </header>
+            <div class="ifel">
+              <svg class="ifel__flow" viewBox="0 0 640 420" role="img" aria-label="Flowchart: the question n % 2 == 0. True goes to print even, False goes to print odd.">
+                <polygon class="f-dec" points="320,20 560,110 320,200 80,110"/>
+                <text class="f-txt" x="320" y="118">n % 2 == 0 ?</text>
+                <path class="f-arrow f-arrow--t" d="M 80 110 H 40 V 290"/>
+                <path class="f-head f-head--t" d="M 40 306 L 30 286 L 50 286 Z"/>
+                <path class="f-arrow f-arrow--f" d="M 560 110 H 600 V 290"/>
+                <path class="f-head f-head--f" d="M 600 306 L 590 286 L 610 286 Z"/>
+                <text class="f-lab f-lab--t" x="40" y="92">True</text>
+                <text class="f-lab f-lab--f" x="600" y="92">False</text>
+                <rect class="f-box" x="0" y="310" width="300" height="78" rx="12"/>
+                <text class="f-code" x="150" y="356">print("even")</text>
+                <rect class="f-box" x="340" y="310" width="300" height="78" rx="12"/>
+                <text class="f-code" x="490" y="356">print("odd")</text>
+              </svg>
+              <div class="ifel__side">
+                <pre class="ifel__code" data-py>if n % 2 == 0:
+    print("even")
+else:
+    print("odd")</pre>
+                <div class="elif">
+                  <p data-i18n="if.elif">More than two choices? Put <code>elif</code> between <code>if</code> and <code>else</code>:</p>
+                  <pre data-py>if mark >= 85:
+    print("Excellent")
+elif mark >= 50:
+    print("Pass")
+else:
+    print("Fail")</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 10. Example 1: question -->
+        <section class="slide slide--question" data-title="Example 1: question" data-gap>
+          <div class="q">
+            <div class="q__main">
+              <p class="kicker" data-i18n="q.kicker1">Example 1 <span>of 5</span></p>
+              <p class="q__title" data-i18n="q.title1">Sum of two numbers</p>
+              <h2 class="q__text" data-i18n="q.text1">Write a program that reads two whole numbers and prints their sum.</h2>
+              <div class="q__row">
+                <div class="sample" data-sample="1"><p class="sample__tag" data-i18n="q.sample">Sample run</p></div>
+                <p class="q__from"><span data-i18n="q.fromTag">You solved it as an algorithm</span><b data-i18n="q.from1">Flowcharts, Example 1</b></p>
+              </div>
+              <details class="q__hint">
+                <summary data-i18n="q.hint">Show a hint</summary>
+                <p data-i18n="q.hint1">Read each number with <code>int(input(...))</code>. Add them, then <code>print("sum =", total)</code>.</p>
+              </details>
+            </div>
+            <div class="timer" data-timer></div>
+          </div>
+        </section>
+
+        <!-- 11. Example 1: solution -->
+        <section class="slide slide--solution" data-title="Example 1: solution">
+          <div class="sol" data-example="1"></div>
+        </section>
+
+        <!-- 12. Example 2: question -->
+        <section class="slide slide--question" data-title="Example 2: question">
+          <div class="q">
+            <div class="q__main">
+              <p class="kicker" data-i18n="q.kicker2">Example 2 <span>of 5</span></p>
+              <p class="q__title" data-i18n="q.title2">Area and perimeter of a rectangle</p>
+              <h2 class="q__text" data-i18n="q.text2">Write a program that reads the length and the width of a rectangle, then prints its area and its perimeter.</h2>
+              <div class="q__row">
+                <div class="sample" data-sample="2"><p class="sample__tag" data-i18n="q.sample">Sample run</p></div>
+                <p class="q__from"><span data-i18n="q.fromTag">You solved it as an algorithm</span><b data-i18n="q.from2">Booklet, algorithm 3</b></p>
+              </div>
+              <details class="q__hint">
+                <summary data-i18n="q.hint">Show a hint</summary>
+                <p data-i18n="q.hint2"><code>area = length * width</code> and <code>perimeter = 2 * (length + width)</code>.</p>
+              </details>
+            </div>
+            <div class="timer" data-timer></div>
+          </div>
+        </section>
+
+        <!-- 13. Example 2: solution -->
+        <section class="slide slide--solution" data-title="Example 2: solution">
+          <div class="sol" data-example="2"></div>
+        </section>
+
+        <!-- 14. Example 3: question -->
+        <section class="slide slide--question" data-title="Example 3: question">
+          <div class="q">
+            <div class="q__main">
+              <p class="kicker" data-i18n="q.kicker3">Example 3 <span>of 5</span></p>
+              <p class="q__title" data-i18n="q.title3">Fahrenheit to Celsius</p>
+              <h2 class="q__text" data-i18n="q.text3">Write a program that reads a temperature in Fahrenheit and prints it in Celsius: c = 5/9 (f − 32).</h2>
+              <div class="q__row">
+                <div class="sample" data-sample="3"><p class="sample__tag" data-i18n="q.sample">Sample run</p></div>
+                <p class="q__from"><span data-i18n="q.fromTag">You solved it as an algorithm</span><b data-i18n="q.from3">Booklet, algorithm 4</b></p>
+              </div>
+              <details class="q__hint">
+                <summary data-i18n="q.hint">Show a hint</summary>
+                <p data-i18n="q.hint3">A temperature can be 98.6, so use <code>float(input(...))</code>. And write the <code>*</code>: <code>(5 / 9) * (f - 32)</code>.</p>
+              </details>
+            </div>
+            <div class="timer" data-timer></div>
+          </div>
+        </section>
+
+        <!-- 15. Example 3: solution -->
+        <section class="slide slide--solution" data-title="Example 3: solution">
+          <div class="sol" data-example="3"></div>
+        </section>
+
+        <!-- 16. Example 4: question -->
+        <section class="slide slide--question" data-title="Example 4: question">
+          <div class="q">
+            <div class="q__main">
+              <p class="kicker" data-i18n="q.kicker4">Example 4 <span>of 5</span></p>
+              <p class="q__title" data-i18n="q.title4">Even or odd</p>
+              <h2 class="q__text" data-i18n="q.text4">Write a program that reads a whole number and prints whether it is even or odd.</h2>
+              <div class="q__row">
+                <div class="sample" data-sample="4"><p class="sample__tag" data-i18n="q.sample">Sample run</p></div>
+                <p class="q__from"><span data-i18n="q.fromTag">You solved it as an algorithm</span><b data-i18n="q.from4">Flowcharts, Example 4</b></p>
+              </div>
+              <details class="q__hint">
+                <summary data-i18n="q.hint">Show a hint</summary>
+                <p data-i18n="q.hint4">A number is even when <code>n % 2 == 0</code>. Use <code>if</code> and <code>else</code>, and don't forget the <code>:</code> and the 4 spaces.</p>
+              </details>
+            </div>
+            <div class="timer" data-timer></div>
+          </div>
+        </section>
+
+        <!-- 17. Example 4: solution -->
+        <section class="slide slide--solution" data-title="Example 4: solution">
+          <div class="sol" data-example="4"></div>
+        </section>
+
+        <!-- 18. Example 5: question -->
+        <section class="slide slide--question" data-title="Example 5: question">
+          <div class="q">
+            <div class="q__main">
+              <p class="kicker" data-i18n="q.kicker5">Example 5 <span>of 5</span></p>
+              <p class="q__title" data-i18n="q.title5">Average and Pass / Fail</p>
+              <h2 class="q__text" data-i18n="q.text5">Write a program that reads three marks and prints their average. Then it prints Pass if the average is 50 or more, otherwise Fail.</h2>
+              <div class="q__row">
+                <div class="sample" data-sample="5"><p class="sample__tag" data-i18n="q.sample">Sample run</p></div>
+                <p class="q__from"><span data-i18n="q.fromTag">You solved it as an algorithm</span><b data-i18n="q.from5">Flowcharts, Example 6</b></p>
+              </div>
+              <details class="q__hint">
+                <summary data-i18n="q.hint">Show a hint</summary>
+                <p data-i18n="q.hint5"><code>average = (m1 + m2 + m3) / 3</code>. Then <code>if average &gt;= 50:</code> … <code>else:</code> …</p>
+              </details>
+            </div>
+            <div class="timer" data-timer></div>
+          </div>
+        </section>
+
+        <!-- 19. Example 5: solution -->
+        <section class="slide slide--solution" data-title="Example 5: solution">
+          <div class="sol" data-example="5"></div>
+        </section>
+
+        <!-- 20. Activity 1: Spot the bug -->
+        <section class="slide slide--act" data-title="Activity 1: Spot the bug" data-gap>
+          <div class="act" id="bugs">
+            <header class="act__head">
+              <div>
+                <p class="kicker" data-i18n="b.kicker">Activity 1 · Spot the bug</p>
+                <h2 class="h2" data-i18n="b.title">Find the mistake</h2>
+              </div>
+              <p class="act__lead" data-i18n="b.lead">Each program has one mistake. Find it with the class first, then press <b>Run</b> to see what Python says.</p>
+            </header>
+            <div class="act__body bugs">
+              <div class="bugs__left">
+                <div class="bugs__top">
+                  <div class="rounds" role="group" data-i18n-label="b.rounds" aria-label="Bugs"></div>
+                  <p class="bugs__title" data-title></p>
+                </div>
+                <div data-editor></div>
+              </div>
+              <div class="bugs__right">
+                <div class="win win--term">
+                  <div class="term__bar">
+                    <span class="term__tab">TERMINAL</span>
+                    <div class="term__btns">
+                      <button type="button" class="btn btn--run" data-run><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><span data-i18n="run.run">Run</span></button>
+                      <button type="button" class="btn btn--fix" data-fix data-i18n="b.fix">Show the fix</button>
+                    </div>
+                  </div>
+                  <div class="term__body" data-term></div>
+                </div>
+                <p class="why" data-why hidden></p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 21. Activity 2: Your turn -->
+        <section class="slide slide--act" data-title="Activity 2: Your turn">
+          <div class="act" id="turn">
+            <header class="act__head">
+              <div>
+                <p class="kicker" data-i18n="y.kicker">Activity 2 · Your turn</p>
+                <h2 class="h2" data-i18n="y.title">Write it in VS Code</h2>
+              </div>
+              <p class="act__lead" data-i18n="y.lead">Pick a task, write the program on your computer and run it. Then compare it with the solution.</p>
+            </header>
+            <div class="act__body turn">
+              <div class="turn__left">
+                <div class="picks" role="group" data-i18n-label="y.tasks" aria-label="Tasks" data-picks></div>
+                <div class="task">
+                  <p class="task__from" data-from></p>
+                  <h3 class="task__title" data-title></h3>
+                  <p class="task__text" data-task></p>
+                  <p class="task__tip" data-tip></p>
+                  <div class="sample" data-sample-box></div>
+                </div>
+              </div>
+              <div class="turn__right">
+                <div class="turn__head">
+                  <p class="turn__label" data-i18n="y.solution">Solution</p>
+                  <button type="button" class="btn btn--line" data-show data-i18n="y.show">Show solution</button>
+                </div>
+                <p class="turn__wait" data-wait data-i18n="y.wait">Write your program first. Then press Show solution.</p>
+                <div class="turn__sol" data-solution hidden></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- 22. Wrap-up -->
+        <section class="slide slide--recap" data-title="Wrap-up" data-gap>
+          <div class="recap">
+            <header>
+              <p class="kicker" data-i18n="recap.kicker">Wrap-up</p>
+              <h2 class="h2" data-i18n="recap.title">Four things to remember</h2>
+            </header>
+            <ol class="recap__list">
+              <li><span class="recap__n">1</span><div><h3 data-i18n="recap.1title"><code>input()</code> gives text</h3><p data-i18n="recap.1text">Use <code>int()</code> for whole numbers and <code>float()</code> for numbers with a point.</p></div></li>
+              <li><span class="recap__n">2</span><div><h3 data-i18n="recap.2title">The colon and 4 spaces</h3><p data-i18n="recap.2text">The lines under <code>if</code> and <code>else</code> move 4 spaces to the right.</p></div></li>
+              <li><span class="recap__n">3</span><div><h3 data-i18n="recap.3title"><code>=</code> is not <code>==</code></h3><p data-i18n="recap.3text"><code>=</code> gives a value. <code>==</code> asks: are they equal?</p></div></li>
+              <li><span class="recap__n">4</span><div><h3 data-i18n="recap.4title">Write the <code>*</code></h3><p data-i18n="recap.4text"><code>2 * (a + b)</code>, not <code>2(a + b)</code>.</p></div></li>
+            </ol>
+            <p class="recap__next" data-i18n="recap.next">Up next: <b>Python Party</b>, the team game. <kbd>→</kbd></p>
+          </div>
+        </section>
+
+        <!-- 23. Game -->
+        <section class="slide slide--game" data-title="Python Party">
+          <div class="gs">
+            <div class="gs__intro">
+              <p class="kicker" data-i18n="gs.kicker">End of lab game</p>
+              <h2 class="gs__title">Python<br><span>Party</span></h2>
+              <ul class="gs__rules">
+                <li data-i18n="gs.rule1">12 easy questions about today's Python.</li>
+                <li data-i18n="gs.rule2">Teams take turns. Each turn has 30 seconds.</li>
+                <li data-i18n="gs.rule3">A right answer scores 100 points, plus up to 50 for speed.</li>
+                <li data-i18n="gs.rule4">Miss it, and the next team can steal it for 50.</li>
+              </ul>
+            </div>
+            <form class="setup" id="game-setup" autocomplete="off">
+              <p class="setup__label" id="team-count-label" data-i18n="gs.teams">How many teams?</p>
+              <div class="seg" role="radiogroup" aria-labelledby="team-count-label" id="team-count"></div>
+              <div class="setup__teams" id="team-names"></div>
+              <div class="setup__actions">
+                <button type="submit" class="btn btn--accent btn--big" id="game-start" data-i18n="gs.start">Start the game</button>
+                <button type="button" class="btn btn--line btn--big" id="game-resume" data-i18n="gs.resume" hidden>Resume game</button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- 24. Meme break -->
+        <section class="slide slide--memes" data-title="Meme break" data-gap>
+          <div class="memes">
+            <header class="memes__head">
+              <div>
+                <p class="kicker" data-i18n="m.kicker">Meme break</p>
+                <h2 class="h2" data-i18n="m.title">Before you go…</h2>
+              </div>
+              <p class="memes__hint" data-i18n="m.hint">Press <kbd>→</kbd> for the next meme.</p>
+            </header>
+            <div class="meme-row" data-reveal>
+              <figure class="meme meme--ev" data-reveal-item>
+                <p class="meme__cap" data-i18n="m.1top">When you add one extra space</p>
+                <div class="meme__split">
+                  <div class="meme__half">
+                    <p class="meme__tag" data-i18n="m.expect">Expectation</p>
+                    <p class="meme__term">sum = 9 ✓</p>
+                  </div>
+                  <div class="meme__half meme__half--real">
+                    <p class="meme__tag" data-i18n="m.reality">Reality</p>
+                    <p class="meme__term meme__term--err">IndentationError:<br>unexpected indent</p>
+                  </div>
+                </div>
+              </figure>
+              <figure class="meme meme--drake" data-reveal-item>
+                <div class="drake__row">
+                  <span class="drake__face" aria-hidden="true">🙅</span>
+                  <p class="drake__text"><code>"5" + "3"</code><br>→ <code>"53"</code></p>
+                </div>
+                <div class="drake__row drake__row--yes">
+                  <span class="drake__face" aria-hidden="true">😎</span>
+                  <p class="drake__text"><code>int("5") + int("3")</code><br>→ <code>8</code></p>
+                </div>
+              </figure>
+              <figure class="meme meme--fresh" data-reveal-item>
+                <p class="meme__cap" data-i18n="m.3top">Me: <code>if n % 2 = 0:</code></p>
+                <div class="meme__mid"><span class="meme__emoji" aria-hidden="true">🐍</span></div>
+                <p class="meme__cap meme__cap--bottom" data-i18n="m.3bottom">Python: "Maybe you meant <code>==</code>?"</p>
+              </figure>
+            </div>
+          </div>
+        </section>
+
+      </main>
+
+      <footer class="bar" id="bar">
+        <p class="bar__title">Python Lab 1</p>
+        <nav class="progress" id="progress" aria-label="Slides"></nav>
+        <div class="bar__tools">
+          <p class="bar__count" id="count" aria-live="polite">1 / 24</p>
+          <button class="icon-btn" type="button" data-act="prev" aria-label="Previous slide" data-i18n-label="nav.prev">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>
+          </button>
+          <button class="icon-btn" type="button" data-act="next" aria-label="Next" data-i18n-label="nav.next">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>
+          </button>
+          <button class="icon-btn" type="button" data-act="full" aria-label="Full screen" data-i18n-label="nav.full">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+          </button>
+          <button class="lang-btn" type="button" data-act="lang" aria-label="Show the slides in Arabic" data-i18n-label="lang.label">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 2.6 3.8 5.6 3.8 9s-1.3 6.4-3.8 9c-2.5-2.6-3.8-5.6-3.8-9S9.5 5.6 12 3z"/></svg>
+            <span data-i18n="lang.switch">العربية</span>
+          </button>
+        </div>
+      </footer>
+
+      <div class="game" id="game" hidden></div>
+    </div>
+  </div>
+
+  <script src="js/i18n.js?v=1"></script>
+  <script src="js/sound.js?v=1"></script>
+  <script src="js/py.js?v=1"></script>
+  <script src="js/programs.js?v=1"></script>
+  <script src="js/editor.js?v=1"></script>
+  <script src="js/solution.js?v=1"></script>
+  <script src="js/activities.js?v=1"></script>
+  <script src="js/questions.js?v=1"></script>
+  <script src="js/game.js?v=1"></script>
+  <script src="js/deck.js?v=1"></script>
+</body>
+</html>

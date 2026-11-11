@@ -41,3 +41,7 @@ The second lecture, **Factorial series** (four series algorithms with a loop ins
 ## Lecture 3
 
 The third lecture, **Drawing shapes** (printing patterns with loops and `mod`, three class activities, the Pattern Party game and a meme break), is in [`lecture-3/`](lecture-3/).
+
+## Lecture 4 (Python Lab 1)
+
+The first Python lab, **Hello, Python** (reminders on indentation, data types, `input()`, operators and `if` / `else`, five worked examples that run in a VS Code style editor, a bug hunt, practice tasks, the Python Party game and a meme break), is in [`lecture-4/`](lecture-4/).
