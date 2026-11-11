@@ -1,10 +1,15 @@
-/* The 20 practice algorithms, from the easiest to the hardest.
+/* The 30 practice algorithms, from the easiest to the hardest.
    Each one is written in the course's style (Start, Declare, Input, Print,
-   If … then … else, "If … then go to step N", mod) and can also be run:
-     input: names read, in order, from the student's input values
-     set:   (v) => changes the variables
-     print: (v) => values printed on one output line
+   If … then … else, "If … then go to step N", mod, and, or) and can also run:
+     input:   names read, in order, from the student's input values
+     set:     (v) => changes the variables
+     print:   (v) => values printed (one output line each, unless the
+              algorithm has a "Print new line" step: then Print stays on the
+              same line, like the patterns in Lecture 3)
+     newline: true for "Print new line"
      loop + when: "If … then go to step N" (loop is the 1-based step number)
+     say:     what the line does, in simple words [English, Arabic]
+   Start, Declare and End get their explanation from the page itself.
    Text fields are [English, Arabic]; algorithm steps stay in English. */
 (function () {
   const L = window.I18n.ltr;
@@ -12,6 +17,7 @@
   window.EXAMPLES = [
     /* ---------- Level 1: one step after another ---------- */
     {
+      id: 'sum-avg',
       level: 1,
       title: ['Sum and average of three numbers', 'مجموع ومعدل ثلاثة أعداد'],
       task: ['Read three numbers. Print their sum and their average.', 'اقرأ ثلاثة أعداد، ثم اطبع مجموعها ومعدلها.'],
@@ -23,18 +29,19 @@
       steps: [
         { t: 'Start' },
         { t: 'Declare a, b, c, sum, avg' },
-        { t: 'Input a, b, c', input: ['a', 'b', 'c'] },
-        { t: 'sum = a + b + c', set: (v) => { v.sum = v.a + v.b + v.c; } },
-        { t: 'avg = sum / 3', set: (v) => { v.avg = v.sum / 3; } },
-        { t: 'Print sum, avg', print: (v) => [v.sum, v.avg] },
+        { t: 'Input a, b, c', input: ['a', 'b', 'c'], say: ['Read three numbers from the user.', 'اقرأ ثلاثة أعداد من المستخدم.'] },
+        { t: 'sum = a + b + c', set: (v) => { v.sum = v.a + v.b + v.c; }, say: ['Add the three numbers and keep the answer in sum.', 'اجمع الأعداد الثلاثة واحفظ الناتج في sum.'] },
+        { t: 'avg = sum / 3', set: (v) => { v.avg = v.sum / 3; }, say: ['The average is the sum divided by how many numbers we have (3).', 'المعدل هو المجموع مقسومًا على عدد الأعداد (3).'] },
+        { t: 'Print sum, avg', print: (v) => [v.sum, v.avg], say: ['Show both answers.', 'اعرض الناتجين.'] },
         { t: 'End' },
       ],
     },
     {
+      id: 'rectangle',
       level: 1,
       title: ['Area and perimeter of a rectangle', 'مساحة ومحيط مستطيل'],
       task: ['Read the length and the width of a rectangle. Print its area and its perimeter.', 'اقرأ طول المستطيل وعرضه، ثم اطبع مساحته ومحيطه.'],
-      hint: [`area = length × width, and perimeter = 2 × (length + width).`, `${L('area = length × width')}، و ${L('perimeter = 2 × (length + width)')}.`],
+      hint: ['area = length × width, and perimeter = 2 × (length + width).', `${L('area = length × width')}، و ${L('perimeter = 2 × (length + width)')}.`],
       skills: ['Input', 'Print', '*  ( )'],
       vars: ['L', 'W', 'area', 'per'],
       order: 'L W',
@@ -42,14 +49,15 @@
       steps: [
         { t: 'Start' },
         { t: 'Declare L, W, area, per' },
-        { t: 'Input L, W', input: ['L', 'W'] },
-        { t: 'area = L * W', set: (v) => { v.area = v.L * v.W; } },
-        { t: 'per = 2 * (L + W)', set: (v) => { v.per = 2 * (v.L + v.W); } },
-        { t: 'Print area, per', print: (v) => [v.area, v.per] },
+        { t: 'Input L, W', input: ['L', 'W'], say: ['Read the length L and the width W.', 'اقرأ الطول L والعرض W.'] },
+        { t: 'area = L * W', set: (v) => { v.area = v.L * v.W; }, say: ['Area = length × width. In algorithms we write * for ×.', 'المساحة = الطول × العرض. في الـ Algorithm نكتب * بدل ×.'] },
+        { t: 'per = 2 * (L + W)', set: (v) => { v.per = 2 * (v.L + v.W); }, say: ['The perimeter is all four sides: 2 × (length + width). The part in ( ) is done first.', 'المحيط هو مجموع الأضلاع الأربعة: 2 × (الطول + العرض). ما بين ( ) يُحسب أولًا.'] },
+        { t: 'Print area, per', print: (v) => [v.area, v.per], say: ['Show the area and the perimeter.', 'اعرض المساحة والمحيط.'] },
         { t: 'End' },
       ],
     },
     {
+      id: 'c-to-f',
       level: 1,
       title: ['Celsius to Fahrenheit', 'من Celsius إلى Fahrenheit'],
       task: ['Read a temperature in Celsius and print it in Fahrenheit. F = C × 9 / 5 + 32.', `اقرأ درجة حرارة بالـ Celsius واطبعها بالـ Fahrenheit: ${L('F = C × 9 / 5 + 32')}.`],
@@ -61,13 +69,14 @@
       steps: [
         { t: 'Start' },
         { t: 'Declare c, f' },
-        { t: 'Input c', input: ['c'] },
-        { t: 'f = c * 9 / 5 + 32', set: (v) => { v.f = (v.c * 9) / 5 + 32; } },
-        { t: 'Print f', print: (v) => [v.f] },
+        { t: 'Input c', input: ['c'], say: ['Read the temperature in Celsius.', 'اقرأ درجة الحرارة بالـ Celsius.'] },
+        { t: 'f = c * 9 / 5 + 32', set: (v) => { v.f = (v.c * 9) / 5 + 32; }, say: ['Use the formula. * and / are done before +.', 'طبّق المعادلة. الضرب * والقسمة / يُحسبان قبل الجمع +.'] },
+        { t: 'Print f', print: (v) => [v.f], say: ['Show the temperature in Fahrenheit.', 'اعرض درجة الحرارة بالـ Fahrenheit.'] },
         { t: 'End' },
       ],
     },
     {
+      id: 'swap',
       level: 1,
       title: ['Swap two numbers', 'تبديل عددين'],
       task: ['Read two numbers a and b. Swap their values, then print a and b.', 'اقرأ عددين a و b. بدّل قيمتيهما، ثم اطبع a و b.'],
@@ -80,17 +89,18 @@
       steps: [
         { t: 'Start' },
         { t: 'Declare a, b, temp' },
-        { t: 'Input a, b', input: ['a', 'b'] },
-        { t: 'temp = a', set: (v) => { v.temp = v.a; } },
-        { t: 'a = b', set: (v) => { v.a = v.b; } },
-        { t: 'b = temp', set: (v) => { v.b = v.temp; } },
-        { t: 'Print a, b', print: (v) => [v.a, v.b] },
+        { t: 'Input a, b', input: ['a', 'b'], say: ['Read the two numbers.', 'اقرأ العددين.'] },
+        { t: 'temp = a', set: (v) => { v.temp = v.a; }, say: ['Keep a copy of a in temp, so we do not lose it.', 'احفظ نسخة من a في temp حتى لا نفقدها.'] },
+        { t: 'a = b', set: (v) => { v.a = v.b; }, say: ['Now a can take the value of b.', 'الآن يمكن أن يأخذ a قيمة b.'] },
+        { t: 'b = temp', set: (v) => { v.b = v.temp; }, say: ['b takes the old value of a, from temp.', 'يأخذ b القيمة القديمة لـ a من temp.'] },
+        { t: 'Print a, b', print: (v) => [v.a, v.b], say: ['Show them: they are swapped.', 'اعرضهما: لقد تبدّلا.'] },
         { t: 'End' },
       ],
     },
 
     /* ---------- Level 2: decisions with If ---------- */
     {
+      id: 'even-odd',
       level: 2,
       title: ['Even or odd', 'زوجي أم فردي'],
       task: ['Read a whole number. Print "even" if it is even, otherwise print "odd".', 'اقرأ عددًا صحيحًا. اطبع "even" إذا كان زوجيًا، وإلا اطبع "odd".'],
@@ -102,12 +112,13 @@
       steps: [
         { t: 'Start' },
         { t: 'Declare n' },
-        { t: 'Input n', input: ['n'] },
-        { t: 'If n mod 2 == 0 then Print "even"\nelse Print "odd"', print: (v) => [v.n % 2 === 0 ? 'even' : 'odd'] },
+        { t: 'Input n', input: ['n'], say: ['Read the number.', 'اقرأ العدد.'] },
+        { t: 'If n mod 2 == 0 then Print "even"\nelse Print "odd"', print: (v) => [v.n % 2 === 0 ? 'even' : 'odd'], say: ['n mod 2 is the remainder after dividing by 2. Remainder 0 means even. Any other remainder means odd.', `${L('n mod 2')} هو باقي القسمة على 2. الباقي 0 يعني زوجي، وأي باقٍ آخر يعني فردي.`] },
         { t: 'End' },
       ],
     },
     {
+      id: 'greater-two',
       level: 2,
       title: ['The greater of two numbers', 'الأكبر بين عددين'],
       task: ['Read two numbers and print the greater one.', 'اقرأ عددين واطبع الأكبر بينهما.'],
@@ -120,12 +131,13 @@
       steps: [
         { t: 'Start' },
         { t: 'Declare a, b' },
-        { t: 'Input a, b', input: ['a', 'b'] },
-        { t: 'If a > b then Print a\nelse Print b', print: (v) => [v.a > v.b ? v.a : v.b] },
+        { t: 'Input a, b', input: ['a', 'b'], say: ['Read the two numbers.', 'اقرأ العددين.'] },
+        { t: 'If a > b then Print a\nelse Print b', print: (v) => [v.a > v.b ? v.a : v.b], say: ['One question: is a bigger than b? Yes: print a. No: print b.', 'سؤال واحد: هل a أكبر من b؟ نعم: اطبع a. لا: اطبع b.'] },
         { t: 'End' },
       ],
     },
     {
+      id: 'pos-neg-zero',
       level: 2,
       title: ['Positive, negative or zero', 'موجب أم سالب أم صفر'],
       task: ['Read a number. Print "positive", "negative" or "zero".', 'اقرأ عددًا، ثم اطبع "positive" أو "negative" أو "zero".'],
@@ -137,12 +149,13 @@
       steps: [
         { t: 'Start' },
         { t: 'Declare n' },
-        { t: 'Input n', input: ['n'] },
-        { t: 'If n > 0 then Print "positive"\nelse if n < 0 then Print "negative"\nelse Print "zero"', print: (v) => [v.n > 0 ? 'positive' : v.n < 0 ? 'negative' : 'zero'] },
+        { t: 'Input n', input: ['n'], say: ['Read the number.', 'اقرأ العدد.'] },
+        { t: 'If n > 0 then Print "positive"\nelse if n < 0 then Print "negative"\nelse Print "zero"', print: (v) => [v.n > 0 ? 'positive' : v.n < 0 ? 'negative' : 'zero'], say: ['First ask: is n > 0? If not, ask: is n < 0? If both answers are no, n must be 0.', `اسأل أولًا: هل ${L('n > 0')}؟ إن لم يكن، اسأل: هل ${L('n < 0')}؟ وإذا كانت الإجابتان لا، فإن n يساوي 0.`] },
         { t: 'End' },
       ],
     },
     {
+      id: 'greater-total',
       level: 2,
       title: ['Who has the greater total?', 'من صاحب المجموع الأكبر؟'],
       task: ['Two students each have three marks. Read the marks of student 1, then of student 2. Print which student has the greater total, and that total. If the totals are the same, print "equal".', 'لكل طالب من طالبين ثلاث علامات. اقرأ علامات الطالب 1 ثم علامات الطالب 2. اطبع أي طالب مجموعه أكبر، ومعه المجموع. وإذا تساوى المجموعان اطبع "equal".'],
@@ -154,14 +167,15 @@
       steps: [
         { t: 'Start' },
         { t: 'Declare a1, a2, a3, b1, b2, b3, t1, t2' },
-        { t: 'Input a1, a2, a3, b1, b2, b3', input: ['a1', 'a2', 'a3', 'b1', 'b2', 'b3'] },
-        { t: 't1 = a1 + a2 + a3', set: (v) => { v.t1 = v.a1 + v.a2 + v.a3; } },
-        { t: 't2 = b1 + b2 + b3', set: (v) => { v.t2 = v.b1 + v.b2 + v.b3; } },
-        { t: 'If t1 > t2 then Print "student 1", t1\nelse if t2 > t1 then Print "student 2", t2\nelse Print "equal"', print: (v) => (v.t1 > v.t2 ? ['student 1', v.t1] : v.t2 > v.t1 ? ['student 2', v.t2] : ['equal']) },
+        { t: 'Input a1, a2, a3, b1, b2, b3', input: ['a1', 'a2', 'a3', 'b1', 'b2', 'b3'], say: ['Read the 3 marks of student 1, then the 3 marks of student 2.', 'اقرأ علامات الطالب 1 الثلاث، ثم علامات الطالب 2 الثلاث.'] },
+        { t: 't1 = a1 + a2 + a3', set: (v) => { v.t1 = v.a1 + v.a2 + v.a3; }, say: ['The total of student 1.', 'مجموع الطالب 1.'] },
+        { t: 't2 = b1 + b2 + b3', set: (v) => { v.t2 = v.b1 + v.b2 + v.b3; }, say: ['The total of student 2.', 'مجموع الطالب 2.'] },
+        { t: 'If t1 > t2 then Print "student 1", t1\nelse if t2 > t1 then Print "student 2", t2\nelse Print "equal"', print: (v) => (v.t1 > v.t2 ? ['student 1', v.t1] : v.t2 > v.t1 ? ['student 2', v.t2] : ['equal']), say: ['Compare the totals. There are three cases: t1 is bigger, t2 is bigger, or they are equal.', 'قارن المجموعين. هناك ثلاث حالات: t1 أكبر، أو t2 أكبر، أو هما متساويان.'] },
         { t: 'End' },
       ],
     },
     {
+      id: 'largest-three',
       level: 2,
       title: ['The largest of three numbers', 'الأكبر بين ثلاثة أعداد'],
       task: ['Read three numbers and print the largest one.', 'اقرأ ثلاثة أعداد واطبع الأكبر بينها.'],
@@ -174,15 +188,16 @@
       steps: [
         { t: 'Start' },
         { t: 'Declare a, b, c, max' },
-        { t: 'Input a, b, c', input: ['a', 'b', 'c'] },
-        { t: 'max = a', set: (v) => { v.max = v.a; } },
-        { t: 'If b > max then max = b', set: (v) => { if (v.b > v.max) v.max = v.b; } },
-        { t: 'If c > max then max = c', set: (v) => { if (v.c > v.max) v.max = v.c; } },
-        { t: 'Print max', print: (v) => [v.max] },
+        { t: 'Input a, b, c', input: ['a', 'b', 'c'], say: ['Read the three numbers.', 'اقرأ الأعداد الثلاثة.'] },
+        { t: 'max = a', set: (v) => { v.max = v.a; }, say: ['Say a is the largest, for now.', 'افترض أن a هو الأكبر حاليًا.'] },
+        { t: 'If b > max then max = b', set: (v) => { if (v.b > v.max) v.max = v.b; }, say: ['Is b bigger than the largest so far? Then b is the new largest.', 'هل b أكبر من الأكبر حتى الآن؟ إذن b هو الأكبر الجديد.'] },
+        { t: 'If c > max then max = c', set: (v) => { if (v.c > v.max) v.max = v.c; }, say: ['Do the same with c.', 'افعل نفس الشيء مع c.'] },
+        { t: 'Print max', print: (v) => [v.max], say: ['max now holds the largest of the three.', 'الآن max يحمل الأكبر بين الثلاثة.'] },
         { t: 'End' },
       ],
     },
     {
+      id: 'grade',
       level: 2,
       title: ['Mark to grade letter', 'تحويل العلامة إلى تقدير'],
       task: ['Read a mark out of 100 and print its grade: A for 85 and up, B for 75 and up, C for 65 and up, D for 50 and up, F below 50.', 'اقرأ علامة من 100 واطبع تقديرها: A من 85 فأكثر، و B من 75 فأكثر، و C من 65 فأكثر، و D من 50 فأكثر، و F لما دون 50.'],
@@ -195,10 +210,11 @@
       steps: [
         { t: 'Start' },
         { t: 'Declare mark' },
-        { t: 'Input mark', input: ['mark'] },
+        { t: 'Input mark', input: ['mark'], say: ['Read the mark.', 'اقرأ العلامة.'] },
         {
           t: 'If mark >= 85 then Print "A"\nelse if mark >= 75 then Print "B"\nelse if mark >= 65 then Print "C"\nelse if mark >= 50 then Print "D"\nelse Print "F"',
           print: (v) => [v.mark >= 85 ? 'A' : v.mark >= 75 ? 'B' : v.mark >= 65 ? 'C' : v.mark >= 50 ? 'D' : 'F'],
+          say: ['Check from the top grade down. The first true condition gives the grade, and the rest are skipped.', 'افحص من أعلى تقدير إلى الأدنى. أول شرط صحيح يعطي التقدير، ويُترك الباقي.'],
         },
         { t: 'End' },
       ],
@@ -206,6 +222,7 @@
 
     /* ---------- Level 3: loops ---------- */
     {
+      id: 'print-1-n',
       level: 3,
       title: ['Print the numbers from 1 to N', 'اطبع الأعداد من 1 إلى N'],
       task: ['Read N and print the numbers 1, 2, 3, …, N.', 'اقرأ N واطبع الأعداد 1، 2، 3، …، N.'],
@@ -217,15 +234,16 @@
       steps: [
         { t: 'Start' },
         { t: 'Declare n, i' },
-        { t: 'Input n', input: ['n'] },
-        { t: 'i = 1', set: (v) => { v.i = 1; } },
-        { t: 'Print i', print: (v) => [v.i] },
-        { t: 'i = i + 1', set: (v) => { v.i += 1; } },
-        { t: 'If i <= n then go to step 5', loop: 5, when: (v) => v.i <= v.n },
+        { t: 'Input n', input: ['n'], say: ['Read how many numbers to print.', 'اقرأ كم عددًا سنطبع.'] },
+        { t: 'i = 1', set: (v) => { v.i = 1; }, say: ['The counter i starts at 1.', 'يبدأ العدّاد i من 1.'] },
+        { t: 'Print i', print: (v) => [v.i], say: ['Print the counter.', 'اطبع العدّاد.'] },
+        { t: 'i = i + 1', set: (v) => { v.i += 1; }, say: ['Move the counter to the next number.', 'انقل العدّاد إلى العدد التالي.'] },
+        { t: 'If i <= n then go to step 5', loop: 5, when: (v) => v.i <= v.n, say: ['Not finished yet (i <= n)? Go back to step 5 and print again.', `لم ننتهِ بعد ${L('(i <= n)')}؟ ارجع إلى الخطوة 5 واطبع مرة أخرى.`] },
         { t: 'End' },
       ],
     },
     {
+      id: 'sum-1-n',
       level: 3,
       title: ['Sum of the numbers from 1 to N', 'مجموع الأعداد من 1 إلى N'],
       task: ['Read N. Print 1 + 2 + 3 + … + N.', `اقرأ N، ثم اطبع ${L('1 + 2 + 3 + … + N')}.`],
@@ -238,16 +256,17 @@
       steps: [
         { t: 'Start' },
         { t: 'Declare n, i, sum' },
-        { t: 'Input n', input: ['n'] },
-        { t: 'sum = 0, i = 1', set: (v) => { v.sum = 0; v.i = 1; } },
-        { t: 'sum = sum + i', set: (v) => { v.sum += v.i; } },
-        { t: 'i = i + 1', set: (v) => { v.i += 1; } },
-        { t: 'If i <= n then go to step 5', loop: 5, when: (v) => v.i <= v.n },
-        { t: 'Print sum', print: (v) => [v.sum] },
+        { t: 'Input n', input: ['n'], say: ['Read N.', 'اقرأ N.'] },
+        { t: 'sum = 0, i = 1', set: (v) => { v.sum = 0; v.i = 1; }, say: ['sum starts empty (0). The counter i starts at 1.', 'يبدأ sum فارغًا (0)، ويبدأ العدّاد i من 1.'] },
+        { t: 'sum = sum + i', set: (v) => { v.sum += v.i; }, say: ['Add the counter to the sum.', 'أضف العدّاد إلى المجموع.'] },
+        { t: 'i = i + 1', set: (v) => { v.i += 1; }, say: ['Go to the next number.', 'انتقل إلى العدد التالي.'] },
+        { t: 'If i <= n then go to step 5', loop: 5, when: (v) => v.i <= v.n, say: ['Still i <= n? Go back and add again.', `ما زال ${L('i <= n')}؟ ارجع وأضف مرة أخرى.`] },
+        { t: 'Print sum', print: (v) => [v.sum], say: ['The loop is over. Print the total once.', 'انتهى الـ Loop. اطبع المجموع مرة واحدة.'] },
         { t: 'End' },
       ],
     },
     {
+      id: 'times-table',
       level: 3,
       title: ['Multiplication table of any number', 'جدول الضرب لأي عدد'],
       task: ['Read a number n and print its multiplication table from n × 1 to n × 10.', `اقرأ عددًا n واطبع جدول ضربه من ${L('n × 1')} إلى ${L('n × 10')}.`],
@@ -259,16 +278,17 @@
       steps: [
         { t: 'Start' },
         { t: 'Declare n, i, r' },
-        { t: 'Input n', input: ['n'] },
-        { t: 'i = 1', set: (v) => { v.i = 1; } },
-        { t: 'r = n * i', set: (v) => { v.r = v.n * v.i; } },
-        { t: 'Print n, "x", i, "=", r', print: (v) => [v.n, 'x', v.i, '=', v.r] },
-        { t: 'i = i + 1', set: (v) => { v.i += 1; } },
-        { t: 'If i <= 10 then go to step 5', loop: 5, when: (v) => v.i <= 10 },
+        { t: 'Input n', input: ['n'], say: ['Read the number whose table we want.', 'اقرأ العدد الذي نريد جدول ضربه.'] },
+        { t: 'i = 1', set: (v) => { v.i = 1; }, say: ['i will go from 1 to 10.', 'سيذهب i من 1 إلى 10.'] },
+        { t: 'r = n * i', set: (v) => { v.r = v.n * v.i; }, say: ['Work out one answer of the table.', 'احسب ناتجًا واحدًا من الجدول.'] },
+        { t: 'Print n, "x", i, "=", r', print: (v) => [v.n, 'x', v.i, '=', v.r], say: ['Print one line, like 7 x 3 = 21.', `اطبع سطرًا واحدًا، مثل ${L('7 x 3 = 21')}.`] },
+        { t: 'i = i + 1', set: (v) => { v.i += 1; }, say: ['Go to the next line of the table.', 'انتقل إلى السطر التالي من الجدول.'] },
+        { t: 'If i <= 10 then go to step 5', loop: 5, when: (v) => v.i <= 10, say: ['While i is 10 or less, go back for the next line.', 'ما دام i يساوي 10 أو أقل، ارجع للسطر التالي.'] },
         { t: 'End' },
       ],
     },
     {
+      id: 'factorial',
       level: 3,
       title: ['Factorial of N', 'مضروب N'],
       task: ['Read N and print N! = 1 × 2 × 3 × … × N.', `اقرأ N واطبع ${L('N! = 1 × 2 × 3 × … × N')}.`],
@@ -281,18 +301,19 @@
       steps: [
         { t: 'Start' },
         { t: 'Declare n, i, f' },
-        { t: 'Input n', input: ['n'] },
-        { t: 'f = 1, i = 1', set: (v) => { v.f = 1; v.i = 1; } },
-        { t: 'f = f * i', set: (v) => { v.f *= v.i; } },
-        { t: 'i = i + 1', set: (v) => { v.i += 1; } },
-        { t: 'If i <= n then go to step 5', loop: 5, when: (v) => v.i <= v.n },
-        { t: 'Print f', print: (v) => [v.f] },
+        { t: 'Input n', input: ['n'], say: ['Read N.', 'اقرأ N.'] },
+        { t: 'f = 1, i = 1', set: (v) => { v.f = 1; v.i = 1; }, say: ['f starts at 1 (not 0), because we multiply.', 'يبدأ f من 1 (وليس 0) لأننا نضرب.'] },
+        { t: 'f = f * i', set: (v) => { v.f *= v.i; }, say: ['Multiply f by the counter.', 'اضرب f في العدّاد.'] },
+        { t: 'i = i + 1', set: (v) => { v.i += 1; }, say: ['Go to the next number.', 'انتقل إلى العدد التالي.'] },
+        { t: 'If i <= n then go to step 5', loop: 5, when: (v) => v.i <= v.n, say: ['Go back while i <= n.', `ارجع ما دام ${L('i <= n')}.`] },
+        { t: 'Print f', print: (v) => [v.f], say: ['f is now 1 × 2 × … × n.', `الآن f يساوي ${L('1 × 2 × … × n')}.`] },
         { t: 'End' },
       ],
     },
 
     /* ---------- Level 4: loops with decisions ---------- */
     {
+      id: 'sum-evens',
       level: 4,
       title: ['Sum of the even numbers from 1 to N', 'مجموع الأعداد الزوجية من 1 إلى N'],
       task: ['Read N. Print the sum of the even numbers between 1 and N.', 'اقرأ N، ثم اطبع مجموع الأعداد الزوجية بين 1 و N.'],
@@ -305,16 +326,17 @@
       steps: [
         { t: 'Start' },
         { t: 'Declare n, i, sum' },
-        { t: 'Input n', input: ['n'] },
-        { t: 'sum = 0, i = 1', set: (v) => { v.sum = 0; v.i = 1; } },
-        { t: 'If i mod 2 == 0 then sum = sum + i', set: (v) => { if (v.i % 2 === 0) v.sum += v.i; } },
-        { t: 'i = i + 1', set: (v) => { v.i += 1; } },
-        { t: 'If i <= n then go to step 5', loop: 5, when: (v) => v.i <= v.n },
-        { t: 'Print sum', print: (v) => [v.sum] },
+        { t: 'Input n', input: ['n'], say: ['Read N.', 'اقرأ N.'] },
+        { t: 'sum = 0, i = 1', set: (v) => { v.sum = 0; v.i = 1; }, say: ['sum starts at 0, the counter at 1.', 'يبدأ sum من 0، والعدّاد من 1.'] },
+        { t: 'If i mod 2 == 0 then sum = sum + i', set: (v) => { if (v.i % 2 === 0) v.sum += v.i; }, say: ['Add i only when it is even (the remainder is 0).', 'أضف i فقط عندما يكون زوجيًا (الباقي 0).'] },
+        { t: 'i = i + 1', set: (v) => { v.i += 1; }, say: ['Go to the next number.', 'انتقل إلى العدد التالي.'] },
+        { t: 'If i <= n then go to step 5', loop: 5, when: (v) => v.i <= v.n, say: ['Go back while i <= n.', `ارجع ما دام ${L('i <= n')}.`] },
+        { t: 'Print sum', print: (v) => [v.sum], say: ['Print the total of the even numbers.', 'اطبع مجموع الأعداد الزوجية.'] },
         { t: 'End' },
       ],
     },
     {
+      id: 'largest-n',
       level: 4,
       title: ['The largest of N numbers', 'الأكبر بين N من الأعداد'],
       task: ['Read N, then read N numbers. Print the largest of them.', 'اقرأ N، ثم اقرأ N من الأعداد. اطبع الأكبر بينها.'],
@@ -327,17 +349,18 @@
       steps: [
         { t: 'Start' },
         { t: 'Declare n, i, x, max' },
-        { t: 'Input n', input: ['n'] },
-        { t: 'max = -999999, i = 1', set: (v) => { v.max = -999999; v.i = 1; } },
-        { t: 'Input x', input: ['x'] },
-        { t: 'If x > max then max = x', set: (v) => { if (v.x > v.max) v.max = v.x; } },
-        { t: 'i = i + 1', set: (v) => { v.i += 1; } },
-        { t: 'If i <= n then go to step 5', loop: 5, when: (v) => v.i <= v.n },
-        { t: 'Print max', print: (v) => [v.max] },
+        { t: 'Input n', input: ['n'], say: ['Read how many numbers will come.', 'اقرأ كم عددًا سيأتي.'] },
+        { t: 'max = -999999, i = 1', set: (v) => { v.max = -999999; v.i = 1; }, say: ['max starts very small, so the first number will beat it.', 'يبدأ max صغيرًا جدًا، حتى يتفوق عليه أول عدد.'] },
+        { t: 'Input x', input: ['x'], say: ['Read the next number.', 'اقرأ العدد التالي.'] },
+        { t: 'If x > max then max = x', set: (v) => { if (v.x > v.max) v.max = v.x; }, say: ['Bigger than the largest so far? Then it is the new max.', 'أكبر من الأكبر حتى الآن؟ إذن هو max الجديد.'] },
+        { t: 'i = i + 1', set: (v) => { v.i += 1; }, say: ['Count this number.', 'احسب هذا العدد.'] },
+        { t: 'If i <= n then go to step 5', loop: 5, when: (v) => v.i <= v.n, say: ['More numbers to read? Go back to step 5.', 'هناك أعداد أخرى للقراءة؟ ارجع إلى الخطوة 5.'] },
+        { t: 'Print max', print: (v) => [v.max], say: ['Print the largest number.', 'اطبع العدد الأكبر.'] },
         { t: 'End' },
       ],
     },
     {
+      id: 'avg-passed',
       level: 4,
       title: ['Average of N marks and how many passed', 'معدل N من العلامات وعدد الناجحين'],
       task: ['Read N, then N marks. Print the average of the marks and how many marks are 50 or more.', 'اقرأ N، ثم N من العلامات. اطبع معدل العلامات وعدد العلامات التي تساوي 50 أو أكثر.'],
@@ -349,21 +372,47 @@
       steps: [
         { t: 'Start' },
         { t: 'Declare n, i, mark, sum, pass, avg' },
-        { t: 'Input n', input: ['n'] },
-        { t: 'sum = 0, pass = 0, i = 1', set: (v) => { v.sum = 0; v.pass = 0; v.i = 1; } },
-        { t: 'Input mark', input: ['mark'] },
-        { t: 'sum = sum + mark', set: (v) => { v.sum += v.mark; } },
-        { t: 'If mark >= 50 then pass = pass + 1', set: (v) => { if (v.mark >= 50) v.pass += 1; } },
-        { t: 'i = i + 1', set: (v) => { v.i += 1; } },
-        { t: 'If i <= n then go to step 5', loop: 5, when: (v) => v.i <= v.n },
-        { t: 'avg = sum / n', set: (v) => { v.avg = v.sum / v.n; } },
-        { t: 'Print avg, pass', print: (v) => [v.avg, v.pass] },
+        { t: 'Input n', input: ['n'], say: ['Read how many marks will come.', 'اقرأ كم علامة ستأتي.'] },
+        { t: 'sum = 0, pass = 0, i = 1', set: (v) => { v.sum = 0; v.pass = 0; v.i = 1; }, say: ['The total and the pass counter start at 0.', 'يبدأ المجموع وعدّاد الناجحين من 0.'] },
+        { t: 'Input mark', input: ['mark'], say: ['Read the next mark.', 'اقرأ العلامة التالية.'] },
+        { t: 'sum = sum + mark', set: (v) => { v.sum += v.mark; }, say: ['Add every mark to the total.', 'أضف كل علامة إلى المجموع.'] },
+        { t: 'If mark >= 50 then pass = pass + 1', set: (v) => { if (v.mark >= 50) v.pass += 1; }, say: ['A mark of 50 or more passed: count it.', 'العلامة 50 أو أكثر ناجحة: احسبها.'] },
+        { t: 'i = i + 1', set: (v) => { v.i += 1; }, say: ['Count this mark.', 'احسب هذه العلامة.'] },
+        { t: 'If i <= n then go to step 5', loop: 5, when: (v) => v.i <= v.n, say: ['More marks to read? Go back to step 5.', 'هناك علامات أخرى للقراءة؟ ارجع إلى الخطوة 5.'] },
+        { t: 'avg = sum / n', set: (v) => { v.avg = v.sum / v.n; }, say: ['After the loop, divide the total by n.', 'بعد الـ Loop، اقسم المجموع على n.'] },
+        { t: 'Print avg, pass', print: (v) => [v.avg, v.pass], say: ['Print the average and the number who passed.', 'اطبع المعدل وعدد الناجحين.'] },
         { t: 'End' },
       ],
     },
 
     /* ---------- Level 5: challenge ---------- */
     {
+      id: 'fibonacci',
+      level: 5,
+      title: ['The Fibonacci series', 'متسلسلة Fibonacci'],
+      task: ['Read N and print the first N numbers of the Fibonacci series: 0, 1, 1, 2, 3, 5, 8, … Each number is the sum of the two numbers before it.', 'اقرأ N واطبع أول N عددًا من متسلسلة Fibonacci: 0، 1، 1، 2، 3، 5، 8، … كل عدد هو مجموع العددين اللذين قبله.'],
+      hint: ['Keep the last two numbers in a and b. Print a, then step forward: c = a + b, then a = b, then b = c.', `احفظ آخر عددين في a و b. اطبع a، ثم تقدّم خطوة: ${L('c = a + b')}، ثم ${L('a = b')}، ثم ${L('b = c')}.`],
+      note: ['The order matters, like in the swap example: do a = b before b = c. If b changed first, its old value would be lost.', `الترتيب مهم، مثل مثال التبديل: نفّذ ${L('a = b')} قبل ${L('b = c')}. لو تغيّر b أولًا لضاعت قيمته القديمة.`],
+      skills: ['Loop', 'Swap', '+'],
+      vars: ['n', 'i', 'a', 'b', 'c'],
+      order: 'n',
+      sample: '8',
+      steps: [
+        { t: 'Start' },
+        { t: 'Declare n, i, a, b, c' },
+        { t: 'Input n', input: ['n'], say: ['Read how many numbers of the series to print.', 'اقرأ كم عددًا من المتسلسلة سنطبع.'] },
+        { t: 'a = 0, b = 1, i = 1', set: (v) => { v.a = 0; v.b = 1; v.i = 1; }, say: ['The series starts with 0 and 1. a and b are always the last two numbers.', 'تبدأ المتسلسلة بـ 0 و 1. و a و b هما دائمًا آخر عددين.'] },
+        { t: 'Print a', print: (v) => [v.a], say: ['Print the current number.', 'اطبع العدد الحالي.'] },
+        { t: 'c = a + b', set: (v) => { v.c = v.a + v.b; }, say: ['The next number is the sum of the last two.', 'العدد التالي هو مجموع آخر عددين.'] },
+        { t: 'a = b', set: (v) => { v.a = v.b; }, say: ['Step forward: a takes the value of b…', 'تقدّم خطوة: يأخذ a قيمة b…'] },
+        { t: 'b = c', set: (v) => { v.b = v.c; }, say: ['…and b takes the new number c.', '…ويأخذ b العدد الجديد c.'] },
+        { t: 'i = i + 1', set: (v) => { v.i += 1; }, say: ['Count the number we printed.', 'احسب العدد الذي طبعناه.'] },
+        { t: 'If i <= n then go to step 5', loop: 5, when: (v) => v.i <= v.n, say: ['Printed fewer than n numbers? Go back to step 5.', 'طبعنا أقل من n عدد؟ ارجع إلى الخطوة 5.'] },
+        { t: 'End' },
+      ],
+    },
+    {
+      id: 'prime',
       level: 5,
       title: ['Is the number prime?', 'هل العدد أولي؟'],
       task: ['Read a whole number n. Print whether it is prime: a prime number can only be divided by 1 and by itself.', 'اقرأ عددًا صحيحًا n. اطبع هل هو أولي: العدد الأولي لا يقبل القسمة إلا على 1 وعلى نفسه.'],
@@ -376,45 +425,40 @@
       steps: [
         { t: 'Start' },
         { t: 'Declare n, i, count' },
-        { t: 'Input n', input: ['n'] },
-        { t: 'count = 0, i = 1', set: (v) => { v.count = 0; v.i = 1; } },
-        { t: 'If n mod i == 0 then count = count + 1', set: (v) => { if (v.n % v.i === 0) v.count += 1; } },
-        { t: 'i = i + 1', set: (v) => { v.i += 1; } },
-        { t: 'If i <= n then go to step 5', loop: 5, when: (v) => v.i <= v.n },
-        { t: 'If count == 2 then Print n, "is prime"\nelse Print n, "is not prime"', print: (v) => [v.n, v.count === 2 ? 'is prime' : 'is not prime'] },
+        { t: 'Input n', input: ['n'], say: ['Read the number.', 'اقرأ العدد.'] },
+        { t: 'count = 0, i = 1', set: (v) => { v.count = 0; v.i = 1; }, say: ['count will count the divisors of n. i tries every number from 1 to n.', 'سيعدّ count قواسم n. و i يجرّب كل عدد من 1 إلى n.'] },
+        { t: 'If n mod i == 0 then count = count + 1', set: (v) => { if (v.n % v.i === 0) v.count += 1; }, say: ['Remainder 0 means i divides n: count it.', 'الباقي 0 يعني أن i يقسم n: احسبه.'] },
+        { t: 'i = i + 1', set: (v) => { v.i += 1; }, say: ['Try the next number.', 'جرّب العدد التالي.'] },
+        { t: 'If i <= n then go to step 5', loop: 5, when: (v) => v.i <= v.n, say: ['Go back until i passes n.', 'ارجع حتى يتجاوز i قيمة n.'] },
+        { t: 'If count == 2 then Print n, "is prime"\nelse Print n, "is not prime"', print: (v) => [v.n, v.count === 2 ? 'is prime' : 'is not prime'], say: ['Exactly 2 divisors (1 and n itself) means prime.', 'قاسمان فقط (1 و n نفسه) يعني أنه أولي.'] },
         { t: 'End' },
       ],
     },
     {
+      id: 'gcd',
       level: 5,
-      title: ['The three largest numbers in a set', 'أكبر ثلاثة أعداد في مجموعة'],
-      task: ['Read N, then N numbers. Print the three largest numbers, from the biggest down.', 'اقرأ N، ثم N من الأعداد. اطبع أكبر ثلاثة أعداد، من الأكبر إلى الأصغر.'],
-      hint: ['Think of a podium with three places: first, second and third. When a new number beats first, the old first moves to second and the old second moves to third.', 'تخيّل منصة تتويج فيها ثلاثة أماكن: first و second و third. عندما يتفوق عدد جديد على first، ينزل first القديم إلى second، وينزل second القديم إلى third.'],
-      note: ['The order of the moves matters: move third first, then second, then put x in first. The three places start at −999999, so the first real numbers always beat them.', `ترتيب النقل مهم: انقل third أولًا، ثم second، ثم ضع x في first. وتبدأ الأماكن الثلاثة من ${L('−999999')}، لذلك أول الأعداد الحقيقية تتفوق عليها دائمًا.`],
-      skills: ['Loop', 'Nested if', 'Podium'],
-      vars: ['n', 'i', 'x', 'first', 'second', 'third'],
-      order: 'n, then the n numbers',
-      sample: '6 5 12 8 20 3 15',
+      title: ['Greatest common divisor (GCD)', 'القاسم المشترك الأكبر (GCD)'],
+      task: ['Read two positive whole numbers a and b. Print their GCD: the biggest number that divides both of them. Example: the GCD of 12 and 18 is 6.', 'اقرأ عددين صحيحين موجبين a و b. اطبع الـ GCD لهما: أكبر عدد يقسم الاثنين. مثال: الـ GCD للعددين 12 و 18 هو 6.'],
+      hint: ['Try every i from 1 up to a. If i divides a and also divides b, keep it in g. The last one you keep is the biggest.', 'جرّب كل i من 1 حتى a. إذا كان i يقسم a ويقسم b أيضًا، احفظه في g. آخر عدد تحفظه هو الأكبر.'],
+      note: ['and: both conditions must be true. 12 mod 4 == 0 is true, but 18 mod 4 == 0 is false, so 4 is not kept.', `${L('and')}: يجب أن يكون الشرطان صحيحين. ${L('12 mod 4 == 0')} صحيح، لكن ${L('18 mod 4 == 0')} خطأ، لذلك لا نحفظ 4.`],
+      skills: ['Loop', 'and', 'mod'],
+      vars: ['a', 'b', 'i', 'g'],
+      order: 'a b',
+      sample: '12 18',
       steps: [
         { t: 'Start' },
-        { t: 'Declare n, i, x, first, second, third' },
-        { t: 'Input n', input: ['n'] },
-        { t: 'first = -999999, second = -999999, third = -999999', set: (v) => { v.first = -999999; v.second = -999999; v.third = -999999; } },
-        { t: 'i = 1', set: (v) => { v.i = 1; } },
-        { t: 'Input x', input: ['x'] },
-        {
-          t: 'If x > first then\n    third = second\n    second = first\n    first = x\nelse if x > second then\n    third = second\n    second = x\nelse if x > third then\n    third = x',
-          set: (v) => {
-            if (v.x > v.first) { v.third = v.second; v.second = v.first; v.first = v.x; } else if (v.x > v.second) { v.third = v.second; v.second = v.x; } else if (v.x > v.third) v.third = v.x;
-          },
-        },
-        { t: 'i = i + 1', set: (v) => { v.i += 1; } },
-        { t: 'If i <= n then go to step 6', loop: 6, when: (v) => v.i <= v.n },
-        { t: 'Print first, second, third', print: (v) => [v.first, v.second, v.third] },
+        { t: 'Declare a, b, i, g' },
+        { t: 'Input a, b', input: ['a', 'b'], say: ['Read the two numbers.', 'اقرأ العددين.'] },
+        { t: 'g = 1, i = 1', set: (v) => { v.g = 1; v.i = 1; }, say: ['g keeps the best answer so far. 1 divides every number.', 'يحفظ g أفضل إجابة حتى الآن. العدد 1 يقسم كل الأعداد.'] },
+        { t: 'If a mod i == 0 and b mod i == 0 then g = i', set: (v) => { if (v.a % v.i === 0 && v.b % v.i === 0) v.g = v.i; }, say: ['Does i divide both a and b? Then it is a common divisor: keep it in g.', 'هل i يقسم a و b معًا؟ إذن هو قاسم مشترك: احفظه في g.'] },
+        { t: 'i = i + 1', set: (v) => { v.i += 1; }, say: ['Try the next number.', 'جرّب العدد التالي.'] },
+        { t: 'If i <= a then go to step 5', loop: 5, when: (v) => v.i <= v.a, say: ['Keep trying up to a.', 'استمر في التجربة حتى a.'] },
+        { t: 'Print g', print: (v) => [v.g], say: ['i went up, so the last common divisor in g is the greatest.', 'لأن i يزداد، فإن آخر قاسم مشترك في g هو الأكبر.'] },
         { t: 'End' },
       ],
     },
     {
+      id: 'sum-factorials',
       level: 5,
       title: ['Sum of the factorials: 1! + 2! + … + N!', 'مجموع المضروبات: !1 + !2 + … + !N'],
       task: ['Read N. Print y = 1! + 2! + 3! + … + N!.', `اقرأ N، ثم اطبع ${L('y = 1! + 2! + 3! + … + N!')}.`],
@@ -427,27 +471,265 @@
       steps: [
         { t: 'Start' },
         { t: 'Declare n, i, f, y' },
-        { t: 'Input n', input: ['n'] },
-        { t: 'y = 0, f = 1, i = 1', set: (v) => { v.y = 0; v.f = 1; v.i = 1; } },
-        { t: 'f = f * i', set: (v) => { v.f *= v.i; } },
-        { t: 'y = y + f', set: (v) => { v.y += v.f; } },
-        { t: 'i = i + 1', set: (v) => { v.i += 1; } },
-        { t: 'If i <= n then go to step 5', loop: 5, when: (v) => v.i <= v.n },
-        { t: 'Print y', print: (v) => [v.y] },
+        { t: 'Input n', input: ['n'], say: ['Read N.', 'اقرأ N.'] },
+        { t: 'y = 0, f = 1, i = 1', set: (v) => { v.y = 0; v.f = 1; v.i = 1; }, say: ['y is the total, so it starts at 0. f is the factorial, so it starts at 1.', 'y هو المجموع لذلك يبدأ من 0. و f هو المضروب لذلك يبدأ من 1.'] },
+        { t: 'f = f * i', set: (v) => { v.f *= v.i; }, say: ['Now f = i! (it uses the factorial before it).', `الآن ${L('f = i!')} (يستفيد من المضروب الذي قبله).`] },
+        { t: 'y = y + f', set: (v) => { v.y += v.f; }, say: ['Add this factorial to the total.', 'أضف هذا المضروب إلى المجموع.'] },
+        { t: 'i = i + 1', set: (v) => { v.i += 1; }, say: ['Go to the next number.', 'انتقل إلى العدد التالي.'] },
+        { t: 'If i <= n then go to step 5', loop: 5, when: (v) => v.i <= v.n, say: ['Go back while i <= n.', `ارجع ما دام ${L('i <= n')}.`] },
+        { t: 'Print y', print: (v) => [v.y], say: ['Print the total.', 'اطبع المجموع.'] },
+        { t: 'End' },
+      ],
+    },
+    {
+      id: 'three-largest',
+      level: 5,
+      title: ['The three largest numbers in a set', 'أكبر ثلاثة أعداد في مجموعة'],
+      task: ['Read N, then N numbers. Print the three largest numbers, from the biggest down.', 'اقرأ N، ثم N من الأعداد. اطبع أكبر ثلاثة أعداد، من الأكبر إلى الأصغر.'],
+      hint: ['Think of a podium with three places: first, second and third. When a new number beats first, the old first moves to second and the old second moves to third.', 'تخيّل منصة تتويج فيها ثلاثة أماكن: first و second و third. عندما يتفوق عدد جديد على first، ينزل first القديم إلى second، وينزل second القديم إلى third.'],
+      note: ['The order of the moves matters: move third first, then second, then put x in first. The three places start at −999999, so the first real numbers always beat them.', `ترتيب النقل مهم: انقل third أولًا، ثم second، ثم ضع x في first. وتبدأ الأماكن الثلاثة من ${L('−999999')}، لذلك أول الأعداد الحقيقية تتفوق عليها دائمًا.`],
+      skills: ['Loop', 'Nested if', 'Podium'],
+      vars: ['n', 'i', 'x', 'first', 'second', 'third'],
+      order: 'n, then the n numbers',
+      sample: '6 5 12 8 20 3 15',
+      steps: [
+        { t: 'Start' },
+        { t: 'Declare n, i, x, first, second, third' },
+        { t: 'Input n', input: ['n'], say: ['Read how many numbers will come.', 'اقرأ كم عددًا سيأتي.'] },
+        { t: 'first = -999999, second = -999999, third = -999999', set: (v) => { v.first = -999999; v.second = -999999; v.third = -999999; }, say: ['Three empty places on the podium, all very small.', 'ثلاثة أماكن فارغة على المنصة، كلها صغيرة جدًا.'] },
+        { t: 'i = 1', set: (v) => { v.i = 1; }, say: ['The counter for the numbers we read.', 'عدّاد الأعداد التي نقرؤها.'] },
+        { t: 'Input x', input: ['x'], say: ['Read the next number.', 'اقرأ العدد التالي.'] },
+        {
+          t: 'If x > first then\n    third = second\n    second = first\n    first = x\nelse if x > second then\n    third = second\n    second = x\nelse if x > third then\n    third = x',
+          set: (v) => {
+            if (v.x > v.first) { v.third = v.second; v.second = v.first; v.first = v.x; } else if (v.x > v.second) { v.third = v.second; v.second = v.x; } else if (v.x > v.third) v.third = v.x;
+          },
+          say: ['Where does x go? If it beats first, everyone moves down one place. If it beats second, second moves down to third. If it beats third, it takes third.', 'أين يذهب x؟ إذا تفوّق على first ينزل الجميع مكانًا واحدًا. وإذا تفوّق على second ينزل second إلى third. وإذا تفوّق على third يأخذ مكانه.'],
+        },
+        { t: 'i = i + 1', set: (v) => { v.i += 1; }, say: ['Count this number.', 'احسب هذا العدد.'] },
+        { t: 'If i <= n then go to step 6', loop: 6, when: (v) => v.i <= v.n, say: ['More numbers to read? Go back to step 6.', 'هناك أعداد أخرى للقراءة؟ ارجع إلى الخطوة 6.'] },
+        { t: 'Print first, second, third', print: (v) => [v.first, v.second, v.third], say: ['Print the podium, from the biggest down.', 'اطبع المنصة، من الأكبر إلى الأصغر.'] },
+        { t: 'End' },
+      ],
+    },
+
+    /* ---------- Level 6: the digits of a number ---------- */
+    {
+      id: 'sum-digits',
+      level: 6,
+      title: ['Sum of the digits', 'مجموع أرقام عدد'],
+      task: ['Read a positive whole number. Print the sum of its digits. Example: 4825 → 4 + 8 + 2 + 5 = 19.', `اقرأ عددًا صحيحًا موجبًا. اطبع مجموع أرقامه. مثال: ${L('4825 → 4 + 8 + 2 + 5 = 19')}.`],
+      hint: ['Take the digits from the right, one by one: n mod 10 is the last digit, and (n − d) / 10 removes it. Stop when n becomes 0.', `خذ الأرقام من اليمين واحدًا واحدًا: ${L('n mod 10')} هو آخر رقم، و ${L('(n − d) / 10')} يحذفه. توقف عندما يصبح n صفرًا.`],
+      note: ['These two lines are the key to every digit problem (examples 23 to 27): d = n mod 10 takes the last digit, and n = (n − d) / 10 removes it.', `هذان السطران هما مفتاح كل مسائل الأرقام (الأمثلة 23 إلى 27): ${L('d = n mod 10')} يأخذ آخر رقم، و ${L('n = (n − d) / 10')} يحذفه.`],
+      skills: ['Loop', 'mod', 'Digits'],
+      vars: ['n', 'd', 'sum'],
+      order: 'n',
+      sample: '4825',
+      steps: [
+        { t: 'Start' },
+        { t: 'Declare n, d, sum' },
+        { t: 'Input n', input: ['n'], say: ['Read the number.', 'اقرأ العدد.'] },
+        { t: 'sum = 0', set: (v) => { v.sum = 0; }, say: ['The sum of the digits starts at 0.', 'يبدأ مجموع الأرقام من 0.'] },
+        { t: 'd = n mod 10', set: (v) => { v.d = v.n % 10; }, say: ['n mod 10 is the last digit: 4825 mod 10 = 5.', `${L('n mod 10')} هو آخر رقم: ${L('4825 mod 10 = 5')}.`] },
+        { t: 'sum = sum + d', set: (v) => { v.sum += v.d; }, say: ['Add that digit to the sum.', 'أضف هذا الرقم إلى المجموع.'] },
+        { t: 'n = (n - d) / 10', set: (v) => { v.n = (v.n - v.d) / 10; }, say: ['Remove the last digit: (4825 − 5) / 10 = 482.', `احذف آخر رقم: ${L('(4825 − 5) / 10 = 482')}.`] },
+        { t: 'If n > 0 then go to step 5', loop: 5, when: (v) => v.n > 0, say: ['Digits left (n > 0)? Go back for the next one.', `بقيت أرقام ${L('(n > 0)')}؟ ارجع للرقم التالي.`] },
+        { t: 'Print sum', print: (v) => [v.sum], say: ['n is 0, so every digit was added. Print the sum.', 'أصبح n صفرًا، أي أننا أضفنا كل الأرقام. اطبع المجموع.'] },
+        { t: 'End' },
+      ],
+    },
+    {
+      id: 'reverse',
+      level: 6,
+      title: ['Reverse a number', 'اعكس عددًا'],
+      task: ['Read a positive whole number and print it backwards. Example: 1234 → 4321.', `اقرأ عددًا صحيحًا موجبًا واطبعه معكوسًا. مثال: ${L('1234 → 4321')}.`],
+      hint: ['Take the digits from the right, like in example 23. Build the new number with rev = rev * 10 + d.', `خذ الأرقام من اليمين كما في المثال 23. وابنِ العدد الجديد بـ ${L('rev = rev * 10 + d')}.`],
+      note: ['rev * 10 makes room for one more digit at the end: 43 × 10 = 430, then + 2 gives 432.', `${L('rev * 10')} يجهّز مكانًا لرقم جديد في آخره: ${L('43 × 10 = 430')}، ثم ${L('+ 2')} يعطي 432.`],
+      skills: ['Loop', 'mod', 'Digits'],
+      vars: ['n', 'd', 'rev'],
+      order: 'n',
+      sample: '1234',
+      steps: [
+        { t: 'Start' },
+        { t: 'Declare n, d, rev' },
+        { t: 'Input n', input: ['n'], say: ['Read the number.', 'اقرأ العدد.'] },
+        { t: 'rev = 0', set: (v) => { v.rev = 0; }, say: ['rev will hold the reversed number. It starts at 0.', 'سيحمل rev العدد المعكوس. ويبدأ من 0.'] },
+        { t: 'd = n mod 10', set: (v) => { v.d = v.n % 10; }, say: ['Take the last digit of n.', 'خذ آخر رقم من n.'] },
+        { t: 'rev = rev * 10 + d', set: (v) => { v.rev = v.rev * 10 + v.d; }, say: ['Move rev one place to the left (× 10) and put d at the end.', 'حرّك rev خانة إلى اليسار (× 10) وضع d في آخره.'] },
+        { t: 'n = (n - d) / 10', set: (v) => { v.n = (v.n - v.d) / 10; }, say: ['Remove the last digit from n.', 'احذف آخر رقم من n.'] },
+        { t: 'If n > 0 then go to step 5', loop: 5, when: (v) => v.n > 0, say: ['Digits left? Go back for the next one.', 'بقيت أرقام؟ ارجع للرقم التالي.'] },
+        { t: 'Print rev', print: (v) => [v.rev], say: ['Print the reversed number.', 'اطبع العدد المعكوس.'] },
+        { t: 'End' },
+      ],
+    },
+    {
+      id: 'palindrome',
+      level: 6,
+      title: ['Is the number a palindrome?', 'هل العدد Palindrome؟'],
+      task: ['A palindrome reads the same from both sides, like 121 or 1331. Read a positive whole number and print whether it is a palindrome.', 'الـ Palindrome يُقرأ بنفس الشكل من الجهتين، مثل 121 أو 1331. اقرأ عددًا صحيحًا موجبًا واطبع هل هو Palindrome.'],
+      hint: ['Reverse the number (example 24), then compare the reverse with the number. Work on a copy m, because the loop changes it to 0.', 'اعكس العدد (المثال 24)، ثم قارن العدد المعكوس بالعدد نفسه. اعمل على نسخة m، لأن الـ Loop يغيّرها حتى تصبح 0.'],
+      note: ['Without the copy m, n would be 0 at the end and you could not compare.', 'بدون النسخة m، سيصبح n صفرًا في النهاية ولن تستطيع المقارنة.'],
+      skills: ['Loop', 'Digits', 'Copy'],
+      vars: ['n', 'm', 'd', 'rev'],
+      order: 'n',
+      sample: '121',
+      steps: [
+        { t: 'Start' },
+        { t: 'Declare n, m, d, rev' },
+        { t: 'Input n', input: ['n'], say: ['Read the number.', 'اقرأ العدد.'] },
+        { t: 'm = n, rev = 0', set: (v) => { v.m = v.n; v.rev = 0; }, say: ['Work on a copy m, so n stays the same. rev starts at 0.', 'اعمل على نسخة m حتى يبقى n كما هو. ويبدأ rev من 0.'] },
+        { t: 'd = m mod 10', set: (v) => { v.d = v.m % 10; }, say: ['Take the last digit of m.', 'خذ آخر رقم من m.'] },
+        { t: 'rev = rev * 10 + d', set: (v) => { v.rev = v.rev * 10 + v.d; }, say: ['Put it at the end of rev (like example 24).', 'ضعه في آخر rev (مثل المثال 24).'] },
+        { t: 'm = (m - d) / 10', set: (v) => { v.m = (v.m - v.d) / 10; }, say: ['Remove it from m.', 'احذفه من m.'] },
+        { t: 'If m > 0 then go to step 5', loop: 5, when: (v) => v.m > 0, say: ['Digits left in m? Go back for the next one.', 'بقيت أرقام في m؟ ارجع للرقم التالي.'] },
+        { t: 'If rev == n then Print n, "is a palindrome"\nelse Print n, "is not a palindrome"', print: (v) => [v.n, v.rev === v.n ? 'is a palindrome' : 'is not a palindrome'], say: ['The same forwards and backwards? Then it is a palindrome.', 'هل هو نفسه من الجهتين؟ إذن هو Palindrome.'] },
+        { t: 'End' },
+      ],
+    },
+    {
+      id: 'armstrong',
+      level: 6,
+      title: ['Armstrong number (3 digits)', 'عدد Armstrong (من 3 أرقام)'],
+      task: ['A 3-digit number is an Armstrong number when the cubes of its digits add up to the number itself: 153 = 1×1×1 + 5×5×5 + 3×3×3 = 1 + 125 + 27. Read a 3-digit number and print whether it is an Armstrong number.', `العدد المكوّن من 3 أرقام يكون Armstrong إذا كان مجموع مكعبات أرقامه يساوي العدد نفسه: ${L('153 = 1×1×1 + 5×5×5 + 3×3×3 = 1 + 125 + 27')}. اقرأ عددًا من 3 أرقام واطبع هل هو Armstrong.`],
+      hint: ['Same loop as the sum of the digits (example 23), but add d × d × d instead of d. Use a copy m, then compare the sum with n.', `نفس Loop مجموع الأرقام (المثال 23)، لكن أضف ${L('d × d × d')} بدل d. استخدم نسخة m، ثم قارن المجموع بـ n.`],
+      note: ['The 3-digit Armstrong numbers are 153, 370, 371 and 407. Try them!', 'أعداد Armstrong المكوّنة من 3 أرقام هي 153 و 370 و 371 و 407. جرّبها!'],
+      skills: ['Loop', 'Digits', 'Copy'],
+      vars: ['n', 'm', 'd', 'sum'],
+      order: 'n',
+      sample: '153',
+      steps: [
+        { t: 'Start' },
+        { t: 'Declare n, m, d, sum' },
+        { t: 'Input n', input: ['n'], say: ['Read the number.', 'اقرأ العدد.'] },
+        { t: 'm = n, sum = 0', set: (v) => { v.m = v.n; v.sum = 0; }, say: ['Copy n into m, so n stays the same. sum starts at 0.', 'انسخ n في m حتى يبقى n كما هو. ويبدأ sum من 0.'] },
+        { t: 'd = m mod 10', set: (v) => { v.d = v.m % 10; }, say: ['Take the last digit.', 'خذ آخر رقم.'] },
+        { t: 'sum = sum + d * d * d', set: (v) => { v.sum += v.d * v.d * v.d; }, say: ['Add the digit cubed (d × d × d): 3 gives 27.', `أضف مكعب الرقم ${L('(d × d × d)')}: الرقم 3 يعطي 27.`] },
+        { t: 'm = (m - d) / 10', set: (v) => { v.m = (v.m - v.d) / 10; }, say: ['Remove the digit from m.', 'احذف الرقم من m.'] },
+        { t: 'If m > 0 then go to step 5', loop: 5, when: (v) => v.m > 0, say: ['Digits left? Go back for the next one.', 'بقيت أرقام؟ ارجع للرقم التالي.'] },
+        { t: 'If sum == n then Print n, "is an Armstrong number"\nelse Print n, "is not an Armstrong number"', print: (v) => [v.n, v.sum === v.n ? 'is an Armstrong number' : 'is not an Armstrong number'], say: ['The sum of the cubes is the same as n? Then it is an Armstrong number.', 'مجموع المكعبات يساوي n؟ إذن هو عدد Armstrong.'] },
+        { t: 'End' },
+      ],
+    },
+    {
+      id: 'binary',
+      level: 6,
+      title: ['Decimal to binary', 'من العشري إلى الثنائي (Binary)'],
+      task: ['Read a whole number and print it in binary (base 2). Example: 13 → 1101.', `اقرأ عددًا صحيحًا واطبعه بالنظام الثنائي (Binary). مثال: ${L('13 → 1101')}.`],
+      hint: ['Divide by 2 again and again and keep the remainders (n mod 2). The binary number is the remainders, read from the last to the first. place puts each new remainder on the left: 1, 10, 100, …', `اقسم على 2 مرة بعد مرة واحتفظ بالبواقي ${L('(n mod 2)')}. العدد الثنائي هو البواقي مقروءة من الأخير إلى الأول. و place يضع كل باقٍ جديد على اليسار: 1، 10، 100، …`],
+      note: ['13 gives the remainders 1, 0, 1, 1. Read them backwards: 1101. Check: 8 + 4 + 0 + 1 = 13.', `العدد 13 يعطي البواقي 1، 0، 1، 1. اقرأها من الأخير: 1101. للتأكد: ${L('8 + 4 + 0 + 1 = 13')}.`],
+      skills: ['Loop', 'mod', 'Binary'],
+      vars: ['n', 'r', 'bin', 'place'],
+      order: 'n',
+      sample: '13',
+      steps: [
+        { t: 'Start' },
+        { t: 'Declare n, r, bin, place' },
+        { t: 'Input n', input: ['n'], say: ['Read the number.', 'اقرأ العدد.'] },
+        { t: 'bin = 0, place = 1', set: (v) => { v.bin = 0; v.place = 1; }, say: ['bin will hold the answer. place says where the next binary digit goes: 1, 10, 100, …', 'سيحمل bin الإجابة. و place يحدد مكان الرقم الثنائي التالي: 1، 10، 100، …'] },
+        { t: 'r = n mod 2', set: (v) => { v.r = v.n % 2; }, say: ['The remainder after dividing by 2 is the next binary digit (0 or 1).', 'باقي القسمة على 2 هو الرقم الثنائي التالي (0 أو 1).'] },
+        { t: 'bin = bin + r * place', set: (v) => { v.bin += v.r * v.place; }, say: ['Put that digit in its place.', 'ضع هذا الرقم في مكانه.'] },
+        { t: 'place = place * 10', set: (v) => { v.place *= 10; }, say: ['The next digit goes one place to the left.', 'الرقم التالي يذهب خانة واحدة إلى اليسار.'] },
+        { t: 'n = (n - r) / 2', set: (v) => { v.n = (v.n - v.r) / 2; }, say: ['Divide n by 2 (without the remainder).', 'اقسم n على 2 (بدون الباقي).'] },
+        { t: 'If n > 0 then go to step 5', loop: 5, when: (v) => v.n > 0, say: ['Keep going until n is 0.', 'استمر حتى يصبح n صفرًا.'] },
+        { t: 'Print bin', print: (v) => [v.bin], say: ['Print the binary number.', 'اطبع العدد الثنائي.'] },
+        { t: 'End' },
+      ],
+    },
+
+    /* ---------- Level 7: a loop inside a loop ---------- */
+    {
+      id: 'star-triangle',
+      level: 7,
+      title: ['Triangle of stars', 'مثلث من النجوم'],
+      task: ['Read N and draw a triangle of stars with N rows. Row 1 has 1 star, row 2 has 2 stars, … and row N has N stars.', 'اقرأ N وارسم مثلثًا من النجوم فيه N سطر. السطر 1 فيه نجمة واحدة، والسطر 2 فيه نجمتان، … والسطر N فيه N نجمة.'],
+      hint: ['Two loops: r counts the rows (the outer loop), and c counts the stars in one row (the inner loop). Row r needs r stars, so the inner loop goes on while c <= r.', `Loopان: r يعدّ السطور (الـ Loop الخارجي)، و c يعدّ النجوم في سطر واحد (الـ Loop الداخلي). السطر r يحتاج r نجمة، لذلك يستمر الـ Loop الداخلي ما دام ${L('c <= r')}.`],
+      note: ['Like in Lecture 3: Print stays on the same line, and Print new line moves down. For every new row, c starts again at 1 (step 5).', 'مثل المحاضرة 3: الـ Print يبقى على نفس السطر، و Print new line ينزل إلى السطر التالي. ومع كل سطر جديد يبدأ c من 1 من جديد (الخطوة 5).'],
+      skills: ['Nested loop', 'Pattern'],
+      vars: ['n', 'r', 'c'],
+      order: 'n',
+      sample: '4',
+      steps: [
+        { t: 'Start' },
+        { t: 'Declare n, r, c' },
+        { t: 'Input n', input: ['n'], say: ['Read the number of rows.', 'اقرأ عدد السطور.'] },
+        { t: 'r = 1', set: (v) => { v.r = 1; }, say: ['r is the row number. Start at row 1.', 'r هو رقم السطر. ابدأ من السطر 1.'] },
+        { t: 'c = 1', set: (v) => { v.c = 1; }, say: ['c counts the stars in this row. Every row starts at 1.', 'يعدّ c النجوم في هذا السطر. وكل سطر يبدأ من 1.'] },
+        { t: 'Print "*"', print: () => ['*'], say: ['Print one star, on the same line.', 'اطبع نجمة واحدة على نفس السطر.'] },
+        { t: 'c = c + 1', set: (v) => { v.c += 1; }, say: ['One more star is done.', 'اكتملت نجمة أخرى.'] },
+        { t: 'If c <= r then go to step 6', loop: 6, when: (v) => v.c <= v.r, say: ['Row r needs r stars. Not enough yet? Go back and print another.', 'السطر r يحتاج r نجمة. لم تكتمل بعد؟ ارجع واطبع نجمة أخرى.'] },
+        { t: 'Print new line', newline: true, say: ['The row is done: go down to the next line.', 'اكتمل السطر: انزل إلى السطر التالي.'] },
+        { t: 'r = r + 1', set: (v) => { v.r += 1; }, say: ['Go to the next row.', 'انتقل إلى السطر التالي.'] },
+        { t: 'If r <= n then go to step 5', loop: 5, when: (v) => v.r <= v.n, say: ['More rows? Go back to step 5, where c starts again at 1.', 'هناك سطور أخرى؟ ارجع إلى الخطوة 5، حيث يبدأ c من 1 من جديد.'] },
+        { t: 'End' },
+      ],
+    },
+    {
+      id: 'hollow-square',
+      level: 7,
+      title: ['Hollow square', 'مربع مفرّغ'],
+      task: ['Read N and draw an N × N square of stars that is empty inside.', `اقرأ N وارسم مربعًا من النجوم حجمه ${L('N × N')} ويكون فارغًا من الداخل.`],
+      hint: ['Two loops visit every place (r, c). A place is on the border when r == 1 or r == n or c == 1 or c == n. Border: print "*". Inside: print a space " ".', `يمرّ Loopان على كل مكان ${L('(r, c)')}. المكان على الحافة إذا كان ${L('r == 1 or r == n or c == 1 or c == n')}. على الحافة: اطبع "*". في الداخل: اطبع مسافة " ".`],
+      note: ['or: one true condition is enough. Without the If you would get a full square of stars.', `${L('or')}: يكفي شرط واحد صحيح. وبدون الـ If ستحصل على مربع ممتلئ بالنجوم.`],
+      skills: ['Nested loop', 'or', 'Pattern'],
+      vars: ['n', 'r', 'c'],
+      order: 'n',
+      sample: '5',
+      steps: [
+        { t: 'Start' },
+        { t: 'Declare n, r, c' },
+        { t: 'Input n', input: ['n'], say: ['Read the size of the square.', 'اقرأ حجم المربع.'] },
+        { t: 'r = 1', set: (v) => { v.r = 1; }, say: ['Start at row 1.', 'ابدأ من السطر 1.'] },
+        { t: 'c = 1', set: (v) => { v.c = 1; }, say: ['Every row starts at column 1.', 'كل سطر يبدأ من العمود 1.'] },
+        { t: 'If r == 1 or r == n or c == 1 or c == n then Print "*"\nelse Print " "', print: (v) => [v.r === 1 || v.r === v.n || v.c === 1 || v.c === v.n ? '*' : ' '], say: ['On the border (first or last row, first or last column)? Print a star. Inside? Print a space.', 'على الحافة (أول أو آخر سطر، أو أول أو آخر عمود)؟ اطبع نجمة. في الداخل؟ اطبع مسافة.'] },
+        { t: 'c = c + 1', set: (v) => { v.c += 1; }, say: ['Go to the next column.', 'انتقل إلى العمود التالي.'] },
+        { t: 'If c <= n then go to step 6', loop: 6, when: (v) => v.c <= v.n, say: ['The row is not full yet? Go back to step 6.', 'لم يمتلئ السطر بعد؟ ارجع إلى الخطوة 6.'] },
+        { t: 'Print new line', newline: true, say: ['The row is done: go down to the next line.', 'اكتمل السطر: انزل إلى السطر التالي.'] },
+        { t: 'r = r + 1', set: (v) => { v.r += 1; }, say: ['Go to the next row.', 'انتقل إلى السطر التالي.'] },
+        { t: 'If r <= n then go to step 5', loop: 5, when: (v) => v.r <= v.n, say: ['More rows? Go back to step 5.', 'هناك سطور أخرى؟ ارجع إلى الخطوة 5.'] },
+        { t: 'End' },
+      ],
+    },
+    {
+      id: 'primes-to-n',
+      level: 7,
+      title: ['All the prime numbers up to N', 'كل الأعداد الأولية حتى N'],
+      task: ['Read N (2 or more) and print every prime number from 2 to N.', 'اقرأ N (يساوي 2 أو أكثر) واطبع كل الأعداد الأولية من 2 إلى N.'],
+      hint: ['Put example 19 inside a loop: x goes from 2 to n. For each x, count its divisors with an inner loop. If count == 2, print x.', `ضع المثال 19 داخل Loop: يذهب x من 2 إلى n. ولكل x عُدّ قواسمه بـ Loop داخلي. إذا كان ${L('count == 2')} اطبع x.`],
+      note: ['count and i must start again (step 5) for every new x. If you forget, the counts of different numbers mix together.', 'يجب أن يبدأ count و i من جديد (الخطوة 5) مع كل x جديد. إذا نسيت ذلك، تختلط قواسم الأعداد المختلفة.'],
+      skills: ['Nested loop', 'mod', 'Counter'],
+      vars: ['n', 'x', 'i', 'count'],
+      order: 'n',
+      sample: '15',
+      steps: [
+        { t: 'Start' },
+        { t: 'Declare n, x, i, count' },
+        { t: 'Input n', input: ['n'], say: ['Read N.', 'اقرأ N.'] },
+        { t: 'x = 2', set: (v) => { v.x = 2; }, say: ['x is the number we check. 2 is the first prime.', 'x هو العدد الذي نفحصه. والعدد 2 هو أول عدد أولي.'] },
+        { t: 'count = 0, i = 1', set: (v) => { v.count = 0; v.i = 1; }, say: ['For every x, start counting its divisors from 0 again.', 'لكل x، ابدأ عدّ قواسمه من 0 من جديد.'] },
+        { t: 'If x mod i == 0 then count = count + 1', set: (v) => { if (v.x % v.i === 0) v.count += 1; }, say: ['Does i divide x? Count it.', 'هل i يقسم x؟ احسبه.'] },
+        { t: 'i = i + 1', set: (v) => { v.i += 1; }, say: ['Try the next i.', 'جرّب i التالي.'] },
+        { t: 'If i <= x then go to step 6', loop: 6, when: (v) => v.i <= v.x, say: ['The inner loop: try every i up to x.', 'الـ Loop الداخلي: جرّب كل i حتى x.'] },
+        { t: 'If count == 2 then Print x', print: (v) => (v.count === 2 ? [v.x] : null), say: ['Exactly 2 divisors? Then x is prime: print it.', 'قاسمان فقط؟ إذن x أولي: اطبعه.'] },
+        { t: 'x = x + 1', set: (v) => { v.x += 1; }, say: ['Check the next number.', 'افحص العدد التالي.'] },
+        { t: 'If x <= n then go to step 5', loop: 5, when: (v) => v.x <= v.n, say: ['The outer loop: go on until x passes n.', 'الـ Loop الخارجي: استمر حتى يتجاوز x قيمة n.'] },
         { t: 'End' },
       ],
     },
   ];
 
   /* Run an algorithm with the given input values. Returns every executed step
-     (with the variables after it) and the printed lines. */
-  window.runAlgorithm = function (ex, inputs, limit = 600) {
+     (with the variables after it and the screen so far) and the printed lines.
+     A print step may return null when its If prints nothing. */
+  window.runAlgorithm = function (ex, inputs, limit = 3000) {
     const v = {};
     const rows = [];
     const output = [];
+    const sameLine = ex.steps.some((s) => s.newline);
+    let line = null; // the open line, when Print stays on the same line
     let k = 0;
     let pc = 0;
     let stopped = false;
+    const screen = () => (line == null ? output : [...output, line]).join('\n');
     while (pc < ex.steps.length) {
       if (rows.length >= limit) { stopped = true; break; }
       const s = ex.steps[pc];
@@ -456,23 +738,32 @@
       let jump = null;
       if (s.input) {
         for (const name of s.input) {
-          if (k >= inputs.length) return { rows, output, missing: name };
+          if (k >= inputs.length) return { rows, output: line == null ? output : [...output, line], missing: name, sameLine };
           v[name] = inputs[k++];
         }
       }
       if (s.set) s.set(v);
       if (s.print) {
-        printed = s.print(v).map(window.fmtValue).join(' ');
-        output.push(printed);
+        const vals = s.print(v);
+        if (vals) {
+          printed = vals.map(window.fmtValue).join(' ');
+          if (sameLine) line = (line ?? '') + printed;
+          else output.push(printed);
+        }
+      }
+      if (s.newline) {
+        output.push(line ?? '');
+        line = null;
       }
       if (s.loop != null) {
         jump = s.when(v);
         if (jump) next = s.loop - 1;
       }
-      rows.push({ step: pc + 1, vars: { ...v }, printed, jump, loop: s.loop });
+      rows.push({ step: pc + 1, vars: { ...v }, printed, newline: !!s.newline, jump, loop: s.loop, next: next + 1, screen: screen() });
       pc = next;
     }
-    return { rows, output, stopped, extra: inputs.length - k };
+    if (line != null) output.push(line);
+    return { rows, output, stopped, extra: inputs.length - k, sameLine };
   };
 
   // Whole numbers as they are; others rounded to 4 decimal places.
